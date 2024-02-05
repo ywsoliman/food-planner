@@ -2,7 +2,7 @@
     <string name="app_name">Food Planner</string>
     <string name="hi_welcome_back">Hi, Welcome Back!</string>
     <string name="hello_again_you_ve_been_missed">Hello again, you’ve been missed!</string>
-    <string name="email">Email</string>
+    <string name="email">Email Address</string>
     <string name="password">Password</string>
     <string name="continue_as_guest">Continue as Guest</string>
     <string name="login">Login</string>
@@ -14,4 +14,8 @@
     <string name="sign_up">Sign Up</string>
     <string name="don_t_have_an_account">Don\'t have an account?</string>
     <string name="google">Google</string>
+    <string name="create_account">Create Account</string>
+    <string name="plan_your_food_today">Plan your food today!</string>
+    <string name="or_sign_up_with">Or Sign Up With</string>
+    <string name="already_have_an_account">Already have an account?</string>
 </resources>
