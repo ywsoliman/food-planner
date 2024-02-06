@@ -5,6 +5,7 @@ import android.util.Patterns;
 
 import androidx.annotation.NonNull;
 
+import com.example.foodplanner.register.view.IRegisterAuth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -12,10 +13,10 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class RegisterPresenter {
 
-    private final IRegisterView view;
+    private final IRegisterAuth view;
     private final FirebaseAuth model;
 
-    public RegisterPresenter(IRegisterView view) {
+    public RegisterPresenter(IRegisterAuth view) {
         this.view = view;
         model = FirebaseAuth.getInstance();
     }
@@ -29,10 +30,10 @@ public class RegisterPresenter {
                             // Sign in success, update UI with the signed-in user's information
 //                            FirebaseUser user = model.getCurrentUser();
 //                            updateUI(user);
-                            view.onRegisterSuccess();
+                            view.onSuccess();
                         } else {
                             // If sign in fails, display a message to the user.
-                            view.onRegisterFailed("Authentication failed");
+                            view.onFailure("Authentication failed");
                         }
                     }
                 });
@@ -43,12 +44,22 @@ public class RegisterPresenter {
             register(email, password);
     }
 
-    private boolean validatePassword(String password) {
-        return !password.isEmpty();
+    public boolean validatePassword(String password) {
+        if (!password.isEmpty() && password.length() >= 6) {
+            view.showPasswordValid();
+            return true;
+        }
+        view.showPasswordTooShort("Password too short! Minimum 6 characters");
+        return false;
     }
 
-    private boolean validateEmail(String email) {
-        return !email.isEmpty() && isEmailValid(email);
+    public boolean validateEmail(String email) {
+        if (!email.isEmpty() && isEmailValid(email)) {
+            view.showEmailValid();
+            return true;
+        }
+        view.showEmailNotValid("Invalid email address!");
+        return false;
     }
 
     private boolean isEmailValid(String email) {

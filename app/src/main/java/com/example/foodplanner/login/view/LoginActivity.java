@@ -2,21 +2,29 @@ package com.example.foodplanner.login.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.foodplanner.IAuthenticate;
 import com.example.foodplanner.R;
 import com.example.foodplanner.home.view.HomeActivity;
-import com.example.foodplanner.register.view.RegisterActivity;
 import com.example.foodplanner.login.presenter.LoginPresenter;
+import com.example.foodplanner.register.view.RegisterActivity;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
-public class LoginActivity extends AppCompatActivity implements ILoginView {
+public class LoginActivity extends AppCompatActivity implements IAuthenticate {
 
+    private static final String TAG = "LoginActivity";
+    private TextInputLayout emailInputLayout;
     private TextInputEditText emailInputEditText;
     private TextInputEditText passInputEditText;
     private TextView navigateToSignup;
@@ -37,6 +45,25 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
         navigateToSignup.setOnClickListener(v -> handleNavigateToSignup());
         guestButton.setOnClickListener(v -> handleGuestButton());
         googleButton.setOnClickListener(v -> handleGoogleButton());
+        addEmailTextInputWatcher();
+    }
+
+    private void addEmailTextInputWatcher() {
+        emailInputEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable email) {
+                Log.i(TAG, "afterTextChanged: " + email.toString());
+                loginPresenter.validateEmail(email.toString());
+            }
+        });
     }
 
     private void handleGoogleButton() {
@@ -59,6 +86,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
     }
 
     private void initUI() {
+        emailInputLayout = findViewById(R.id.emailTextInputLayout);
         emailInputEditText = findViewById(R.id.emailTextInputEdit);
         passInputEditText = findViewById(R.id.passwordTextInputEdit);
         navigateToSignup = findViewById(R.id.signupButton);
@@ -68,7 +96,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
     }
 
     @Override
-    public void onLoginSuccess() {
+    public void onSuccess() {
         Toast.makeText(this, "Signed-in successfully!", Toast.LENGTH_SHORT).show();
         navigateToHome();
     }
@@ -80,8 +108,21 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
     }
 
     @Override
-    public void onLoginFailed(String errorMsg) {
-        Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
+    public void onFailure(String errorMsg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(errorMsg);
+        builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+        builder.show();
+    }
+
+    @Override
+    public void showEmailValid() {
+        emailInputLayout.setError(null);
+    }
+
+    @Override
+    public void showEmailNotValid(String errorMsg) {
+        emailInputLayout.setError(errorMsg);
     }
 
 }
