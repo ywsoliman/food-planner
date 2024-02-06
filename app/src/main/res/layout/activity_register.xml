@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="16dp"
-    tools:context=".LoginActivity">
+    tools:context=".login.view.LoginActivity">
 
     <TextView
         android:id="@+id/signupHeading"
@@ -115,13 +115,13 @@
         android:layout_marginBottom="16dp"
         android:text="@string/already_have_an_account"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/loginButton"
+        app:layout_constraintEnd_toStartOf="@+id/navigateToLogin"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/loginButton"
+        android:id="@+id/navigateToLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
