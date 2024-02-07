@@ -96,9 +96,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/passwordTextInputLayout" />
 
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/orSignUpWith"
+        app:layout_constraintEnd_toStartOf="@id/orSignUpWith"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/orSignUpWith" />
 
     <TextView
-        android:id="@+id/orLoginWith"
+        android:id="@+id/orSignUpWith"
         style="@style/textBold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -107,6 +115,32 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signupButton" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/orSignUpWith"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/orSignUpWith"
+        app:layout_constraintTop_toTopOf="@id/orSignUpWith" />
+
+    <Button
+        android:id="@+id/googleButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/white"
+        android:text="@string/continue_with_google"
+        android:textColor="@color/black"
+        app:icon="@drawable/ic_google"
+        app:iconGravity="textStart"
+        app:iconSize="24dp"
+        app:iconTint="@android:color/transparent"
+        app:iconTintMode="add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/orSignUpWith" />
 
     <TextView
         android:id="@+id/textView"

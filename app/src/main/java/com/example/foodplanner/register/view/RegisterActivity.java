@@ -25,6 +25,8 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterAuth
     private TextView navigateToLogin;
     private Button signupButton;
     private RegisterPresenter registerPresenter;
+    private Button googleButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +37,19 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterAuth
         registerPresenter = new RegisterPresenter(this);
         navigateToLogin.setOnClickListener(v -> handleNavigateToSignup());
         signupButton.setOnClickListener(v -> handleRegisterButton());
+        googleButton.setOnClickListener(v -> handleGoogleButton());
         addEmailTextInputWatcher();
         addPasswordTextInputWatcher();
+    }
+
+    private void initUI() {
+        emailTextInputLayout = findViewById(R.id.emailTextInputLayout);
+        passwordTextInputLayout = findViewById(R.id.passwordTextInputLayout);
+        emailInputEditText = findViewById(R.id.emailTextInputEdit);
+        passInputEditText = findViewById(R.id.passwordTextInputEdit);
+        navigateToLogin = findViewById(R.id.navigateToLogin);
+        signupButton = findViewById(R.id.signupButton);
+        googleButton = findViewById(R.id.googleButton);
     }
 
     private void addPasswordTextInputWatcher() {
@@ -73,6 +86,10 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterAuth
         });
     }
 
+    private void handleGoogleButton() {
+        Toast.makeText(this, "Google clicked!", Toast.LENGTH_SHORT).show();
+    }
+
     private void handleRegisterButton() {
         String email = emailInputEditText.getText().toString().trim();
         String password = passInputEditText.getText().toString().trim();
@@ -89,15 +106,6 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterAuth
     private void handleNavigateToSignup() {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
-    }
-
-    private void initUI() {
-        emailTextInputLayout = findViewById(R.id.emailTextInputLayout);
-        passwordTextInputLayout = findViewById(R.id.passwordTextInputLayout);
-        emailInputEditText = findViewById(R.id.emailTextInputEdit);
-        passInputEditText = findViewById(R.id.passwordTextInputEdit);
-        navigateToLogin = findViewById(R.id.navigateToLogin);
-        signupButton = findViewById(R.id.signupButton);
     }
 
     @Override

@@ -31,7 +31,7 @@ public class LoginActivity extends AppCompatActivity implements IAuthenticate {
     private Button loginButton;
     private Button guestButton;
     private LoginPresenter loginPresenter;
-    private MaterialCardView googleButton;
+    private Button googleButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +46,16 @@ public class LoginActivity extends AppCompatActivity implements IAuthenticate {
         guestButton.setOnClickListener(v -> handleGuestButton());
         googleButton.setOnClickListener(v -> handleGoogleButton());
         addEmailTextInputWatcher();
+    }
+
+    private void initUI() {
+        emailInputLayout = findViewById(R.id.emailTextInputLayout);
+        emailInputEditText = findViewById(R.id.emailTextInputEdit);
+        passInputEditText = findViewById(R.id.passwordTextInputEdit);
+        navigateToSignup = findViewById(R.id.signupButton);
+        loginButton = findViewById(R.id.navigateToLogin);
+        guestButton = findViewById(R.id.guestButton);
+        googleButton = findViewById(R.id.googleButton);
     }
 
     private void addEmailTextInputWatcher() {
@@ -83,16 +93,6 @@ public class LoginActivity extends AppCompatActivity implements IAuthenticate {
     private void handleNavigateToSignup() {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
-    }
-
-    private void initUI() {
-        emailInputLayout = findViewById(R.id.emailTextInputLayout);
-        emailInputEditText = findViewById(R.id.emailTextInputEdit);
-        passInputEditText = findViewById(R.id.passwordTextInputEdit);
-        navigateToSignup = findViewById(R.id.signupButton);
-        loginButton = findViewById(R.id.navigateToLogin);
-        guestButton = findViewById(R.id.guestButton);
-        googleButton = findViewById(R.id.googleButton);
     }
 
     @Override
