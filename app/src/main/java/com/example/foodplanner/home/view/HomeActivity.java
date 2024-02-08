@@ -1,48 +1,26 @@
 package com.example.foodplanner.home.view;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
+
 import com.example.foodplanner.R;
-import com.example.foodplanner.home.presenter.ForYouPresenter;
-import com.example.foodplanner.models.Meal;
-import com.example.foodplanner.models.Repository;
-import com.example.foodplanner.network.MealsRemoteDataSource;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class HomeActivity extends AppCompatActivity implements IHomeView {
+public class HomeActivity extends AppCompatActivity {
 
-    private TextView trendingMealName;
-    private ImageView trendingMealImage;
-    private ForYouPresenter forYouPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        initUI();
-        forYouPresenter = new ForYouPresenter(this, Repository.getInstance(FirebaseAuth.getInstance(), MealsRemoteDataSource.getInstance()));
-        forYouPresenter.getSingleRandomMeal();
+        NavController navController = Navigation.findNavController(this, R.id.home_nav_host_fragment);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
-    }
-
-    private void initUI() {
-        trendingMealName = findViewById(R.id.trendingMealName);
-        trendingMealImage = findViewById(R.id.trendingMealImage);
-    }
-
-    @Override
-    public void showSingleRandomMeal(Meal meal) {
-        trendingMealName.setText(meal.getStrMeal());
-        Glide.with(this)
-                .load(meal.getStrMealThumb())
-                .apply(new RequestOptions().override(0, 200))
-                .into(trendingMealImage);
     }
 }

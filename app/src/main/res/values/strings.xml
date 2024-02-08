@@ -21,4 +21,11 @@
     <string name="app_slogan">Fuel Your Day, Plan Your Way: Simplify with our Food Planner App!</string>
     <string name="continue_with_google">Continue with Google</string>
     <string name="google_logo">Google Logo</string>
+    <string name="for_you">For you</string>
+    <string name="search">Search</string>
+    <string name="meal_plan">Meal Plan</string>
+    <string name="favorite">Favorite</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
 </resources>
