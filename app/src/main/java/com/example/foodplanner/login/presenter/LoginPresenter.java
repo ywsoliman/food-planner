@@ -4,28 +4,21 @@ import android.app.Activity;
 import android.util.Patterns;
 
 import com.example.foodplanner.IAuthenticate;
+import com.example.foodplanner.models.IRepository;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginPresenter {
 
     private final IAuthenticate view;
-    private final FirebaseAuth model;
+    private final IRepository model;
 
-    public LoginPresenter(IAuthenticate view) {
+    public LoginPresenter(IAuthenticate view, IRepository model) {
         this.view = view;
-        model = FirebaseAuth.getInstance();
+        this.model = model;
     }
 
     public void login(String email, String password) {
-        model.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener((Activity) view, task -> {
-                    if (task.isSuccessful()) {
-                        view.onSuccess();
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        view.onFailure("Invalid username or password");
-                    }
-                });
+        model.loginWithEmailAndPassword(view, email, password);
     }
 
     public void tryLogin(String email, String password) {

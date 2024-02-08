@@ -16,10 +16,13 @@ import com.example.foodplanner.IAuthenticate;
 import com.example.foodplanner.R;
 import com.example.foodplanner.home.view.HomeActivity;
 import com.example.foodplanner.login.presenter.LoginPresenter;
+import com.example.foodplanner.models.Repository;
+import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.example.foodplanner.register.view.RegisterActivity;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity implements IAuthenticate {
 
@@ -39,7 +42,10 @@ public class LoginActivity extends AppCompatActivity implements IAuthenticate {
         setContentView(R.layout.activity_login);
 
         initUI();
-        loginPresenter = new LoginPresenter(this);
+        loginPresenter = new LoginPresenter(this,
+                Repository.getInstance(
+                        FirebaseAuth.getInstance(), MealsRemoteDataSource.getInstance()
+                ));
 
         loginButton.setOnClickListener(v -> handleLoginButton());
         navigateToSignup.setOnClickListener(v -> handleNavigateToSignup());

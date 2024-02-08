@@ -13,6 +13,7 @@ import com.example.foodplanner.home.presenter.ForYouPresenter;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeActivity extends AppCompatActivity implements IHomeView {
 
@@ -26,7 +27,7 @@ public class HomeActivity extends AppCompatActivity implements IHomeView {
         setContentView(R.layout.activity_home);
 
         initUI();
-        forYouPresenter = new ForYouPresenter(this, Repository.getInstance(MealsRemoteDataSource.getInstance()));
+        forYouPresenter = new ForYouPresenter(this, Repository.getInstance(FirebaseAuth.getInstance(), MealsRemoteDataSource.getInstance()));
         forYouPresenter.getSingleRandomMeal();
 
     }
