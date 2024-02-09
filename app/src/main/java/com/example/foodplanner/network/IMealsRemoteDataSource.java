@@ -4,4 +4,5 @@ public interface IMealsRemoteDataSource {
 
     void requestSingleRandomMeal(NetworkCallback networkCallback);
 
+    void requestCategories(NetworkCallback networkCallback);
 }

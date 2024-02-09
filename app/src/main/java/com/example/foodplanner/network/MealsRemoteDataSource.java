@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.foodplanner.models.MealsList;
+import com.example.foodplanner.models.category.CategoryList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,13 +41,32 @@ public class MealsRemoteDataSource implements IMealsRemoteDataSource {
             @Override
             public void onResponse(@NonNull Call<MealsList> call, @NonNull Response<MealsList> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    networkCallback.onSuccess(response.body().getMeals());
+                    networkCallback.onSuccessSingleMeal(response.body().getMeals());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<MealsList> call, @NonNull Throwable t) {
                 networkCallback.onFailure(t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void requestCategories(NetworkCallback networkCallback) {
+        Call<CategoryList> call = mealsAPI.getCategories();
+        call.enqueue(new Callback<CategoryList>() {
+            @Override
+            public void onResponse(@NonNull Call<CategoryList> call, @NonNull Response<CategoryList> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.i(TAG, "onResponse: Categories = " + response.body());
+                    networkCallback.onSuccessCategories(response.body().getCategories());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<CategoryList> call, @NonNull Throwable t) {
+                Log.i(TAG, "onFailure: " + t.getMessage());
             }
         });
     }
