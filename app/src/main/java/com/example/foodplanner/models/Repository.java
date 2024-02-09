@@ -3,6 +3,7 @@ package com.example.foodplanner.models;
 import android.app.Activity;
 
 import com.example.foodplanner.auth.IAuthenticate;
+import com.example.foodplanner.network.MealDetailsNetworkCallback;
 import com.example.foodplanner.network.MealsNetworkCallback;
 import com.example.foodplanner.network.IMealsRemoteDataSource;
 import com.example.foodplanner.network.ForYouNetworkCallback;
@@ -39,6 +40,11 @@ public class Repository implements IRepository {
     @Override
     public void getRemoteMealsByCategory(MealsNetworkCallback networkCallback, String category) {
         remoteDataSource.requestMealsByCategory(networkCallback, category);
+    }
+
+    @Override
+    public void getRemoteMealDetails(MealDetailsNetworkCallback networkCallback, String mealID) {
+        remoteDataSource.requestMealDetailsByID(networkCallback, mealID);
     }
 
     @Override

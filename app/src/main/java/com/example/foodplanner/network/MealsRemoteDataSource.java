@@ -89,4 +89,22 @@ public class MealsRemoteDataSource implements IMealsRemoteDataSource {
             }
         });
     }
+
+    @Override
+    public void requestMealDetailsByID(MealDetailsNetworkCallback networkCallback, String mealID) {
+        Call<MealsList> call = mealsAPI.getMealDetailsByID(mealID);
+        call.enqueue(new Callback<MealsList>() {
+            @Override
+            public void onResponse(@NonNull Call<MealsList> call, @NonNull Response<MealsList> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    networkCallback.onSuccess(response.body().getMeals().get(0));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MealsList> call, @NonNull Throwable t) {
+                Log.i(TAG, "onFailure: requestMealDetailsByID -> " + t.getMessage());
+            }
+        });
+    }
 }

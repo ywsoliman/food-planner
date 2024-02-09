@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -74,6 +76,7 @@ public class MealsFragment extends Fragment implements IMealView, OnMealClickLis
 
     @Override
     public void onMealItemClicked(String mealID) {
-        Toast.makeText(getContext(), mealID, Toast.LENGTH_SHORT).show();
+        MealsFragmentDirections.ActionMealsFragmentToMealDetailsFragment action = MealsFragmentDirections.actionMealsFragmentToMealDetailsFragment(mealID);
+        Navigation.findNavController(requireView()).navigate(action);
     }
 }

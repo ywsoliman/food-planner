@@ -18,4 +18,8 @@ public interface MealsAPI {
     //https://www.themealdb.com/api/json/v1/1/filter.php?c=Beef
     @GET("filter.php")
     Call<MealsList> getMealsByCategory(@Query("c") String category);
+
+    //www.themealdb.com/api/json/v1/1/lookup.php?i=52772
+    @GET("lookup.php")
+    Call<MealsList> getMealDetailsByID(@Query("i") String mealID);
 }

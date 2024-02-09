@@ -7,4 +7,6 @@ public interface IMealsRemoteDataSource {
     void requestCategories(ForYouNetworkCallback forYouNetworkCallback);
 
     void requestMealsByCategory(MealsNetworkCallback networkCallback, String category);
+
+    void requestMealDetailsByID(MealDetailsNetworkCallback networkCallback, String mealID);
 }
