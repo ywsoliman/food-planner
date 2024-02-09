@@ -1,15 +1,12 @@
 package com.example.foodplanner.models;
 
 import android.app.Activity;
-import android.telecom.Call;
 
 import com.example.foodplanner.auth.IAuthenticate;
-import com.example.foodplanner.models.category.Category;
+import com.example.foodplanner.network.MealsNetworkCallback;
 import com.example.foodplanner.network.IMealsRemoteDataSource;
-import com.example.foodplanner.network.NetworkCallback;
+import com.example.foodplanner.network.ForYouNetworkCallback;
 import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.List;
 
 public class Repository implements IRepository {
 
@@ -30,13 +27,18 @@ public class Repository implements IRepository {
     }
 
     @Override
-    public void getRemoteProducts(NetworkCallback networkCallback) {
-        remoteDataSource.requestSingleRandomMeal(networkCallback);
+    public void getRemoteProducts(ForYouNetworkCallback forYouNetworkCallback) {
+        remoteDataSource.requestSingleRandomMeal(forYouNetworkCallback);
     }
 
     @Override
-    public void getRemoteCategories(NetworkCallback networkCallback) {
-        remoteDataSource.requestCategories(networkCallback);
+    public void getRemoteCategories(ForYouNetworkCallback forYouNetworkCallback) {
+        remoteDataSource.requestCategories(forYouNetworkCallback);
+    }
+
+    @Override
+    public void getRemoteMealsByCategory(MealsNetworkCallback networkCallback, String category) {
+        remoteDataSource.requestMealsByCategory(networkCallback, category);
     }
 
     @Override

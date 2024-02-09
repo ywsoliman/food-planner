@@ -1,4 +1,4 @@
-package com.example.foodplanner.home.foryou.view;
+package com.example.foodplanner.home.foryou.searchbycategory.view;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.foodplanner.R;
+import com.example.foodplanner.home.foryou.searchbycategory.OnCategoryClickListener;
 import com.example.foodplanner.models.category.Category;
 
 import java.util.List;
@@ -69,7 +70,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             categoryTitle = itemView.findViewById(R.id.categoryTitle);
             categoryDesc = itemView.findViewById(R.id.categoryDesc);
             categoryThumbnail = itemView.findViewById(R.id.categoryThumbnail);
-            itemView.setOnClickListener(v -> listener.onCategoryItemClicked(categories.get(getAdapterPosition())));
+            itemView.setOnClickListener(v -> listener.onCategoryItemClicked(categories.get(getAdapterPosition()).getStrCategory()));
         }
     }
 }

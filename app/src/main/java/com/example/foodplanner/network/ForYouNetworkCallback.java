@@ -5,7 +5,7 @@ import com.example.foodplanner.models.category.Category;
 
 import java.util.List;
 
-public interface NetworkCallback {
+public interface ForYouNetworkCallback {
     void onSuccessSingleMeal(List<Meal> meals);
 
     void onFailure(String errorMsg);

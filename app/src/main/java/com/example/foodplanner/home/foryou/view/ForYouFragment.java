@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,13 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.foodplanner.R;
 import com.example.foodplanner.home.foryou.presenter.ForYouPresenter;
-import com.example.foodplanner.home.view.IForYouView;
+import com.example.foodplanner.home.foryou.searchbycategory.OnCategoryClickListener;
+import com.example.foodplanner.home.foryou.searchbycategory.view.CategoryAdapter;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.models.category.Category;
@@ -91,7 +92,8 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
     }
 
     @Override
-    public void onCategoryItemClicked(Category category) {
-        Toast.makeText(getContext(), category.getStrCategory(), Toast.LENGTH_SHORT).show();
+    public void onCategoryItemClicked(String categoryName) {
+        ForYouFragmentDirections.ActionForYouFragmentToMealsFragment action = ForYouFragmentDirections.actionForYouFragmentToMealsFragment(categoryName);
+        Navigation.findNavController(requireView()).navigate(action);
     }
 }

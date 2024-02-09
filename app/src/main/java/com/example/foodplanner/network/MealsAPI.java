@@ -5,6 +5,7 @@ import com.example.foodplanner.models.category.CategoryList;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 public interface MealsAPI {
 
@@ -13,4 +14,8 @@ public interface MealsAPI {
 
     @GET("categories.php")
     Call<CategoryList> getCategories();
+
+    //https://www.themealdb.com/api/json/v1/1/filter.php?c=Beef
+    @GET("filter.php")
+    Call<MealsList> getMealsByCategory(@Query("c") String category);
 }

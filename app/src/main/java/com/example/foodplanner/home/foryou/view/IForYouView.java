@@ -1,4 +1,4 @@
-package com.example.foodplanner.home.view;
+package com.example.foodplanner.home.foryou.view;
 
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.category.Category;

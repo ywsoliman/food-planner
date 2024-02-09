@@ -35,7 +35,7 @@ public class MealsRemoteDataSource implements IMealsRemoteDataSource {
     }
 
     @Override
-    public void requestSingleRandomMeal(NetworkCallback networkCallback) {
+    public void requestSingleRandomMeal(ForYouNetworkCallback networkCallback) {
         Call<MealsList> call = mealsAPI.getSingleRandomMeal();
         call.enqueue(new Callback<MealsList>() {
             @Override
@@ -53,7 +53,7 @@ public class MealsRemoteDataSource implements IMealsRemoteDataSource {
     }
 
     @Override
-    public void requestCategories(NetworkCallback networkCallback) {
+    public void requestCategories(ForYouNetworkCallback networkCallback) {
         Call<CategoryList> call = mealsAPI.getCategories();
         call.enqueue(new Callback<CategoryList>() {
             @Override
@@ -67,6 +67,25 @@ public class MealsRemoteDataSource implements IMealsRemoteDataSource {
             @Override
             public void onFailure(@NonNull Call<CategoryList> call, @NonNull Throwable t) {
                 Log.i(TAG, "onFailure: " + t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void requestMealsByCategory(MealsNetworkCallback networkCallback, String category) {
+        Call<MealsList> call = mealsAPI.getMealsByCategory(category);
+        call.enqueue(new Callback<MealsList>() {
+            @Override
+            public void onResponse(@NonNull Call<MealsList> call, @NonNull Response<MealsList> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.i(TAG, "onResponse: requestMealsByCategory");
+                    networkCallback.onSuccess(response.body().getMeals());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MealsList> call, @NonNull Throwable t) {
+                Log.i(TAG, "onFailure: requestMealsByCategory -> " + t.getMessage());
             }
         });
     }

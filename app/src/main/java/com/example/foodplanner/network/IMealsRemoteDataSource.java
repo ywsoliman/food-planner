@@ -2,7 +2,9 @@ package com.example.foodplanner.network;
 
 public interface IMealsRemoteDataSource {
 
-    void requestSingleRandomMeal(NetworkCallback networkCallback);
+    void requestSingleRandomMeal(ForYouNetworkCallback networkCallback);
 
-    void requestCategories(NetworkCallback networkCallback);
+    void requestCategories(ForYouNetworkCallback forYouNetworkCallback);
+
+    void requestMealsByCategory(MealsNetworkCallback networkCallback, String category);
 }
