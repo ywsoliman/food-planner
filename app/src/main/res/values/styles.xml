@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="textHeading" parent="TextAppearance.AppCompat">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">24sp</item>
     </style>
+
     <style name="textBold" parent="TextAppearance.AppCompat">
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="textHeadingTemp">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">42sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
     </style>
 </resources>

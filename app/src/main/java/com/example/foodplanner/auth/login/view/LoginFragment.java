@@ -1,32 +1,37 @@
-package com.example.foodplanner.login.view;
+package com.example.foodplanner.auth.login.view;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
-import com.example.foodplanner.IAuthenticate;
 import com.example.foodplanner.R;
+import com.example.foodplanner.auth.IAuthCallback;
+import com.example.foodplanner.auth.IAuthenticate;
+import com.example.foodplanner.auth.login.presenter.LoginPresenter;
 import com.example.foodplanner.home.view.HomeActivity;
-import com.example.foodplanner.login.presenter.LoginPresenter;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
-import com.example.foodplanner.register.view.RegisterActivity;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class LoginActivity extends AppCompatActivity implements IAuthenticate {
+public class LoginFragment extends Fragment implements IAuthenticate {
 
-    private static final String TAG = "LoginActivity";
     private TextInputLayout emailInputLayout;
     private TextInputEditText emailInputEditText;
     private TextInputEditText passInputEditText;
@@ -37,11 +42,22 @@ public class LoginActivity extends AppCompatActivity implements IAuthenticate {
     private Button googleButton;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+    }
 
-        initUI();
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_login, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initUI(view);
+
         loginPresenter = new LoginPresenter(this,
                 Repository.getInstance(
                         FirebaseAuth.getInstance(), MealsRemoteDataSource.getInstance()
@@ -54,14 +70,14 @@ public class LoginActivity extends AppCompatActivity implements IAuthenticate {
         addEmailTextInputWatcher();
     }
 
-    private void initUI() {
-        emailInputLayout = findViewById(R.id.emailTextInputLayout);
-        emailInputEditText = findViewById(R.id.emailTextInputEdit);
-        passInputEditText = findViewById(R.id.passwordTextInputEdit);
-        navigateToSignup = findViewById(R.id.signupButton);
-        loginButton = findViewById(R.id.navigateToLogin);
-        guestButton = findViewById(R.id.guestButton);
-        googleButton = findViewById(R.id.googleButton);
+    private void initUI(View view) {
+        emailInputLayout = view.findViewById(R.id.emailTextInputLayout);
+        emailInputEditText = view.findViewById(R.id.emailTextInputEdit);
+        passInputEditText = view.findViewById(R.id.passwordTextInputEdit);
+        navigateToSignup = view.findViewById(R.id.signupButton);
+        loginButton = view.findViewById(R.id.navigateToLogin);
+        guestButton = view.findViewById(R.id.guestButton);
+        googleButton = view.findViewById(R.id.googleButton);
     }
 
     private void addEmailTextInputWatcher() {
@@ -76,14 +92,13 @@ public class LoginActivity extends AppCompatActivity implements IAuthenticate {
 
             @Override
             public void afterTextChanged(Editable email) {
-                Log.i(TAG, "afterTextChanged: " + email.toString());
                 loginPresenter.validateEmail(email.toString());
             }
         });
     }
 
     private void handleGoogleButton() {
-        Toast.makeText(this, "Google clicked!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Google clicked!", Toast.LENGTH_SHORT).show();
     }
 
     private void handleGuestButton() {
@@ -93,29 +108,29 @@ public class LoginActivity extends AppCompatActivity implements IAuthenticate {
     private void handleLoginButton() {
         String email = emailInputEditText.getText().toString().trim();
         String password = passInputEditText.getText().toString().trim();
-        loginPresenter.tryLogin(email, password);
+        loginPresenter.login(email, password);
     }
 
     private void handleNavigateToSignup() {
-        Intent intent = new Intent(this, RegisterActivity.class);
+        Navigation.findNavController(requireView())
+                .navigate(R.id.action_loginFragment_to_registerFragment);
+    }
+
+    private void navigateToHome() {
+        Intent intent = new Intent(requireActivity(), HomeActivity.class);
         startActivity(intent);
+        requireActivity().finish();
     }
 
     @Override
     public void onSuccess() {
-        Toast.makeText(this, "Signed-in successfully!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Signed-in successfully!", Toast.LENGTH_SHORT).show();
         navigateToHome();
-    }
-
-    private void navigateToHome() {
-        Intent intent = new Intent(this, HomeActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     @Override
     public void onFailure(String errorMsg) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setMessage(errorMsg);
         builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
         builder.show();

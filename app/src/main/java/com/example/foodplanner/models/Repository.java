@@ -2,11 +2,18 @@ package com.example.foodplanner.models;
 
 import android.app.Activity;
 
+import androidx.annotation.NonNull;
+
+import com.example.foodplanner.auth.IAuthCallback;
 import com.example.foodplanner.auth.IAuthenticate;
+import com.example.foodplanner.auth.register.view.IRegisterAuth;
 import com.example.foodplanner.network.MealDetailsNetworkCallback;
 import com.example.foodplanner.network.MealsNetworkCallback;
 import com.example.foodplanner.network.IMealsRemoteDataSource;
 import com.example.foodplanner.network.ForYouNetworkCallback;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class Repository implements IRepository {
@@ -48,14 +55,26 @@ public class Repository implements IRepository {
     }
 
     @Override
-    public void loginWithEmailAndPassword(IAuthenticate view, String email, String password) {
-        firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener((Activity) view, task -> {
+    public void registerWithEmailAndPassword(IAuthCallback callback, String email, String password) {
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(callback.getActivity(), task -> {
                     if (task.isSuccessful()) {
-                        view.onSuccess();
+                        callback.onSuccess();
                     } else {
-                        // If sign in fails, display a message to the user.
-                        view.onFailure("Invalid username or password");
+                        callback.onFailure("The email address is already in use by another account.");
+                    }
+                });
+    }
+
+
+    @Override
+    public void loginWithEmailAndPassword(IAuthCallback callback, String email, String password) {
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(callback.getActivity(), task -> {
+                    if (task.isSuccessful()) {
+                        callback.onSuccess();
+                    } else {
+                        callback.onFailure("Invalid username or password");
                     }
                 });
     }

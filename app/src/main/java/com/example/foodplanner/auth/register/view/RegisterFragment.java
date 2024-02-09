@@ -1,22 +1,29 @@
-package com.example.foodplanner.register.view;
+package com.example.foodplanner.auth.register.view;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+
 import com.example.foodplanner.R;
-import com.example.foodplanner.login.view.LoginActivity;
-import com.example.foodplanner.register.presenter.RegisterPresenter;
+import com.example.foodplanner.auth.register.presenter.RegisterPresenter;
+import com.example.foodplanner.models.Repository;
+import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
-public class RegisterActivity extends AppCompatActivity implements IRegisterAuth {
+public class RegisterFragment extends Fragment implements IRegisterAuth {
 
     private TextInputLayout emailTextInputLayout;
     private TextInputLayout passwordTextInputLayout;
@@ -27,29 +34,42 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterAuth
     private RegisterPresenter registerPresenter;
     private Button googleButton;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_register, container, false);
+    }
 
-        initUI();
-        registerPresenter = new RegisterPresenter(this);
-        navigateToLogin.setOnClickListener(v -> handleNavigateToSignup());
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        initUI(view);
+        registerPresenter = new RegisterPresenter(this,
+                Repository.getInstance(
+                        FirebaseAuth.getInstance(), MealsRemoteDataSource.getInstance()
+                ));
+        navigateToLogin.setOnClickListener(v -> handleNavigateToLogin());
         signupButton.setOnClickListener(v -> handleRegisterButton());
         googleButton.setOnClickListener(v -> handleGoogleButton());
         addEmailTextInputWatcher();
         addPasswordTextInputWatcher();
     }
 
-    private void initUI() {
-        emailTextInputLayout = findViewById(R.id.emailTextInputLayout);
-        passwordTextInputLayout = findViewById(R.id.passwordTextInputLayout);
-        emailInputEditText = findViewById(R.id.emailTextInputEdit);
-        passInputEditText = findViewById(R.id.passwordTextInputEdit);
-        navigateToLogin = findViewById(R.id.navigateToLogin);
-        signupButton = findViewById(R.id.signupButton);
-        googleButton = findViewById(R.id.googleButton);
+    private void initUI(View view) {
+        emailTextInputLayout = view.findViewById(R.id.emailTextInputLayout);
+        passwordTextInputLayout = view.findViewById(R.id.passwordTextInputLayout);
+        emailInputEditText = view.findViewById(R.id.emailTextInputEdit);
+        passInputEditText = view.findViewById(R.id.passwordTextInputEdit);
+        navigateToLogin = view.findViewById(R.id.navigateToLogin);
+        signupButton = view.findViewById(R.id.signupButton);
+        googleButton = view.findViewById(R.id.googleButton);
     }
 
     private void addPasswordTextInputWatcher() {
@@ -87,35 +107,29 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterAuth
     }
 
     private void handleGoogleButton() {
-        Toast.makeText(this, "Google clicked!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Google clicked!", Toast.LENGTH_SHORT).show();
     }
 
     private void handleRegisterButton() {
         String email = emailInputEditText.getText().toString().trim();
         String password = passInputEditText.getText().toString().trim();
-        registerPresenter.tryRegister(email, password);
-        navigateToLogin();
+        registerPresenter.register(email, password);
     }
 
-    private void navigateToLogin() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    private void handleNavigateToSignup() {
-        Intent intent = new Intent(this, RegisterActivity.class);
-        startActivity(intent);
+    private void handleNavigateToLogin() {
+        Navigation.findNavController(requireView()).
+                navigate(R.id.action_registerFragment_to_loginFragment);
     }
 
     @Override
     public void onSuccess() {
-        Toast.makeText(this, "Registered successfully!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Registered successfully!", Toast.LENGTH_SHORT).show();
+        handleNavigateToLogin();
     }
 
     @Override
     public void onFailure(String errorMsg) {
-        Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
     }
 
     @Override

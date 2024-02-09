@@ -1,13 +1,13 @@
-package com.example.foodplanner.login.presenter;
+package com.example.foodplanner.auth.login.presenter;
 
 import android.app.Activity;
 import android.util.Patterns;
 
-import com.example.foodplanner.IAuthenticate;
+import com.example.foodplanner.auth.IAuthCallback;
+import com.example.foodplanner.auth.IAuthenticate;
 import com.example.foodplanner.models.IRepository;
-import com.google.firebase.auth.FirebaseAuth;
 
-public class LoginPresenter {
+public class LoginPresenter implements IAuthCallback {
 
     private final IAuthenticate view;
     private final IRepository model;
@@ -18,12 +18,8 @@ public class LoginPresenter {
     }
 
     public void login(String email, String password) {
-        model.loginWithEmailAndPassword(view, email, password);
-    }
-
-    public void tryLogin(String email, String password) {
         if (validateEmail(email) && validatePassword(password))
-            login(email, password);
+            model.loginWithEmailAndPassword(this, email, password);
     }
 
     private boolean validatePassword(String password) {
@@ -41,5 +37,20 @@ public class LoginPresenter {
 
     private boolean isEmailValid(String email) {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    @Override
+    public void onSuccess() {
+        view.onSuccess();
+    }
+
+    @Override
+    public void onFailure(String errorMsg) {
+        view.onFailure(errorMsg);
+    }
+
+    @Override
+    public Activity getActivity() {
+        return view.getActivity();
     }
 }
