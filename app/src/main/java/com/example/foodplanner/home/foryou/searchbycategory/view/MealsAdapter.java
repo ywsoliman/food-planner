@@ -42,7 +42,7 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealViewHold
         Meal currentMeal = meals.get(position);
         holder.mealTitle.setText(currentMeal.getStrMeal());
         Glide.with(context)
-                .load(currentMeal.getStrMealThumb())
+                .load(currentMeal.getStrMealThumb() + "/preview")
                 .into(holder.mealThumbnail);
     }
 
