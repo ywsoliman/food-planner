@@ -1,7 +1,9 @@
 package com.example.foodplanner.auth.login.view;
 
-import android.app.Activity;
+
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,11 +19,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.foodplanner.R;
-import com.example.foodplanner.auth.IAuthCallback;
 import com.example.foodplanner.auth.IAuthenticate;
 import com.example.foodplanner.auth.login.presenter.LoginPresenter;
 import com.example.foodplanner.home.view.HomeActivity;
@@ -32,6 +33,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginFragment extends Fragment implements IAuthenticate {
 
+
+    private static final String PREF_NAME = "RememberMePrefs";
     private TextInputLayout emailInputLayout;
     private TextInputEditText emailInputEditText;
     private TextInputEditText passInputEditText;
@@ -40,10 +43,20 @@ public class LoginFragment extends Fragment implements IAuthenticate {
     private Button guestButton;
     private LoginPresenter loginPresenter;
     private Button googleButton;
+    private CheckBox rememberMe;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    private void rememberMeCheck() {
+        SharedPreferences sharedPreferences =
+                requireActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        boolean rememberMe = sharedPreferences.getBoolean("rememberMe", false);
+        if (rememberMe) {
+            navigateToHome();
+        }
     }
 
     @Override
@@ -56,7 +69,10 @@ public class LoginFragment extends Fragment implements IAuthenticate {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         initUI(view);
+
+        rememberMeCheck();
 
         loginPresenter = new LoginPresenter(this,
                 Repository.getInstance(
@@ -74,10 +90,11 @@ public class LoginFragment extends Fragment implements IAuthenticate {
         emailInputLayout = view.findViewById(R.id.emailTextInputLayout);
         emailInputEditText = view.findViewById(R.id.emailTextInputEdit);
         passInputEditText = view.findViewById(R.id.passwordTextInputEdit);
-        navigateToSignup = view.findViewById(R.id.signupButton);
+        navigateToSignup = view.findViewById(R.id.navigateToSignup);
         loginButton = view.findViewById(R.id.navigateToLogin);
         guestButton = view.findViewById(R.id.guestButton);
         googleButton = view.findViewById(R.id.googleButton);
+        rememberMe = view.findViewById(R.id.rememberMeCheck);
     }
 
     private void addEmailTextInputWatcher() {
@@ -117,6 +134,13 @@ public class LoginFragment extends Fragment implements IAuthenticate {
     }
 
     private void navigateToHome() {
+        if (rememberMe.isChecked()) {
+            SharedPreferences sharedPreferences =
+                    requireActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("rememberMe", true);
+            editor.apply();
+        }
         Intent intent = new Intent(requireActivity(), HomeActivity.class);
         startActivity(intent);
         requireActivity().finish();

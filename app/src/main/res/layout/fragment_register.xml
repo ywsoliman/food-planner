@@ -85,7 +85,7 @@
 
     <Button
 
-        android:id="@+id/signupButton"
+        android:id="@+id/navigateToSignup"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -114,7 +114,7 @@
         android:text="@string/or_sign_up_with"
         app:layout_constraintEnd_toStartOf="@+id/rightVGuideline"
         app:layout_constraintStart_toStartOf="@+id/leftVGuideline"
-        app:layout_constraintTop_toBottomOf="@+id/signupButton" />
+        app:layout_constraintTop_toBottomOf="@+id/navigateToSignup" />
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/materialDivider2"
@@ -139,8 +139,8 @@
         app:iconSize="24dp"
         app:iconTint="@android:color/transparent"
         app:iconTintMode="add"
-        app:layout_constraintEnd_toEndOf="@+id/signupButton"
-        app:layout_constraintStart_toStartOf="@+id/signupButton"
+        app:layout_constraintEnd_toEndOf="@+id/navigateToSignup"
+        app:layout_constraintStart_toStartOf="@+id/navigateToSignup"
         app:layout_constraintTop_toBottomOf="@id/orSignUpWith" />
 
     <TextView

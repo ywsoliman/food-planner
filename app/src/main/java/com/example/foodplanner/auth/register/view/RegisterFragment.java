@@ -68,7 +68,7 @@ public class RegisterFragment extends Fragment implements IRegisterAuth {
         emailInputEditText = view.findViewById(R.id.emailTextInputEdit);
         passInputEditText = view.findViewById(R.id.passwordTextInputEdit);
         navigateToLogin = view.findViewById(R.id.navigateToLogin);
-        signupButton = view.findViewById(R.id.signupButton);
+        signupButton = view.findViewById(R.id.navigateToSignup);
         googleButton = view.findViewById(R.id.googleButton);
     }
 
