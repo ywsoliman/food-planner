@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.foodplanner.home.search.presenter.SearchedMealsCallback;
 import com.example.foodplanner.models.MealsList;
 import com.example.foodplanner.models.category.CategoryList;
 
@@ -116,6 +117,24 @@ public class MealsRemoteDataSource implements IMealsRemoteDataSource {
             @Override
             public void onFailure(@NonNull Call<MealsList> call, @NonNull Throwable t) {
                 Log.i(TAG, "onFailure: requestMealDetailsByID -> " + t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void requestSearchedMeals(SearchedMealsCallback callback, String query) {
+        Call<MealsList> call = mealsAPI.getMealsBySearch(query);
+        call.enqueue(new Callback<MealsList>() {
+            @Override
+            public void onResponse(@NonNull Call<MealsList> call, @NonNull Response<MealsList> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body().getMeals());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MealsList> call, @NonNull Throwable t) {
+                callback.onFailure(t.getMessage());
             }
         });
     }

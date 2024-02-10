@@ -3,6 +3,8 @@ package com.example.foodplanner.models;
 import com.example.foodplanner.auth.IAuthCallback;
 import com.example.foodplanner.auth.IAuthenticate;
 import com.example.foodplanner.auth.register.view.IRegisterAuth;
+import com.example.foodplanner.home.search.presenter.SearchPresenter;
+import com.example.foodplanner.home.search.presenter.SearchedMealsCallback;
 import com.example.foodplanner.network.MealDetailsNetworkCallback;
 import com.example.foodplanner.network.MealsNetworkCallback;
 import com.example.foodplanner.network.ForYouNetworkCallback;
@@ -19,4 +21,6 @@ public interface IRepository {
     void getRemoteMealDetails(MealDetailsNetworkCallback networkCallback, String mealID);
 
     void registerWithEmailAndPassword(IAuthCallback callback, String email, String password);
+
+    void getRemoteSearchedMeals(SearchedMealsCallback callback, String query);
 }

@@ -22,4 +22,8 @@ public interface MealsAPI {
     //www.themealdb.com/api/json/v1/1/lookup.php?i=52772
     @GET("lookup.php")
     Call<MealsList> getMealDetailsByID(@Query("i") String mealID);
+
+    //https://www.themealdb.com/api/json/v1/1/search.php?s=Arrabiata
+    @GET("search.php")
+    Call<MealsList> getMealsBySearch(@Query("s") String query);
 }

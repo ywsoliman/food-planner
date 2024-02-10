@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.example.foodplanner.auth.IAuthCallback;
 import com.example.foodplanner.auth.IAuthenticate;
 import com.example.foodplanner.auth.register.view.IRegisterAuth;
+import com.example.foodplanner.home.search.presenter.SearchedMealsCallback;
 import com.example.foodplanner.network.MealDetailsNetworkCallback;
 import com.example.foodplanner.network.MealsNetworkCallback;
 import com.example.foodplanner.network.IMealsRemoteDataSource;
@@ -52,6 +53,11 @@ public class Repository implements IRepository {
     @Override
     public void getRemoteMealDetails(MealDetailsNetworkCallback networkCallback, String mealID) {
         remoteDataSource.requestMealDetailsByID(networkCallback, mealID);
+    }
+
+    @Override
+    public void getRemoteSearchedMeals(SearchedMealsCallback callback, String query) {
+        remoteDataSource.requestSearchedMeals(callback, query);
     }
 
     @Override
