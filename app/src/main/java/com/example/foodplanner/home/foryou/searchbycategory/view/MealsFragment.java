@@ -58,7 +58,7 @@ public class MealsFragment extends Fragment implements IMealView, OnMealClickLis
 
         presenter = new MealsPresenter(this, Repository.getInstance(
                 FirebaseAuth.getInstance(),
-                MealsRemoteDataSource.getInstance()
+                MealsRemoteDataSource.getInstance(requireContext())
         ));
         String categoryName = MealsFragmentArgs.fromBundle(getArguments()).getCategoryName();
         presenter.getMealsByCategory(categoryName);

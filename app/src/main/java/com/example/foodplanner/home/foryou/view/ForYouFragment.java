@@ -66,7 +66,7 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
 
         forYouPresenter = new ForYouPresenter(this,
                 Repository.getInstance(FirebaseAuth.getInstance(),
-                        MealsRemoteDataSource.getInstance()));
+                        MealsRemoteDataSource.getInstance(requireContext())));
         forYouPresenter.getSingleRandomMeal();
         forYouPresenter.getCategories();
     }

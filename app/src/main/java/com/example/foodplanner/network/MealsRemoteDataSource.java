@@ -1,5 +1,6 @@
 package com.example.foodplanner.network;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -7,6 +8,8 @@ import androidx.annotation.NonNull;
 import com.example.foodplanner.models.MealsList;
 import com.example.foodplanner.models.category.CategoryList;
 
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -20,17 +23,26 @@ public class MealsRemoteDataSource implements IMealsRemoteDataSource {
     private static MealsRemoteDataSource instance = null;
     private final MealsAPI mealsAPI;
 
-    private MealsRemoteDataSource() {
+    private MealsRemoteDataSource(Context context) {
+
+        int cacheSize = 10 * 1024 * 1024;
+        Cache cache = new Cache(context.getCacheDir(), cacheSize);
+
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .cache(cache)
+                .build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
                 .build();
         mealsAPI = retrofit.create(MealsAPI.class);
     }
 
-    public static synchronized MealsRemoteDataSource getInstance() {
+    public static synchronized MealsRemoteDataSource getInstance(Context context) {
         if (instance == null)
-            instance = new MealsRemoteDataSource();
+            instance = new MealsRemoteDataSource(context);
         return instance;
     }
 

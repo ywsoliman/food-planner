@@ -76,7 +76,7 @@ public class LoginFragment extends Fragment implements IAuthenticate {
 
         loginPresenter = new LoginPresenter(this,
                 Repository.getInstance(
-                        FirebaseAuth.getInstance(), MealsRemoteDataSource.getInstance()
+                        FirebaseAuth.getInstance(), MealsRemoteDataSource.getInstance(requireContext())
                 ));
 
         loginButton.setOnClickListener(v -> handleLoginButton());

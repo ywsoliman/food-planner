@@ -53,7 +53,7 @@ public class RegisterFragment extends Fragment implements IRegisterAuth {
         initUI(view);
         registerPresenter = new RegisterPresenter(this,
                 Repository.getInstance(
-                        FirebaseAuth.getInstance(), MealsRemoteDataSource.getInstance()
+                        FirebaseAuth.getInstance(), MealsRemoteDataSource.getInstance(requireContext())
                 ));
         navigateToLogin.setOnClickListener(v -> handleNavigateToLogin());
         signupButton.setOnClickListener(v -> handleRegisterButton());
