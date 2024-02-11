@@ -35,19 +35,22 @@
         tools:layout="@layout/fragment_meal_plan" />
     <fragment
         android:id="@+id/mealsFragment"
-        android:name="com.example.foodplanner.home.foryou.searchbycategory.view.MealsFragment"
+        android:name="com.example.foodplanner.home.meals.view.MealsFragment"
         android:label="fragment_meals"
         tools:layout="@layout/fragment_meals" >
-        <argument
-            android:name="categoryName"
-            app:argType="string" />
         <action
             android:id="@+id/action_mealsFragment_to_mealDetailsFragment"
             app:destination="@id/mealDetailsFragment" />
+        <argument
+            android:name="type"
+            app:argType="com.example.foodplanner.home.foryou.view.Type" />
+        <argument
+            android:name="query"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/mealDetailsFragment"
-        android:name="com.example.foodplanner.home.mealdetails.view.MealDetailsFragment"
+        android:name="com.example.foodplanner.home.meals.details.view.MealDetailsFragment"
         android:label="fragment_meal_details"
         tools:layout="@layout/fragment_meal_details" >
         <argument

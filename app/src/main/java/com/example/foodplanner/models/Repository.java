@@ -61,6 +61,16 @@ public class Repository implements IRepository {
     }
 
     @Override
+    public void getRemoteAreas(ForYouNetworkCallback callback) {
+        remoteDataSource.requestAreas(callback);
+    }
+
+    @Override
+    public void getRemoteMealsByArea(MealsNetworkCallback networkCallback, String query) {
+        remoteDataSource.requestMealsByArea(networkCallback, query);
+    }
+
+    @Override
     public void registerWithEmailAndPassword(IAuthCallback callback, String email, String password) {
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(callback.getActivity(), task -> {

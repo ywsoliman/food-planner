@@ -36,5 +36,7 @@
     <string name="save">Save</string>
     <string name="meal_thumbnail">Meal Thumbnail</string>
     <string name="remember_me">Remember Me</string>
+    <string name="area_flag">Area Flag</string>
+    <string name="search_by_country">Search By Country</string>
 
 </resources>

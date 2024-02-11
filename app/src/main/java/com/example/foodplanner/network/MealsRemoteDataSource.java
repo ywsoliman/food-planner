@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 
 import com.example.foodplanner.home.search.presenter.SearchedMealsCallback;
 import com.example.foodplanner.models.MealsList;
+import com.example.foodplanner.models.area.AreaList;
 import com.example.foodplanner.models.category.CategoryList;
 
 import okhttp3.Cache;
@@ -135,6 +136,43 @@ public class MealsRemoteDataSource implements IMealsRemoteDataSource {
             @Override
             public void onFailure(@NonNull Call<MealsList> call, @NonNull Throwable t) {
                 callback.onFailure(t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void requestAreas(ForYouNetworkCallback callback) {
+        Call<AreaList> call = mealsAPI.getAreas();
+        call.enqueue(new Callback<AreaList>() {
+            @Override
+            public void onResponse(@NonNull Call<AreaList> call, @NonNull Response<AreaList> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccessAreas(response.body().getMeals());
+                    Log.i(TAG, "onResponse: areas = " + response.body().getMeals());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<AreaList> call, @NonNull Throwable t) {
+
+            }
+        });
+    }
+
+    @Override
+    public void requestMealsByArea(MealsNetworkCallback networkCallback, String query) {
+        Call<MealsList> call = mealsAPI.getMealsByArea(query);
+        call.enqueue(new Callback<MealsList>() {
+            @Override
+            public void onResponse(@NonNull Call<MealsList> call, @NonNull Response<MealsList> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    networkCallback.onSuccess(response.body().getMeals());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MealsList> call, @NonNull Throwable t) {
+                networkCallback.onFailure(t.getMessage());
             }
         });
     }

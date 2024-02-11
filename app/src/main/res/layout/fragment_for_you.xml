@@ -96,6 +96,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textView2" />
 
+        <TextView
+            android:id="@+id/textView3"
+            style="@style/textHeading"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/search_by_country"
+            app:layout_constraintStart_toStartOf="@+id/leftGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/rvCategories" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvArea"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

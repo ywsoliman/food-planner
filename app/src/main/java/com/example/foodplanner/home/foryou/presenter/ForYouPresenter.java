@@ -3,6 +3,7 @@ package com.example.foodplanner.home.foryou.presenter;
 import com.example.foodplanner.home.foryou.view.IForYouView;
 import com.example.foodplanner.models.IRepository;
 import com.example.foodplanner.models.Meal;
+import com.example.foodplanner.models.area.Area;
 import com.example.foodplanner.models.category.Category;
 import com.example.foodplanner.network.ForYouNetworkCallback;
 
@@ -39,5 +40,14 @@ public class ForYouPresenter implements ForYouNetworkCallback {
     @Override
     public void onSuccessCategories(List<Category> categories) {
         view.showCategories(categories);
+    }
+
+    @Override
+    public void onSuccessAreas(List<Area> areas) {
+        view.showAreas(areas);
+    }
+
+    public void getAreas() {
+        model.getRemoteAreas(this);
     }
 }

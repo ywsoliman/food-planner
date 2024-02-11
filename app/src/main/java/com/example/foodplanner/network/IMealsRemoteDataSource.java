@@ -13,4 +13,8 @@ public interface IMealsRemoteDataSource {
     void requestMealDetailsByID(MealDetailsNetworkCallback networkCallback, String mealID);
 
     void requestSearchedMeals(SearchedMealsCallback callback, String query);
+
+    void requestAreas(ForYouNetworkCallback callback);
+
+    void requestMealsByArea(MealsNetworkCallback networkCallback, String query);
 }
