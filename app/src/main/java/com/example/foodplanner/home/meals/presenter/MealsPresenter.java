@@ -1,7 +1,7 @@
-package com.example.foodplanner.home.foryou.searchbycategory.presenter;
+package com.example.foodplanner.home.meals.presenter;
 
 import com.example.foodplanner.network.MealsNetworkCallback;
-import com.example.foodplanner.home.foryou.searchbycategory.view.IMealView;
+import com.example.foodplanner.home.meals.view.IMealView;
 import com.example.foodplanner.models.IRepository;
 import com.example.foodplanner.models.Meal;
 
@@ -29,5 +29,9 @@ public class MealsPresenter implements MealsNetworkCallback {
 
     public void getMealsByCategory(String category) {
         model.getRemoteMealsByCategory(this, category);
+    }
+
+    public void getMealsByArea(String query) {
+        model.getRemoteMealsByArea(this, query);
     }
 }

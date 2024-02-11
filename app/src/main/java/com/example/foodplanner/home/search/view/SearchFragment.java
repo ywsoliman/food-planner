@@ -19,8 +19,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
 
 import com.example.foodplanner.R;
-import com.example.foodplanner.home.foryou.searchbycategory.OnMealClickListener;
-import com.example.foodplanner.home.foryou.searchbycategory.view.MealsAdapter;
+import com.example.foodplanner.home.meals.view.OnMealClickListener;
+import com.example.foodplanner.home.meals.view.MealsAdapter;
 import com.example.foodplanner.home.search.presenter.SearchPresenter;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.Repository;

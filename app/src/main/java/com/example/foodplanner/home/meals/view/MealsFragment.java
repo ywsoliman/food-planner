@@ -1,4 +1,4 @@
-package com.example.foodplanner.home.foryou.searchbycategory.view;
+package com.example.foodplanner.home.meals.view;
 
 import android.os.Bundle;
 
@@ -6,18 +6,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.foodplanner.R;
-import com.example.foodplanner.home.foryou.searchbycategory.presenter.MealsPresenter;
-import com.example.foodplanner.home.foryou.searchbycategory.OnMealClickListener;
+import com.example.foodplanner.home.foryou.view.Type;
+import com.example.foodplanner.home.meals.presenter.MealsPresenter;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
@@ -28,7 +26,6 @@ import java.util.List;
 
 public class MealsFragment extends Fragment implements IMealView, OnMealClickListener {
 
-    private MealsPresenter presenter;
     private RecyclerView recyclerView;
     private MealsAdapter adapter;
 
@@ -56,12 +53,22 @@ public class MealsFragment extends Fragment implements IMealView, OnMealClickLis
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        presenter = new MealsPresenter(this, Repository.getInstance(
+        MealsPresenter presenter = new MealsPresenter(this, Repository.getInstance(
                 FirebaseAuth.getInstance(),
                 MealsRemoteDataSource.getInstance(requireContext())
         ));
-        String categoryName = MealsFragmentArgs.fromBundle(getArguments()).getCategoryName();
-        presenter.getMealsByCategory(categoryName);
+
+        Type type = MealsFragmentArgs.fromBundle(getArguments()).getType();
+        String query = MealsFragmentArgs.fromBundle(getArguments()).getQuery();
+        switch (type) {
+            case CATEGORY:
+                presenter.getMealsByCategory(query);
+                break;
+            case AREA:
+                presenter.getMealsByArea(query);
+                break;
+        }
+
 
     }
 

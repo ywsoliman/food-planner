@@ -1,4 +1,4 @@
-package com.example.foodplanner.home.foryou.searchbycategory;
+package com.example.foodplanner.home.meals.view;
 
 public interface OnMealClickListener {
     void onMealItemClicked(String mealID);

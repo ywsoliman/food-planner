@@ -1,4 +1,4 @@
-package com.example.foodplanner.home.foryou.searchbycategory.view;
+package com.example.foodplanner.home.foryou.view.category;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,9 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.foodplanner.R;
-import com.example.foodplanner.home.foryou.searchbycategory.OnCategoryClickListener;
 import com.example.foodplanner.models.category.Category;
 
 import java.util.List;
@@ -45,7 +43,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.categoryDesc.setText(currentCategory.getStrCategoryDescription());
         Glide.with(context)
                 .load(currentCategory.getStrCategoryThumb())
-                .apply(new RequestOptions().override(0, 120))
                 .into(holder.categoryThumbnail);
     }
 

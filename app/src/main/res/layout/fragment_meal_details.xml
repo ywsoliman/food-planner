@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".home.mealdetails.view.MealDetailsFragment">
+    android:layout_height="match_parent">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/saveFAB"
@@ -47,17 +45,48 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mealThumbnail">
 
-        <TextView
-            android:textAlignment="center"
-            android:id="@+id/mealTitle"
-            style="@style/textHeading"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="16dp"
-            tools:text="Molokhya B El Araneb" />
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/mealTitle"
+                style="@style/textHeading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textStyle="italic"
+                tools:text="Teriyaki Chicken Casserole" />
+
+            <TextView
+                android:id="@+id/mealCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Chicken" />
+
+            <TextView
+                android:id="@+id/mealArea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Japanese" />
+
+        </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvInstructions"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mealTitleCard" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

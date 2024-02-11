@@ -1,6 +1,6 @@
-package com.example.foodplanner.home.mealdetails.presenter;
+package com.example.foodplanner.home.meals.details.presenter;
 
-import com.example.foodplanner.home.mealdetails.view.IMealDetailsView;
+import com.example.foodplanner.home.meals.details.view.IMealDetailsView;
 import com.example.foodplanner.models.IRepository;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.network.MealDetailsNetworkCallback;
