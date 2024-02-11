@@ -40,6 +40,8 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
         Ingredient current = ingredients.get(position);
         Glide.with(context)
                 .load("https://www.themealdb.com/images/ingredients/" + current.getStrIngredient() + "-Small.png")
+                .placeholder(R.drawable.loading_animation)
+                .error(R.drawable.ic_broken_image)
                 .into(holder.ingredientThumbnail);
     }
 

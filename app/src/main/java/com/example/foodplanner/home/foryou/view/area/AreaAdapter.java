@@ -42,6 +42,8 @@ public class AreaAdapter extends RecyclerView.Adapter<AreaAdapter.AreaViewHolder
         Glide.with(context)
                 .load(CountryImageMap.getCountryImageResource(areas.get(position).getStrArea()))
                 .apply(new RequestOptions().override(256, 256))
+                .placeholder(R.drawable.loading_animation)
+                .error(R.drawable.ic_broken_image)
                 .into(holder.areaImage);
     }
 

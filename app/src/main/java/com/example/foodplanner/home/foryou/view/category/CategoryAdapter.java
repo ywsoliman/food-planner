@@ -43,6 +43,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.categoryDesc.setText(currentCategory.getStrCategoryDescription());
         Glide.with(context)
                 .load(currentCategory.getStrCategoryThumb())
+                .placeholder(R.drawable.loading_animation)
+                .error(R.drawable.ic_broken_image)
                 .into(holder.categoryThumbnail);
     }
 

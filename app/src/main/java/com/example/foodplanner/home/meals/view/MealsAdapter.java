@@ -42,6 +42,8 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealViewHold
         holder.mealTitle.setText(currentMeal.getStrMeal());
         Glide.with(context)
                 .load(currentMeal.getStrMealThumb() + "/preview")
+                .placeholder(R.drawable.loading_animation)
+                .error(R.drawable.ic_broken_image)
                 .into(holder.mealThumbnail);
     }
 
