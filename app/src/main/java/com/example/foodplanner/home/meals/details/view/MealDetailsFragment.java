@@ -1,5 +1,7 @@
 package com.example.foodplanner.home.meals.details.view;
 
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,8 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
 import com.example.foodplanner.R;
@@ -20,6 +25,7 @@ import com.example.foodplanner.home.meals.details.presenter.MealDetailsPresenter
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -35,6 +41,7 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
     private TextView mealArea;
     private RecyclerView rvInstructions;
     private InstructionsAdapter instructionsAdapter;
+    private CollapsingToolbarLayout collapsingToolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,18 +77,21 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
 
     private void initUI(View view) {
         mealThumbnail = view.findViewById(R.id.mealThumbnail);
-        mealTitle = view.findViewById(R.id.mealTitle);
+//        mealTitle = view.findViewById(R.id.mealTitle);
         rvInstructions = view.findViewById(R.id.rvInstructions);
         mealCategory = view.findViewById(R.id.mealCategory);
         mealArea = view.findViewById(R.id.mealArea);
+        collapsingToolbar = view.findViewById(R.id.collapsingToolbar);
     }
 
     @Override
     public void showMealDetails(Meal meal) {
 
-        mealTitle.setText(meal.getStrMeal());
+//        mealTitle.setText(meal.getStrMeal());
         mealCategory.setText(meal.getStrCategory());
         mealArea.setText(meal.getStrArea());
+        collapsingToolbar.setTitle(meal.getStrMeal());
+
         Glide.with(this)
                 .load(meal.getStrMealThumb())
                 .into(mealThumbnail);

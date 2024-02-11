@@ -27,7 +27,7 @@
 
     <TextView
         android:id="@+id/emailText"
-        style="@style/textBold"
+        style="@style/textSubheading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -56,7 +56,7 @@
 
     <TextView
         android:id="@+id/passwordText"
-        style="@style/textBold"
+        style="@style/textSubheading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -107,7 +107,7 @@
 
     <TextView
         android:id="@+id/orSignUpWith"
-        style="@style/textBold"
+        style="@style/textSubheading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

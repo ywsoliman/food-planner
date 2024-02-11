@@ -38,5 +38,8 @@
     <string name="remember_me">Remember Me</string>
     <string name="area_flag">Area Flag</string>
     <string name="search_by_country">Search By Country</string>
+    <string name="category">Category:</string>
+    <string name="area">Area:</string>
+    <string name="meal_instructions">Meal Instructions:</string>
 
 </resources>
