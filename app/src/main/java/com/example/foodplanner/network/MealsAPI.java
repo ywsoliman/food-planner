@@ -3,6 +3,7 @@ package com.example.foodplanner.network;
 import com.example.foodplanner.models.MealsList;
 import com.example.foodplanner.models.area.AreaList;
 import com.example.foodplanner.models.category.CategoryList;
+import com.example.foodplanner.models.ingredients.IngredientList;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -34,4 +35,11 @@ public interface MealsAPI {
     // www.themealdb.com/api/json/v1/1/filter.php?a=Canadian
     @GET("filter.php")
     Call<MealsList> getMealsByArea(@Query("a") String area);
+
+    @GET("list.php?i=list")
+    Call<IngredientList> getIngredients();
+
+    // www.themealdb.com/api/json/v1/1/filter.php?i=chicken_breast
+    @GET("filter.php")
+    Call<MealsList> getMealsByIngredient(@Query("i") String ingredient);
 }

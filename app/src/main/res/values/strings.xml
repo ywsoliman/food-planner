@@ -41,5 +41,6 @@
     <string name="category">Category:</string>
     <string name="area">Area:</string>
     <string name="meal_instructions">Meal Instructions:</string>
+    <string name="search_by_ingredients">Search By Ingredients</string>
 
 </resources>

@@ -29,4 +29,8 @@ public interface IRepository {
     void getRemoteAreas(ForYouNetworkCallback callback);
 
     void getRemoteMealsByArea(MealsNetworkCallback networkCallback, String query);
+
+    void getRemoteIngredients(ForYouNetworkCallback networkCallback);
+
+    void getRemoteMealsByIngredient(MealsNetworkCallback networkCallback, String ingredient);
 }

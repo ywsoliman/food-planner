@@ -67,6 +67,9 @@ public class MealsFragment extends Fragment implements IMealView, OnMealClickLis
             case AREA:
                 presenter.getMealsByArea(query);
                 break;
+            case INGREDIENT:
+                presenter.getMealsByIngredient(query.replaceAll(" ", "_").toLowerCase());
+                break;
         }
 
 

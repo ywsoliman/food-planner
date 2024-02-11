@@ -9,6 +9,7 @@ import com.example.foodplanner.home.search.presenter.SearchedMealsCallback;
 import com.example.foodplanner.models.MealsList;
 import com.example.foodplanner.models.area.AreaList;
 import com.example.foodplanner.models.category.CategoryList;
+import com.example.foodplanner.models.ingredients.IngredientList;
 
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
@@ -162,6 +163,43 @@ public class MealsRemoteDataSource implements IMealsRemoteDataSource {
     @Override
     public void requestMealsByArea(MealsNetworkCallback networkCallback, String query) {
         Call<MealsList> call = mealsAPI.getMealsByArea(query);
+        call.enqueue(new Callback<MealsList>() {
+            @Override
+            public void onResponse(@NonNull Call<MealsList> call, @NonNull Response<MealsList> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    networkCallback.onSuccess(response.body().getMeals());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MealsList> call, @NonNull Throwable t) {
+                networkCallback.onFailure(t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void requestIngredients(ForYouNetworkCallback networkCallback) {
+        Call<IngredientList> call = mealsAPI.getIngredients();
+        call.enqueue(new Callback<IngredientList>() {
+            @Override
+            public void onResponse(@NonNull Call<IngredientList> call, @NonNull Response<IngredientList> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    networkCallback.onSuccessIngredients(response.body().getMeals());
+                    Log.i(TAG, "requestIngredients: " + response.body().getMeals());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<IngredientList> call, @NonNull Throwable t) {
+
+            }
+        });
+    }
+
+    @Override
+    public void requestMealsByIngredient(MealsNetworkCallback networkCallback, String ingredient) {
+        Call<MealsList> call = mealsAPI.getMealsByIngredient(ingredient);
         call.enqueue(new Callback<MealsList>() {
             @Override
             public void onResponse(@NonNull Call<MealsList> call, @NonNull Response<MealsList> response) {

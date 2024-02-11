@@ -5,6 +5,7 @@ import com.example.foodplanner.models.IRepository;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.area.Area;
 import com.example.foodplanner.models.category.Category;
+import com.example.foodplanner.models.ingredients.Ingredient;
 import com.example.foodplanner.network.ForYouNetworkCallback;
 
 import java.util.List;
@@ -47,7 +48,16 @@ public class ForYouPresenter implements ForYouNetworkCallback {
         view.showAreas(areas);
     }
 
+    @Override
+    public void onSuccessIngredients(List<Ingredient> meals) {
+        view.showIngredients(meals);
+    }
+
     public void getAreas() {
         model.getRemoteAreas(this);
+    }
+
+    public void getIngredients() {
+        model.getRemoteIngredients(this);
     }
 }

@@ -25,10 +25,13 @@ import com.example.foodplanner.home.foryou.view.area.AreaAdapter;
 import com.example.foodplanner.home.foryou.view.area.OnAreaClickListener;
 import com.example.foodplanner.home.foryou.view.category.OnCategoryClickListener;
 import com.example.foodplanner.home.foryou.view.category.CategoryAdapter;
+import com.example.foodplanner.home.foryou.view.ingredient.IngredientAdapter;
+import com.example.foodplanner.home.foryou.view.ingredient.OnIngredientClickListener;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.models.area.Area;
 import com.example.foodplanner.models.category.Category;
+import com.example.foodplanner.models.ingredients.Ingredient;
 import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,7 +39,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ForYouFragment extends Fragment implements IForYouView, OnCategoryClickListener, OnAreaClickListener {
+public class ForYouFragment extends Fragment implements IForYouView, OnCategoryClickListener, OnAreaClickListener, OnIngredientClickListener {
 
     private MaterialCardView trendingMealCard;
     private TextView trendingMealName;
@@ -45,6 +48,8 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
     private CategoryAdapter categoryAdapter;
     private RecyclerView rvArea;
     private AreaAdapter areaAdapter;
+    private RecyclerView rvIngredients;
+    private IngredientAdapter ingredientsAdapter;
     private ForYouPresenter forYouPresenter;
 
 
@@ -68,6 +73,7 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
 
         categoryAdapter = new CategoryAdapter(getContext(), new ArrayList<>(), this);
         areaAdapter = new AreaAdapter(getContext(), new ArrayList<>(), this);
+        ingredientsAdapter = new IngredientAdapter(getContext(), new ArrayList<>(), this);
 
         rvCategory.setLayoutManager(new GridLayoutManager(getContext(), 2, GridLayoutManager.HORIZONTAL, false));
         rvCategory.setAdapter(categoryAdapter);
@@ -75,12 +81,16 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
         rvArea.setLayoutManager(new GridLayoutManager(getContext(), 2, GridLayoutManager.HORIZONTAL, false));
         rvArea.setAdapter(areaAdapter);
 
+        rvIngredients.setLayoutManager(new GridLayoutManager(getContext(), 3, GridLayoutManager.HORIZONTAL, false));
+        rvIngredients.setAdapter(ingredientsAdapter);
+
         forYouPresenter = new ForYouPresenter(this,
                 Repository.getInstance(FirebaseAuth.getInstance(),
                         MealsRemoteDataSource.getInstance(requireContext())));
         forYouPresenter.getSingleRandomMeal();
         forYouPresenter.getCategories();
         forYouPresenter.getAreas();
+        forYouPresenter.getIngredients();
     }
 
     private void initUI(View view) {
@@ -88,6 +98,7 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
         trendingMealImage = view.findViewById(R.id.trendingMealImage);
         rvCategory = view.findViewById(R.id.rvCategories);
         rvArea = view.findViewById(R.id.rvArea);
+        rvIngredients = view.findViewById(R.id.rvIngredients);
         trendingMealCard = view.findViewById(R.id.trendingMealCardView);
     }
 
@@ -117,6 +128,11 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
     }
 
     @Override
+    public void showIngredients(List<Ingredient> ingredients) {
+        ingredientsAdapter.setList(ingredients);
+    }
+
+    @Override
     public void onCategoryItemClicked(String categoryName) {
         ForYouFragmentDirections.ActionForYouFragmentToMealsFragment action = ForYouFragmentDirections.actionForYouFragmentToMealsFragment(Type.CATEGORY, categoryName);
         Navigation.findNavController(requireView()).navigate(action);
@@ -125,6 +141,12 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
     @Override
     public void onAreaItemClicked(String areaName) {
         ForYouFragmentDirections.ActionForYouFragmentToMealsFragment action = ForYouFragmentDirections.actionForYouFragmentToMealsFragment(Type.AREA, areaName);
+        Navigation.findNavController(requireView()).navigate(action);
+    }
+
+    @Override
+    public void onIngredientItemClicked(String ingredientName) {
+        ForYouFragmentDirections.ActionForYouFragmentToMealsFragment action = ForYouFragmentDirections.actionForYouFragmentToMealsFragment(Type.INGREDIENT, ingredientName);
         Navigation.findNavController(requireView()).navigate(action);
     }
 }

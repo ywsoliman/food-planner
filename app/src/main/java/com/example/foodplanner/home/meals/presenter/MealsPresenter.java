@@ -8,14 +8,13 @@ import com.example.foodplanner.models.Meal;
 import java.util.List;
 
 public class MealsPresenter implements MealsNetworkCallback {
-    private IMealView view;
-    private IRepository model;
+    private final IMealView view;
+    private final IRepository model;
 
     public MealsPresenter(IMealView view, IRepository model) {
         this.view = view;
         this.model = model;
     }
-
 
     @Override
     public void onSuccess(List<Meal> meals) {
@@ -33,5 +32,9 @@ public class MealsPresenter implements MealsNetworkCallback {
 
     public void getMealsByArea(String query) {
         model.getRemoteMealsByArea(this, query);
+    }
+
+    public void getMealsByIngredient(String ingredient) {
+        model.getRemoteMealsByIngredient(this, ingredient);
     }
 }
