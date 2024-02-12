@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,27 +23,34 @@ import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
 import com.example.foodplanner.R;
+import com.example.foodplanner.home.foryou.view.ingredient.IngredientAdapter;
 import com.example.foodplanner.home.meals.details.presenter.MealDetailsPresenter;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.Repository;
+import com.example.foodplanner.models.ingredients.Ingredient;
 import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class MealDetailsFragment extends Fragment implements IMealDetailsView {
 
     private static final String TAG = "MealDetailsFragment";
     private MealDetailsPresenter presenter;
     private ImageView mealThumbnail;
-    private TextView mealTitle;
     private TextView mealCategory;
     private TextView mealArea;
     private RecyclerView rvInstructions;
     private InstructionsAdapter instructionsAdapter;
     private CollapsingToolbarLayout collapsingToolbar;
+    private RecyclerView rvMealIngredients;
+    private IngredientMealAdapter ingredientMealAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,9 +76,14 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
         ));
 
         instructionsAdapter = new InstructionsAdapter(new ArrayList<>());
+        ingredientMealAdapter = new IngredientMealAdapter(getContext(), new ArrayList<>());
 
         rvInstructions.setAdapter(instructionsAdapter);
         rvInstructions.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        rvMealIngredients.setAdapter(ingredientMealAdapter);
+        rvMealIngredients.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+
 
         String mealID = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealID();
         presenter.getMealDetails(mealID);
@@ -79,6 +93,7 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
         mealThumbnail = view.findViewById(R.id.mealThumbnail);
 //        mealTitle = view.findViewById(R.id.mealTitle);
         rvInstructions = view.findViewById(R.id.rvInstructions);
+        rvMealIngredients = view.findViewById(R.id.rvMealIngredients);
         mealCategory = view.findViewById(R.id.mealCategory);
         mealArea = view.findViewById(R.id.mealArea);
         collapsingToolbar = view.findViewById(R.id.collapsingToolbar);
@@ -87,16 +102,48 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
     @Override
     public void showMealDetails(Meal meal) {
 
-//        mealTitle.setText(meal.getStrMeal());
         mealCategory.setText(meal.getStrCategory());
         mealArea.setText(meal.getStrArea());
         collapsingToolbar.setTitle(meal.getStrMeal());
-
         Glide.with(this)
                 .load(meal.getStrMealThumb())
                 .into(mealThumbnail);
 
+        List<Pair<String, String>> pairList = getIngredientNameWithMeasure(meal);
+        ingredientMealAdapter.setList(pairList);
+
         String instructions = meal.getStrInstructions().replaceAll("([0-9]\\.)|\\r|\\n|\\t", "");
-        instructionsAdapter.setList(Arrays.asList(instructions.split("\\.")));
+        instructionsAdapter.setList(Arrays.asList(instructions.trim().split("\\.")));
+
     }
+
+    private List<Pair<String, String>> getIngredientNameWithMeasure(Meal meal) {
+        List<String> ingredientNames = new ArrayList<>();
+        List<String> ingredientMeasures = new ArrayList<>();
+        Method[] methods = Meal.class.getDeclaredMethods();
+        for (Method method : methods) {
+            try {
+                if (method.getName().startsWith("getStrIngredient")) {
+                    String name = (String) method.invoke(meal);
+                    if (name != null && !name.isEmpty())
+                        ingredientNames.add(name);
+                }
+                if (method.getName().startsWith("getStrMeasure")) {
+                    String measure = (String) method.invoke(meal);
+                    if (measure != null && !measure.isEmpty())
+                        ingredientMeasures.add(measure);
+                }
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        List<Pair<String, String>> pairList = new ArrayList<>();
+        for (int i = 0; i < ingredientNames.size(); i++) {
+            Pair<String, String> pair = Pair.create(ingredientNames.get(i), ingredientMeasures.get(i));
+            pairList.add(pair);
+        }
+
+        return pairList;
+    }
+
 }

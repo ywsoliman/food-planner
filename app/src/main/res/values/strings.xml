@@ -42,5 +42,7 @@
     <string name="area">Area:</string>
     <string name="meal_instructions">Meal Instructions:</string>
     <string name="search_by_ingredients">Search By Ingredients</string>
+    <string name="ingredients">Ingredients:</string>
+    <string name="ingredient_thumbnail">Ingredient Thumbnail</string>
 
 </resources>
