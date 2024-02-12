@@ -17,6 +17,7 @@ import androidx.navigation.Navigation;
 
 import com.example.foodplanner.R;
 import com.example.foodplanner.auth.register.presenter.RegisterPresenter;
+import com.example.foodplanner.db.MealsLocalDataSource;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.google.android.material.textfield.TextInputEditText;
@@ -53,7 +54,9 @@ public class RegisterFragment extends Fragment implements IRegisterAuth {
         initUI(view);
         registerPresenter = new RegisterPresenter(this,
                 Repository.getInstance(
-                        FirebaseAuth.getInstance(), MealsRemoteDataSource.getInstance(requireContext())
+                        FirebaseAuth.getInstance(),
+                        MealsRemoteDataSource.getInstance(requireContext()),
+                        MealsLocalDataSource.getInstance(getContext())
                 ));
         navigateToLogin.setOnClickListener(v -> handleNavigateToLogin());
         signupButton.setOnClickListener(v -> handleRegisterButton());

@@ -24,6 +24,7 @@ import androidx.navigation.Navigation;
 import com.example.foodplanner.R;
 import com.example.foodplanner.auth.IAuthenticate;
 import com.example.foodplanner.auth.login.presenter.LoginPresenter;
+import com.example.foodplanner.db.MealsLocalDataSource;
 import com.example.foodplanner.home.view.HomeActivity;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
@@ -76,7 +77,7 @@ public class LoginFragment extends Fragment implements IAuthenticate {
 
         loginPresenter = new LoginPresenter(this,
                 Repository.getInstance(
-                        FirebaseAuth.getInstance(), MealsRemoteDataSource.getInstance(requireContext())
+                        FirebaseAuth.getInstance(), MealsRemoteDataSource.getInstance(requireContext()), MealsLocalDataSource.getInstance(getContext())
                 ));
 
         loginButton.setOnClickListener(v -> handleLoginButton());

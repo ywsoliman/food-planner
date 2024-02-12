@@ -1,8 +1,12 @@
 package com.example.foodplanner.home.meals.details.view;
 
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.util.Pair;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,29 +14,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.util.Pair;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.VideoView;
-
 import com.bumptech.glide.Glide;
 import com.example.foodplanner.R;
-import com.example.foodplanner.home.foryou.view.ingredient.IngredientAdapter;
+import com.example.foodplanner.db.MealsLocalDataSource;
 import com.example.foodplanner.home.meals.details.presenter.MealDetailsPresenter;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.Repository;
-import com.example.foodplanner.models.ingredients.Ingredient;
 import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -72,7 +63,8 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
 
         presenter = new MealDetailsPresenter(this, Repository.getInstance(
                 FirebaseAuth.getInstance(),
-                MealsRemoteDataSource.getInstance(requireContext())
+                MealsRemoteDataSource.getInstance(requireContext()),
+                MealsLocalDataSource.getInstance(getContext())
         ));
 
         instructionsAdapter = new InstructionsAdapter(new ArrayList<>());
@@ -130,13 +122,14 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
                 }
                 if (method.getName().startsWith("getStrMeasure")) {
                     String measure = (String) method.invoke(meal);
-                    if (measure != null && !measure.isEmpty())
+                    if (measure != null && !measure.isEmpty() && !measure.equals(" "))
                         ingredientMeasures.add(measure);
                 }
             } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
         }
+
         List<Pair<String, String>> pairList = new ArrayList<>();
         for (int i = 0; i < ingredientNames.size(); i++) {
             Pair<String, String> pair = Pair.create(ingredientNames.get(i), ingredientMeasures.get(i));

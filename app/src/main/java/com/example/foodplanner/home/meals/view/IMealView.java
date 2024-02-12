@@ -5,7 +5,5 @@ import com.example.foodplanner.models.Meal;
 import java.util.List;
 
 public interface IMealView {
-
-    void showMealsOfCategory(List<Meal> mealList);
-
+    void showMeals(List<Meal> mealList);
 }

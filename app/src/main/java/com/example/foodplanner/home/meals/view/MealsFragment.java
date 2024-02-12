@@ -1,6 +1,9 @@
 package com.example.foodplanner.home.meals.view;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,16 +12,14 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.example.foodplanner.R;
+import com.example.foodplanner.db.MealsLocalDataSource;
 import com.example.foodplanner.home.foryou.view.Type;
 import com.example.foodplanner.home.meals.presenter.MealsPresenter;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class MealsFragment extends Fragment implements IMealView, OnMealClickLis
 
     private RecyclerView recyclerView;
     private MealsAdapter adapter;
+    private MealsPresenter presenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,9 +55,10 @@ public class MealsFragment extends Fragment implements IMealView, OnMealClickLis
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        MealsPresenter presenter = new MealsPresenter(this, Repository.getInstance(
+        presenter = new MealsPresenter(this, Repository.getInstance(
                 FirebaseAuth.getInstance(),
-                MealsRemoteDataSource.getInstance(requireContext())
+                MealsRemoteDataSource.getInstance(requireContext()),
+                MealsLocalDataSource.getInstance(getContext())
         ));
 
         Type type = MealsFragmentArgs.fromBundle(getArguments()).getType();
@@ -80,7 +83,7 @@ public class MealsFragment extends Fragment implements IMealView, OnMealClickLis
     }
 
     @Override
-    public void showMealsOfCategory(List<Meal> mealList) {
+    public void showMeals(List<Meal> mealList) {
         adapter.setList(mealList);
     }
 
@@ -89,4 +92,13 @@ public class MealsFragment extends Fragment implements IMealView, OnMealClickLis
         MealsFragmentDirections.ActionMealsFragmentToMealDetailsFragment action = MealsFragmentDirections.actionMealsFragmentToMealDetailsFragment(mealID);
         Navigation.findNavController(requireView()).navigate(action);
     }
+
+    @Override
+    public void onSaveOrDeleteButtonClicked(Meal meal) {
+        presenter.addMealToFavorites(meal);
+        Snackbar.make(requireView(), R.string.meal_is_added_to_favorites_successfully, Snackbar.LENGTH_SHORT)
+                .setAnchorView(R.id.bottomNavigationView)
+                .show();
+    }
+
 }

@@ -19,12 +19,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
 
 import com.example.foodplanner.R;
+import com.example.foodplanner.db.MealsLocalDataSource;
 import com.example.foodplanner.home.meals.view.OnMealClickListener;
 import com.example.foodplanner.home.meals.view.MealsAdapter;
 import com.example.foodplanner.home.search.presenter.SearchPresenter;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -61,13 +63,14 @@ public class SearchFragment extends Fragment implements ISearchView, OnMealClick
         searchPresenter = new SearchPresenter(this,
                 Repository.getInstance(
                         FirebaseAuth.getInstance(),
-                        MealsRemoteDataSource.getInstance(requireContext())
+                        MealsRemoteDataSource.getInstance(requireContext()),
+                        MealsLocalDataSource.getInstance(getContext())
                 ));
 
         initUI(view);
 
         searchView.requestFocus();
-        showKeyboard();
+//        showKeyboard();
 
         mealsAdapter = new MealsAdapter(requireContext(), new ArrayList<>(), this);
         rvSearchedMeals.setAdapter(mealsAdapter);
@@ -106,6 +109,14 @@ public class SearchFragment extends Fragment implements ISearchView, OnMealClick
     public void onMealItemClicked(String mealID) {
         SearchFragmentDirections.ActionSearchFragmentToMealDetailsFragment action = SearchFragmentDirections.actionSearchFragmentToMealDetailsFragment(mealID);
         Navigation.findNavController(requireView()).navigate(action);
+    }
+
+    @Override
+    public void onSaveOrDeleteButtonClicked(Meal meal) {
+        searchPresenter.addMealToFavorites(meal);
+        Snackbar.make(requireView(), R.string.meal_is_deleted_from_favorites, Snackbar.LENGTH_SHORT)
+                .setAnchorView(R.id.bottomNavigationView)
+                .show();
     }
 
     private void hideKeyboard() {

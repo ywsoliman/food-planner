@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.foodplanner.R;
+import com.example.foodplanner.db.MealsLocalDataSource;
 import com.example.foodplanner.home.foryou.presenter.ForYouPresenter;
 import com.example.foodplanner.home.foryou.view.area.AreaAdapter;
 import com.example.foodplanner.home.foryou.view.area.OnAreaClickListener;
@@ -27,6 +28,7 @@ import com.example.foodplanner.home.foryou.view.category.OnCategoryClickListener
 import com.example.foodplanner.home.foryou.view.category.CategoryAdapter;
 import com.example.foodplanner.home.foryou.view.ingredient.IngredientAdapter;
 import com.example.foodplanner.home.foryou.view.ingredient.OnIngredientClickListener;
+import com.example.foodplanner.home.meals.view.OnMealClickListener;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.models.area.Area;
@@ -34,14 +36,16 @@ import com.example.foodplanner.models.category.Category;
 import com.example.foodplanner.models.ingredients.Ingredient;
 import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class ForYouFragment extends Fragment implements IForYouView, OnCategoryClickListener, OnAreaClickListener, OnIngredientClickListener {
+public class ForYouFragment extends Fragment implements IForYouView, OnCategoryClickListener, OnAreaClickListener, OnIngredientClickListener, OnMealClickListener {
 
-    private MaterialCardView trendingMealCard;
+    private View trendingMealCard;
     private TextView trendingMealName;
     private ImageView trendingMealImage;
     private RecyclerView rvCategory;
@@ -86,7 +90,9 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
 
         forYouPresenter = new ForYouPresenter(this,
                 Repository.getInstance(FirebaseAuth.getInstance(),
-                        MealsRemoteDataSource.getInstance(requireContext())));
+                        MealsRemoteDataSource.getInstance(requireContext()),
+                        MealsLocalDataSource.getInstance(getContext())
+                ));
         forYouPresenter.getSingleRandomMeal();
         forYouPresenter.getCategories();
         forYouPresenter.getAreas();
@@ -94,12 +100,13 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
     }
 
     private void initUI(View view) {
-        trendingMealName = view.findViewById(R.id.trendingMealName);
-        trendingMealImage = view.findViewById(R.id.trendingMealImage);
+        trendingMealCard = view.findViewById(R.id.trendingMealCardView);
+        trendingMealName = trendingMealCard.findViewById(R.id.mealTitle);
+        trendingMealImage = trendingMealCard.findViewById(R.id.mealThumbnail);
         rvCategory = view.findViewById(R.id.rvCategories);
         rvArea = view.findViewById(R.id.rvArea);
         rvIngredients = view.findViewById(R.id.rvIngredients);
-        trendingMealCard = view.findViewById(R.id.trendingMealCardView);
+//        trendingMealCard = view.findViewById(R.id.trendingMealCardView);
     }
 
     @Override
@@ -109,12 +116,9 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
                 .load(meal.getStrMealThumb())
                 .apply(new RequestOptions().override(0, 200))
                 .into(trendingMealImage);
-        trendingMealCard.setOnClickListener(v -> {
-            ForYouFragmentDirections.ActionForYouFragmentToMealDetailsFragment action =
-                    ForYouFragmentDirections.actionForYouFragmentToMealDetailsFragment(meal.getIdMeal());
-            Navigation.findNavController(requireView()).navigate(action);
-        });
-
+        trendingMealCard.setOnClickListener(v -> onMealItemClicked(meal.getIdMeal()));
+        trendingMealCard.findViewById(R.id.saveFAB)
+                .setOnClickListener(v -> onSaveOrDeleteButtonClicked(meal));
     }
 
     @Override
@@ -148,5 +152,22 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
     public void onIngredientItemClicked(String ingredientName) {
         ForYouFragmentDirections.ActionForYouFragmentToMealsFragment action = ForYouFragmentDirections.actionForYouFragmentToMealsFragment(Type.INGREDIENT, ingredientName);
         Navigation.findNavController(requireView()).navigate(action);
+    }
+
+    @Override
+    public void onMealItemClicked(String mealID) {
+        trendingMealCard.setOnClickListener(v -> {
+            ForYouFragmentDirections.ActionForYouFragmentToMealDetailsFragment action =
+                    ForYouFragmentDirections.actionForYouFragmentToMealDetailsFragment(mealID);
+            Navigation.findNavController(requireView()).navigate(action);
+        });
+    }
+
+    @Override
+    public void onSaveOrDeleteButtonClicked(Meal meal) {
+        forYouPresenter.addMealToFavorites(meal);
+        Snackbar.make(requireView(), R.string.meal_is_added_to_favorites_successfully, Snackbar.LENGTH_SHORT)
+                .setAnchorView(R.id.bottomNavigationView)
+                .show();
     }
 }

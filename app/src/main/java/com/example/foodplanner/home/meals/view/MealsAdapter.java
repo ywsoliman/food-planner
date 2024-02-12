@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.foodplanner.R;
 import com.example.foodplanner.models.Meal;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealViewHold
         Meal currentMeal = meals.get(position);
         holder.mealTitle.setText(currentMeal.getStrMeal());
         Glide.with(context)
-                .load(currentMeal.getStrMealThumb() + "/preview")
+                .load(currentMeal.getStrMealThumb())
                 .placeholder(R.drawable.loading_animation)
                 .error(R.drawable.ic_broken_image)
                 .into(holder.mealThumbnail);
@@ -66,6 +67,11 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealViewHold
             super(itemView);
             mealThumbnail = itemView.findViewById(R.id.mealThumbnail);
             mealTitle = itemView.findViewById(R.id.mealTitle);
+            FloatingActionButton saveFAB = itemView.findViewById(R.id.saveFAB);
+            saveFAB.setOnClickListener(v -> {
+                listener.onSaveOrDeleteButtonClicked(meals.get(getAdapterPosition()));
+//                saveFAB.setImageResource(R.drawable.favorite_check);
+            });
             itemView.setOnClickListener(v -> listener.onMealItemClicked(meals.get(getAdapterPosition()).getIdMeal()));
         }
     }

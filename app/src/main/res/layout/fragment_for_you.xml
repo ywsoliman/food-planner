@@ -19,42 +19,52 @@
             app:layout_constraintStart_toStartOf="@+id/leftGuideline"
             app:layout_constraintTop_toTopOf="@+id/topGuideline" />
 
-        <com.google.android.material.card.MaterialCardView
+        <include
             android:id="@+id/trendingMealCardView"
+            layout="@layout/item_meal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
-            app:layout_constraintEnd_toStartOf="@+id/rightGuideline"
-            app:layout_constraintStart_toStartOf="@+id/leftGuideline"
-            app:layout_constraintTop_toBottomOf="@+id/trendingMealHeading">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/trendingMealHeading" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+        <!--        <com.google.android.material.card.MaterialCardView-->
+        <!--            android:id="@+id/trendingMealCardView"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="16dp"-->
+        <!--            app:cardBackgroundColor="@color/white"-->
+        <!--            app:cardCornerRadius="8dp"-->
+        <!--            app:cardElevation="4dp"-->
+        <!--            app:layout_constraintEnd_toStartOf="@+id/rightGuideline"-->
+        <!--            app:layout_constraintStart_toStartOf="@+id/leftGuideline"-->
+        <!--            app:layout_constraintTop_toBottomOf="@+id/trendingMealHeading">-->
 
-                <ImageView
-                    android:id="@+id/trendingMealImage"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:scaleType="centerCrop" />
+        <!--            <LinearLayout-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:orientation="vertical">-->
 
-                <TextView
-                    android:id="@+id/trendingMealName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:padding="8dp"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    tools:text="Fol W Falafel" />
+        <!--                <ImageView-->
+        <!--                    android:id="@+id/trendingMealImage"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="200dp"-->
+        <!--                    android:scaleType="centerCrop" />-->
 
-            </LinearLayout>
+        <!--                <TextView-->
+        <!--                    android:id="@+id/trendingMealName"-->
+        <!--                    android:layout_width="wrap_content"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:layout_marginTop="8dp"-->
+        <!--                    android:padding="8dp"-->
+        <!--                    android:textSize="24sp"-->
+        <!--                    android:textStyle="bold"-->
+        <!--                    tools:text="Fol W Falafel" />-->
 
-        </com.google.android.material.card.MaterialCardView>
+        <!--            </LinearLayout>-->
+
+        <!--        </com.google.android.material.card.MaterialCardView>-->
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/leftGuideline"

@@ -44,5 +44,10 @@
     <string name="search_by_ingredients">Search By Ingredients</string>
     <string name="ingredients">Ingredients:</string>
     <string name="ingredient_thumbnail">Ingredient Thumbnail</string>
+    <string name="save_button">Save Button</string>
+    <string name="meal_is_deleted_from_favorites">Meal is deleted from favorites.</string>
+    <string name="meal_is_added_to_favorites_successfully">Meal is added to favorites successfully!</string>
+    <string name="your_favorite_meals">Your Favorite Meals:</string>
+    <string name="undo">Undo</string>
 
 </resources>

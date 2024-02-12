@@ -3,10 +3,12 @@ package com.example.foodplanner.models;
 import android.app.Activity;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 
 import com.example.foodplanner.auth.IAuthCallback;
 import com.example.foodplanner.auth.IAuthenticate;
 import com.example.foodplanner.auth.register.view.IRegisterAuth;
+import com.example.foodplanner.db.IMealsLocalDataSource;
 import com.example.foodplanner.home.meals.presenter.MealsPresenter;
 import com.example.foodplanner.home.search.presenter.SearchedMealsCallback;
 import com.example.foodplanner.network.MealDetailsNetworkCallback;
@@ -18,21 +20,24 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.List;
+
 public class Repository implements IRepository {
 
     private static Repository repository = null;
     private final IMealsRemoteDataSource remoteDataSource;
+    private final IMealsLocalDataSource localDataSource;
     private final FirebaseAuth firebaseAuth;
 
-    private Repository(FirebaseAuth firebaseAuth, IMealsRemoteDataSource remoteDataSource) {
-
+    private Repository(FirebaseAuth firebaseAuth, IMealsRemoteDataSource remoteDataSource, IMealsLocalDataSource localDataSource) {
         this.remoteDataSource = remoteDataSource;
         this.firebaseAuth = firebaseAuth;
+        this.localDataSource = localDataSource;
     }
 
-    public static synchronized Repository getInstance(FirebaseAuth firebaseAuth, IMealsRemoteDataSource remoteDataSource) {
+    public static synchronized Repository getInstance(FirebaseAuth firebaseAuth, IMealsRemoteDataSource remoteDataSource, IMealsLocalDataSource localDataSource) {
         if (repository == null)
-            repository = new Repository(firebaseAuth, remoteDataSource);
+            repository = new Repository(firebaseAuth, remoteDataSource, localDataSource);
         return repository;
     }
 
@@ -79,6 +84,21 @@ public class Repository implements IRepository {
     @Override
     public void getRemoteMealsByIngredient(MealsNetworkCallback networkCallback, String ingredient) {
         remoteDataSource.requestMealsByIngredient(networkCallback, ingredient);
+    }
+
+    @Override
+    public void insert(Meal meal) {
+        localDataSource.insert(meal);
+    }
+
+    @Override
+    public LiveData<List<Meal>> getLocalMeals() {
+        return localDataSource.getLocalMeals();
+    }
+
+    @Override
+    public void delete(Meal meal) {
+        localDataSource.delete(meal);
     }
 
     @Override

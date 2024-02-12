@@ -22,11 +22,16 @@ public class SearchPresenter implements SearchedMealsCallback {
 
     @Override
     public void onSuccess(List<Meal> searchedMeals) {
-        view.showSearchedMeals(searchedMeals);
+        if (searchedMeals != null)
+            view.showSearchedMeals(searchedMeals);
     }
 
     @Override
     public void onFailure(String errorMsg) {
 
+    }
+
+    public void addMealToFavorites(Meal meal) {
+        model.insert(meal);
     }
 }
