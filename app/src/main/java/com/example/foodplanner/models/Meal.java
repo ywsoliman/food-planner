@@ -1,16 +1,32 @@
 package com.example.foodplanner.models;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "meals_table")
 public class Meal {
-
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "id")
     private String idMeal;
-
+    @ColumnInfo(name = "name")
     private String strMeal;
+    @Ignore
     private String strDrinkAlternate;
+    @ColumnInfo(name = "category")
     private String strCategory;
+    @ColumnInfo(name = "area")
     private String strArea;
+    @ColumnInfo(name = "instructions")
     private String strInstructions;
+    @ColumnInfo(name = "thumbnail")
     private String strMealThumb;
+    @Ignore
     private String strTags;
+    @ColumnInfo(name = "youtube_url")
     private String strYoutube;
     private String strIngredient1;
     private String strIngredient2;
@@ -52,7 +68,9 @@ public class Meal {
     private String strMeasure18;
     private String strMeasure19;
     private String strMeasure20;
+    @Ignore
     private String strSource;
+    @Ignore
     private String strImageSource;
 
     public String getIdMeal() {
