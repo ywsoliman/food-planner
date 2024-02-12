@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,6 +39,7 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
     @Override
     public void onBindViewHolder(@NonNull IngredientAdapter.IngredientViewHolder holder, int position) {
         Ingredient current = ingredients.get(position);
+        holder.ingredientText.setText(current.getStrIngredient());
         Glide.with(context)
                 .load("https://www.themealdb.com/images/ingredients/" + current.getStrIngredient() + "-Small.png")
                 .placeholder(R.drawable.loading_animation)
@@ -58,10 +60,12 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
     public class IngredientViewHolder extends RecyclerView.ViewHolder {
 
         private final ImageView ingredientThumbnail;
+        private final TextView ingredientText;
 
         public IngredientViewHolder(@NonNull View itemView) {
             super(itemView);
             ingredientThumbnail = itemView.findViewById(R.id.ingredientImage);
+            ingredientText = itemView.findViewById(R.id.ingredientText);
             itemView.setOnClickListener(v -> listener.onIngredientItemClicked(ingredients.get(getAdapterPosition()).getStrIngredient()));
         }
     }
