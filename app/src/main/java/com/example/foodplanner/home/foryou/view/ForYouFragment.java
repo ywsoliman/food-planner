@@ -106,7 +106,6 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
         rvCategory = view.findViewById(R.id.rvCategories);
         rvArea = view.findViewById(R.id.rvArea);
         rvIngredients = view.findViewById(R.id.rvIngredients);
-//        trendingMealCard = view.findViewById(R.id.trendingMealCardView);
     }
 
     @Override
@@ -156,11 +155,9 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
 
     @Override
     public void onMealItemClicked(String mealID) {
-        trendingMealCard.setOnClickListener(v -> {
-            ForYouFragmentDirections.ActionForYouFragmentToMealDetailsFragment action =
-                    ForYouFragmentDirections.actionForYouFragmentToMealDetailsFragment(mealID);
-            Navigation.findNavController(requireView()).navigate(action);
-        });
+        ForYouFragmentDirections.ActionForYouFragmentToMealDetailsFragment action =
+                ForYouFragmentDirections.actionForYouFragmentToMealDetailsFragment(mealID);
+        Navigation.findNavController(requireView()).navigate(action);
     }
 
     @Override
