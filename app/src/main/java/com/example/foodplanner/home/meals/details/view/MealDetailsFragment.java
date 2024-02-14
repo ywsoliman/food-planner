@@ -32,6 +32,9 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -56,6 +59,7 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
     private Button addToFavButton;
     private Meal meal;
     private PlannedMeal plannedMeal;
+    private YouTubePlayerView youtubeVideo;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,6 +111,7 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
         mealArea = view.findViewById(R.id.mealArea);
         addToFavButton = view.findViewById(R.id.addToFavButton);
         addToCalendarButton = view.findViewById(R.id.addToCalendarButton);
+        youtubeVideo = view.findViewById(R.id.youtubeVideo);
     }
 
     private void handleAddToFavorite() {
@@ -143,6 +148,7 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
     public void showMealDetails(Meal meal) {
 
         this.meal = meal;
+        plannedMeal = new PlannedMeal(meal);
 
         mealTitle.setText(meal.getStrMeal());
         mealCategory.setText(meal.getStrCategory());
@@ -157,7 +163,16 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
         String instructions = meal.getStrInstructions().replaceAll("([0-9]\\.)|\\r|\\n|\\t", "");
         instructionsAdapter.setList(Arrays.asList(instructions.trim().split("\\.")));
 
-        plannedMeal = new PlannedMeal(meal);
+        getLifecycle().addObserver(youtubeVideo);
+        String mealVideoId = meal.getStrYoutube().substring(meal.getStrYoutube().indexOf('=') + 1);
+        youtubeVideo.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+            @Override
+            public void onReady(@NonNull YouTubePlayer youTubePlayer) {
+                super.onReady(youTubePlayer);
+                youTubePlayer.loadVideo(mealVideoId, 0);
+            }
+        });
+
     }
 
     private List<Pair<String, String>> getIngredientNameWithMeasure(Meal meal) {

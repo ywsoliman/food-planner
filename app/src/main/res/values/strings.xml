@@ -53,5 +53,6 @@
     <string name="add_to_favorites_button">Add to Favorites Button</string>
     <string name="meal_added_to_calendar_successfully">Meal added to calendar successfully!</string>
     <string name="remove_icon">Remove Icon</string>
+    <string name="can_t_follow_instructions_watch_a_video">Can\'t follow instructions?\nWatch a Video!</string>
 
 </resources>

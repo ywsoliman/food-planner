@@ -9,19 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-        <!--            android:id="@+id/addToCalendarFAB"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginEnd="24dp"-->
-        <!--            android:backgroundTint="@color/black_transparent"-->
-        <!--            android:contentDescription="@string/add_to_calendar_button"-->
-        <!--            android:src="@drawable/calendar"-->
-        <!--            app:elevation="1dp"-->
-        <!--            app:layout_constraintEnd_toStartOf="@id/addToFavoritesFAB"-->
-        <!--            app:layout_constraintTop_toTopOf="@+id/addToFavoritesFAB"-->
-        <!--            app:rippleColor="@color/white"-->
-        <!--            app:tint="@color/white" />-->
 
         <ImageView
             android:id="@+id/mealThumbnail"
@@ -45,6 +32,22 @@
             app:layout_constraintBottom_toBottomOf="@id/mealThumbnail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/mealTitle"
+            style="@style/textHeading"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/mealThumbnail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteX="38dp"
+            tools:layout_editor_absoluteY="297dp"
+            tools:text="Ma7shy Koronb W Felfel W Betngan W Wara2 3enab" />
 
         <Button
             android:id="@+id/addToFavButton"
@@ -145,24 +148,33 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
+                <TextView
+                    android:id="@+id/textView5"
+                    style="@style/textSubheading"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/can_t_follow_instructions_watch_a_video"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rvInstructions" />
+
+                <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+                    android:id="@+id/youtubeVideo"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_margin="16dp"
+                    app:autoPlay="false"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textView5" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 
-        <TextView
-            android:id="@+id/mealTitle"
-            style="@style/textHeading"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="@id/mealThumbnail"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteX="38dp"
-            tools:layout_editor_absoluteY="297dp"
-            tools:text="Ma7shy Koronb W Felfel W Betngan W Wara2 3enab" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
