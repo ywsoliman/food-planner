@@ -1,9 +1,12 @@
 package com.example.foodplanner.home.meals.view;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,12 +27,19 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MealsFragment extends Fragment implements IMealView, OnMealClickListener {
 
     private RecyclerView recyclerView;
     private MealsAdapter adapter;
     private MealsPresenter presenter;
+    private SearchView searchView;
+    private List<Meal> meals;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,15 +84,50 @@ public class MealsFragment extends Fragment implements IMealView, OnMealClickLis
                 presenter.getMealsByIngredient(query.replaceAll(" ", "_").toLowerCase());
                 break;
         }
+
+        addSearchViewListener();
+    }
+
+    private void addSearchViewListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+
+            @SuppressLint("CheckResult")
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.i("TAG", "onQueryTextChange: " + newText);
+                if (newText.isEmpty())
+                    adapter.setList(meals);
+                else {
+                    List<Meal> filteredList = new ArrayList<>();
+                    Observable.fromIterable(meals)
+                            .subscribeOn(Schedulers.io())
+                            .filter(meal -> meal.getStrMeal().toLowerCase().contains(newText.toLowerCase()))
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    filteredList::add,
+                                    error -> Log.i("TAG", "onQueryTextChange: " + error.getMessage()),
+                                    () -> adapter.setList(filteredList)
+                            );
+                    Log.i("TAG", "onQueryTextChange Filtered Meals: " + filteredList);
+                }
+                return true;
+            }
+        });
     }
 
     private void initUI(View view) {
         recyclerView = view.findViewById(R.id.rvMealsByCategory);
+        searchView = view.findViewById(R.id.searchView);
     }
 
     @Override
     public void showMeals(List<Meal> mealList) {
         adapter.setList(mealList);
+        this.meals = mealList;
     }
 
     @Override
