@@ -2,6 +2,7 @@ package com.example.foodplanner.home.meals.details.view;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -159,30 +161,24 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
     }
 
     private List<Pair<String, String>> getIngredientNameWithMeasure(Meal meal) {
-        List<String> ingredientNames = new ArrayList<>();
-        List<String> ingredientMeasures = new ArrayList<>();
-        Method[] methods = Meal.class.getDeclaredMethods();
-        for (Method method : methods) {
-            try {
-                if (method.getName().startsWith("getStrIngredient")) {
-                    String name = (String) method.invoke(meal);
-                    if (name != null && !name.isEmpty())
-                        ingredientNames.add(name);
-                }
-                if (method.getName().startsWith("getStrMeasure")) {
-                    String measure = (String) method.invoke(meal);
-                    if (measure != null && !measure.isEmpty() && !measure.equals(" "))
-                        ingredientMeasures.add(measure);
-                }
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
         List<Pair<String, String>> pairList = new ArrayList<>();
-        for (int i = 0; i < ingredientNames.size(); i++) {
-            Pair<String, String> pair = Pair.create(ingredientNames.get(i), ingredientMeasures.get(i));
-            pairList.add(pair);
+        try {
+            for (int i = 1; i <= 20; i++) {
+                Field ingredientField = Meal.class.getDeclaredField("strIngredient" + i);
+                Field measureField = Meal.class.getDeclaredField("strMeasure" + i);
+                ingredientField.setAccessible(true);
+                measureField.setAccessible(true);
+
+                String ingredient = (String) ingredientField.get(meal);
+                String measure = (String) measureField.get(meal);
+
+                if (ingredient != null && !ingredient.isEmpty()) {
+                    measure = (measure != null && !measure.isEmpty() && !measure.trim().equals("")) ? measure : "N/A";
+                    pairList.add(Pair.create(ingredient, measure));
+                }
+            }
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
 
         return pairList;
