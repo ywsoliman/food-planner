@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -35,13 +33,10 @@ import com.example.foodplanner.models.area.Area;
 import com.example.foodplanner.models.category.Category;
 import com.example.foodplanner.models.ingredients.Ingredient;
 import com.example.foodplanner.network.MealsRemoteDataSource;
-import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ForYouFragment extends Fragment implements IForYouView, OnCategoryClickListener, OnAreaClickListener, OnIngredientClickListener, OnMealClickListener {
 
@@ -116,8 +111,6 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
                 .apply(new RequestOptions().override(0, 200))
                 .into(trendingMealImage);
         trendingMealCard.setOnClickListener(v -> onMealItemClicked(meal.getIdMeal()));
-        trendingMealCard.findViewById(R.id.saveFAB)
-                .setOnClickListener(v -> onSaveOrDeleteButtonClicked(meal));
     }
 
     @Override
@@ -160,11 +153,4 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
         Navigation.findNavController(requireView()).navigate(action);
     }
 
-    @Override
-    public void onSaveOrDeleteButtonClicked(Meal meal) {
-        forYouPresenter.addMealToFavorites(meal);
-        Snackbar.make(requireView(), R.string.meal_is_added_to_favorites_successfully, Snackbar.LENGTH_SHORT)
-                .setAnchorView(R.id.bottomNavigationView)
-                .show();
-    }
 }

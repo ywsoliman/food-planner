@@ -70,7 +70,7 @@ public class SearchFragment extends Fragment implements ISearchView, OnMealClick
         initUI(view);
 
         searchView.requestFocus();
-//        showKeyboard();
+        showKeyboard();
 
         mealsAdapter = new MealsAdapter(requireContext(), new ArrayList<>(), this);
         rvSearchedMeals.setAdapter(mealsAdapter);
@@ -109,14 +109,6 @@ public class SearchFragment extends Fragment implements ISearchView, OnMealClick
     public void onMealItemClicked(String mealID) {
         SearchFragmentDirections.ActionSearchFragmentToMealDetailsFragment action = SearchFragmentDirections.actionSearchFragmentToMealDetailsFragment(mealID);
         Navigation.findNavController(requireView()).navigate(action);
-    }
-
-    @Override
-    public void onSaveOrDeleteButtonClicked(Meal meal) {
-        searchPresenter.addMealToFavorites(meal);
-        Snackbar.make(requireView(), R.string.meal_is_deleted_from_favorites, Snackbar.LENGTH_SHORT)
-                .setAnchorView(R.id.bottomNavigationView)
-                .show();
     }
 
     private void hideKeyboard() {

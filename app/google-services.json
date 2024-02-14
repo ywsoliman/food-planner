@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "357883500328",
+    "firebase_url": "https://food-planner-madsv44-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "food-planner-madsv44",
     "storage_bucket": "food-planner-madsv44.appspot.com"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.example.foodplanner"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "357883500328-7416ahvcueka3ajkvtqv4c6uh56cuivm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.foodplanner",
+            "certificate_hash": "a0de8223f4164481a1d5dfebc990a5cfe1f5251d"
+          }
+        },
+        {
+          "client_id": "357883500328-19s0fs2mt1afmer6b8n3ttn0rttdn7k3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCPf8Ybfpr9rl8lMmClgPfNax_Sf0gKyds"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "357883500328-19s0fs2mt1afmer6b8n3ttn0rttdn7k3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

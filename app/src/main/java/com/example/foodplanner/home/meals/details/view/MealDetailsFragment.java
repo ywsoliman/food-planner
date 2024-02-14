@@ -1,12 +1,16 @@
 package com.example.foodplanner.home.meals.details.view;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,31 +21,39 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.foodplanner.R;
 import com.example.foodplanner.db.MealsLocalDataSource;
+import com.example.foodplanner.db.PlannedMealsDao;
 import com.example.foodplanner.home.meals.details.presenter.MealDetailsPresenter;
 import com.example.foodplanner.models.Meal;
+import com.example.foodplanner.models.PlannedMeal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 public class MealDetailsFragment extends Fragment implements IMealDetailsView {
 
-    private static final String TAG = "MealDetailsFragment";
     private MealDetailsPresenter presenter;
+    private TextView mealTitle;
     private ImageView mealThumbnail;
     private TextView mealCategory;
     private TextView mealArea;
     private RecyclerView rvInstructions;
     private InstructionsAdapter instructionsAdapter;
-    private CollapsingToolbarLayout collapsingToolbar;
     private RecyclerView rvMealIngredients;
     private IngredientMealAdapter ingredientMealAdapter;
+    private Button addToCalendarButton;
+    private Button addToFavButton;
+    private Meal meal;
+    private PlannedMeal plannedMeal;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,27 +88,63 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
         rvMealIngredients.setAdapter(ingredientMealAdapter);
         rvMealIngredients.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-
         String mealID = MealDetailsFragmentArgs.fromBundle(getArguments()).getMealID();
         presenter.getMealDetails(mealID);
+
+        addToFavButton.setOnClickListener(v -> handleAddToFavorite());
+        addToCalendarButton.setOnClickListener(v -> handleAddToCalendar());
+
     }
 
     private void initUI(View view) {
         mealThumbnail = view.findViewById(R.id.mealThumbnail);
-//        mealTitle = view.findViewById(R.id.mealTitle);
+        mealTitle = view.findViewById(R.id.mealTitle);
         rvInstructions = view.findViewById(R.id.rvInstructions);
         rvMealIngredients = view.findViewById(R.id.rvMealIngredients);
         mealCategory = view.findViewById(R.id.mealCategory);
         mealArea = view.findViewById(R.id.mealArea);
-        collapsingToolbar = view.findViewById(R.id.collapsingToolbar);
+        addToFavButton = view.findViewById(R.id.addToFavButton);
+        addToCalendarButton = view.findViewById(R.id.addToCalendarButton);
+    }
+
+    private void handleAddToFavorite() {
+        presenter.insertMealToFavorites(meal);
+        Snackbar.make(requireView(), R.string.meal_is_added_to_favorites_successfully, Snackbar.LENGTH_SHORT)
+                .setAnchorView(R.id.bottomNavigationView)
+                .show();
+    }
+
+    private void handleAddToCalendar() {
+
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog dialog = new DatePickerDialog(requireContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                plannedMeal.setYear(year);
+                plannedMeal.setMonth(month);
+                plannedMeal.setDay_of_month(dayOfMonth);
+                presenter.insertMealOnDate(plannedMeal);
+                Snackbar.make(requireView(), R.string.meal_added_to_calendar_successfully, Snackbar.LENGTH_SHORT)
+                        .setAnchorView(R.id.bottomNavigationView)
+                        .show();
+            }
+        }, year, month, dayOfMonth);
+
+        dialog.show();
     }
 
     @Override
     public void showMealDetails(Meal meal) {
 
+        this.meal = meal;
+
+        mealTitle.setText(meal.getStrMeal());
         mealCategory.setText(meal.getStrCategory());
         mealArea.setText(meal.getStrArea());
-        collapsingToolbar.setTitle(meal.getStrMeal());
         Glide.with(this)
                 .load(meal.getStrMealThumb())
                 .into(mealThumbnail);
@@ -107,6 +155,7 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
         String instructions = meal.getStrInstructions().replaceAll("([0-9]\\.)|\\r|\\n|\\t", "");
         instructionsAdapter.setList(Arrays.asList(instructions.trim().split("\\.")));
 
+        plannedMeal = new PlannedMeal(meal);
     }
 
     private List<Pair<String, String>> getIngredientNameWithMeasure(Meal meal) {

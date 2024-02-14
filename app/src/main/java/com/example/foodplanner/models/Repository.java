@@ -1,23 +1,14 @@
 package com.example.foodplanner.models;
 
-import android.app.Activity;
-
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import com.example.foodplanner.auth.IAuthCallback;
-import com.example.foodplanner.auth.IAuthenticate;
-import com.example.foodplanner.auth.register.view.IRegisterAuth;
 import com.example.foodplanner.db.IMealsLocalDataSource;
-import com.example.foodplanner.home.meals.presenter.MealsPresenter;
 import com.example.foodplanner.home.search.presenter.SearchedMealsCallback;
+import com.example.foodplanner.network.ForYouNetworkCallback;
+import com.example.foodplanner.network.IMealsRemoteDataSource;
 import com.example.foodplanner.network.MealDetailsNetworkCallback;
 import com.example.foodplanner.network.MealsNetworkCallback;
-import com.example.foodplanner.network.IMealsRemoteDataSource;
-import com.example.foodplanner.network.ForYouNetworkCallback;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
@@ -88,7 +79,7 @@ public class Repository implements IRepository {
 
     @Override
     public void insert(Meal meal) {
-        localDataSource.insert(meal);
+        localDataSource.insertFavoriteMeal(meal);
     }
 
     @Override
@@ -98,7 +89,27 @@ public class Repository implements IRepository {
 
     @Override
     public void delete(Meal meal) {
-        localDataSource.delete(meal);
+        localDataSource.deleteFavoriteMeal(meal);
+    }
+
+    @Override
+    public LiveData<List<PlannedMeal>> getLocalPlannedMeals(int year, int month, int dayOfMonth) {
+        return localDataSource.getLocalPlannedMeals(year, month, dayOfMonth);
+    }
+
+    @Override
+    public void insertPlannedMeal(PlannedMeal plannedMeal) {
+        localDataSource.insertPlannedMeal(plannedMeal);
+    }
+
+    @Override
+    public void deletePlannedMeal(PlannedMeal plannedMeal) {
+        localDataSource.deletePlannedMeal(plannedMeal);
+    }
+
+    @Override
+    public void addPlannedMeal(PlannedMeal plannedMeals) {
+        localDataSource.insertPlannedMeal(plannedMeals);
     }
 
     @Override

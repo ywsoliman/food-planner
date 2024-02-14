@@ -49,5 +49,9 @@
     <string name="meal_is_added_to_favorites_successfully">Meal is added to favorites successfully!</string>
     <string name="your_favorite_meals">Your Favorite Meals:</string>
     <string name="undo">Undo</string>
+    <string name="add_to_calendar_button">Add to Calendar Button</string>
+    <string name="add_to_favorites_button">Add to Favorites Button</string>
+    <string name="meal_added_to_calendar_successfully">Meal added to calendar successfully!</string>
+    <string name="remove_icon">Remove Icon</string>
 
 </resources>

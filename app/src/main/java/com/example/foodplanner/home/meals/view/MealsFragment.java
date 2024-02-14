@@ -74,8 +74,6 @@ public class MealsFragment extends Fragment implements IMealView, OnMealClickLis
                 presenter.getMealsByIngredient(query.replaceAll(" ", "_").toLowerCase());
                 break;
         }
-
-
     }
 
     private void initUI(View view) {
@@ -91,14 +89,6 @@ public class MealsFragment extends Fragment implements IMealView, OnMealClickLis
     public void onMealItemClicked(String mealID) {
         MealsFragmentDirections.ActionMealsFragmentToMealDetailsFragment action = MealsFragmentDirections.actionMealsFragmentToMealDetailsFragment(mealID);
         Navigation.findNavController(requireView()).navigate(action);
-    }
-
-    @Override
-    public void onSaveOrDeleteButtonClicked(Meal meal) {
-        presenter.addMealToFavorites(meal);
-        Snackbar.make(requireView(), R.string.meal_is_added_to_favorites_successfully, Snackbar.LENGTH_SHORT)
-                .setAnchorView(R.id.bottomNavigationView)
-                .show();
     }
 
 }

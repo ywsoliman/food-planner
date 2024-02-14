@@ -3,6 +3,7 @@ package com.example.foodplanner.home.meals.details.presenter;
 import com.example.foodplanner.home.meals.details.view.IMealDetailsView;
 import com.example.foodplanner.models.IRepository;
 import com.example.foodplanner.models.Meal;
+import com.example.foodplanner.models.PlannedMeal;
 import com.example.foodplanner.network.MealDetailsNetworkCallback;
 
 public class MealDetailsPresenter implements MealDetailsNetworkCallback {
@@ -27,5 +28,13 @@ public class MealDetailsPresenter implements MealDetailsNetworkCallback {
     @Override
     public void onFailure(String errorMsg) {
 
+    }
+
+    public void insertMealOnDate(PlannedMeal plannedMeal) {
+        model.insertPlannedMeal(plannedMeal);
+    }
+
+    public void insertMealToFavorites(Meal meal) {
+        model.insert(meal);
     }
 }

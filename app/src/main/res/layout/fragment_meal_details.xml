@@ -1,221 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:layout_height="wrap_content">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsingToolbar"
+        <!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+        <!--            android:id="@+id/addToCalendarFAB"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginEnd="24dp"-->
+        <!--            android:backgroundTint="@color/black_transparent"-->
+        <!--            android:contentDescription="@string/add_to_calendar_button"-->
+        <!--            android:src="@drawable/calendar"-->
+        <!--            app:elevation="1dp"-->
+        <!--            app:layout_constraintEnd_toStartOf="@id/addToFavoritesFAB"-->
+        <!--            app:layout_constraintTop_toTopOf="@+id/addToFavoritesFAB"-->
+        <!--            app:rippleColor="@color/white"-->
+        <!--            app:tint="@color/white" />-->
+
+        <ImageView
+            android:id="@+id/mealThumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:contentDescription="@string/meal_thumbnail"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/gradient"
+            android:importantForAccessibility="no"
+            app:layout_constraintBottom_toBottomOf="@id/mealThumbnail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/addToFavButton"
+            style="?attr/materialIconButtonFilledTonalStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:contentDescription="@string/remove_icon"
+            app:icon="@drawable/favorite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/addToCalendarButton"
+            style="?attr/materialIconButtonFilledTonalStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/remove_icon"
+            app:icon="@drawable/calendar"
+            app:layout_constraintEnd_toStartOf="@id/addToFavButton"
+            app:layout_constraintTop_toTopOf="@id/addToFavButton" />
+
+
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:collapsedTitleTextColor="@color/white"
-            app:contentScrim="@color/black"
-            app:expandedTitleTextAppearance="@style/textHeadingTemp"
-            app:expandedTitleTextColor="@color/white"
-            app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mealThumbnail">
 
-            <ImageView
-                android:id="@+id/mealThumbnail"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="350dp"
-                android:contentDescription="@string/meal_thumbnail"
-                android:scaleType="centerCrop"
-                app:layout_collapseMode="parallax"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@tools:sample/avatars" />
+                android:layout_height="match_parent">
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_gravity="bottom"
-                android:background="@drawable/gradient"
-                android:importantForAccessibility="no" />
+                <TextView
+                    android:id="@+id/mealCategory"
+                    style="@style/textSubheading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Chicken" />
 
-            <androidx.appcompat.widget.Toolbar
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
+                <TextView
+                    android:id="@+id/mealArea"
+                    style="@style/textSubheading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="@+id/mealCategory"
+                    app:layout_constraintStart_toStartOf="@+id/mealCategory"
+                    app:layout_constraintTop_toBottomOf="@+id/mealCategory"
+                    tools:text="Japanese" />
 
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvInstructions"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView4">
 
-    </com.google.android.material.appbar.AppBarLayout>
+                </androidx.recyclerview.widget.RecyclerView>
 
+                <TextView
+                    android:id="@+id/textView6"
+                    style="@style/textSubheading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/ingredients"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/mealArea" />
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                <TextView
+                    android:id="@+id/textView4"
+                    style="@style/textSubheading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/meal_instructions"
+                    app:layout_constraintStart_toStartOf="@+id/textView6"
+                    app:layout_constraintTop_toBottomOf="@+id/rvMealIngredients" />
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvMealIngredients"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
 
-            <TextView
-                android:id="@+id/mealCategory"
-                style="@style/textSubheading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Chicken" />
+        <TextView
+            android:id="@+id/mealTitle"
+            style="@style/textHeading"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/mealThumbnail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteX="38dp"
+            tools:layout_editor_absoluteY="297dp"
+            tools:text="Ma7shy Koronb W Felfel W Betngan W Wara2 3enab" />
 
-            <TextView
-                android:id="@+id/mealArea"
-                style="@style/textSubheading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="@+id/mealCategory"
-                app:layout_constraintStart_toStartOf="@+id/mealCategory"
-                app:layout_constraintTop_toBottomOf="@+id/mealCategory"
-                tools:text="Japanese" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvInstructions"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4">
-
-            </androidx.recyclerview.widget.RecyclerView>
-
-            <TextView
-                android:id="@+id/textView6"
-                style="@style/textSubheading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/ingredients"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/mealArea" />
-
-            <TextView
-                android:id="@+id/textView4"
-                style="@style/textSubheading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/meal_instructions"
-                app:layout_constraintStart_toStartOf="@+id/textView6"
-                app:layout_constraintTop_toBottomOf="@+id/rvMealIngredients" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvMealIngredients"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView6" />
-            
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout><!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-    <!--    xmlns:tools="http://schemas.android.com/tools"-->
-    <!--    android:layout_width="match_parent"-->
-    <!--    android:layout_height="match_parent">-->
-
-    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-    <!--        android:id="@+id/saveFAB"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginEnd="16dp"-->
-    <!--        android:layout_marginBottom="16dp"-->
-    <!--        android:backgroundTint="@color/colorPrimary"-->
-    <!--        android:clickable="true"-->
-    <!--        android:contentDescription="@string/save"-->
-    <!--        android:focusable="true"-->
-    <!--        android:src="@drawable/save"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:tint="@color/white" />-->
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/mealThumbnail"-->
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="350dp"-->
-    <!--        android:contentDescription="@string/meal_thumbnail"-->
-    <!--        android:scaleType="centerCrop"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        tools:src="@tools:sample/avatars" />-->
-
-    <!--    <com.google.android.material.card.MaterialCardView-->
-    <!--        android:id="@+id/mealTitleCard"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="32dp"-->
-    <!--        android:layout_marginEnd="32dp"-->
-    <!--        android:backgroundTint="@color/white"-->
-    <!--        app:cardCornerRadius="32dp"-->
-    <!--        app:cardElevation="16dp"-->
-    <!--        app:layout_constraintBottom_toBottomOf="@+id/mealThumbnail"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/mealThumbnail">-->
-
-    <!--        <LinearLayout-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:gravity="center"-->
-    <!--            android:orientation="vertical"-->
-    <!--            android:padding="16dp">-->
-
-    <!--            <TextView-->
-    <!--                android:id="@+id/mealTitle"-->
-    <!--                style="@style/textHeading"-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:textAlignment="center"-->
-    <!--                android:textStyle="italic"-->
-    <!--                tools:text="Teriyaki Chicken Casserole" />-->
-
-    <!--            <TextView-->
-    <!--                android:id="@+id/mealCategory"-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                tools:text="Chicken" />-->
-
-    <!--            <TextView-->
-    <!--                android:id="@+id/mealArea"-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                tools:text="Japanese" />-->
-
-    <!--        </LinearLayout>-->
-
-    <!--    </com.google.android.material.card.MaterialCardView>-->
-
-    <!--    <androidx.recyclerview.widget.RecyclerView-->
-    <!--        android:id="@+id/rvInstructions"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="0dp"-->
-    <!--        android:layout_marginStart="16dp"-->
-    <!--        android:layout_marginTop="16dp"-->
-    <!--        android:layout_marginEnd="16dp"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintHorizontal_bias="0.0"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/mealTitleCard" />-->
-
-    <!--</androidx.constraintlayout.widget.ConstraintLayout>-->
+</ScrollView>

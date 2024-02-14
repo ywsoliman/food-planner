@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#3F51B5"
-    tools:context=".home.view.MealPlanFragment">
+    android:layout_margin="16dp"
+    android:orientation="vertical"
+    tools:context=".home.mealplan.view.MealPlanFragment">
 
-    <TextView
-        style="@style/textHeadingTemp"
+    <Button
+        android:id="@+id/dateButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        app:icon="@drawable/calendar"
+        app:iconTint="@color/white"
+        tools:text="Pick a date" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPlannedMeals"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/meal_plan" />
-
-</FrameLayout>
+        android:layout_marginTop="16dp" />
+</LinearLayout>

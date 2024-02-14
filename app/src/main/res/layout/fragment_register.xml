@@ -162,7 +162,6 @@
         android:clickable="true"
         android:focusable="true"
         android:text="@string/login"
-        android:textColor="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/textView"
         app:layout_constraintEnd_toStartOf="@+id/rightVGuideline"
         app:layout_constraintHorizontal_bias="0.5"

@@ -12,15 +12,15 @@ import com.example.foodplanner.models.Meal;
 import java.util.List;
 
 @Dao
-public interface MealsDAO {
+public interface FavoriteMealsDAO {
 
     @Query("SELECT * FROM meals_table")
-    LiveData<List<Meal>> getAllMeals();
+    LiveData<List<Meal>> getFavoriteMeals();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Meal meal);
 
     @Delete
     void delete(Meal meal);
-
+    
 }

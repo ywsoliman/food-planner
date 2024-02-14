@@ -3,11 +3,6 @@ package com.example.foodplanner.models;
 import androidx.lifecycle.LiveData;
 
 import com.example.foodplanner.auth.IAuthCallback;
-import com.example.foodplanner.auth.IAuthenticate;
-import com.example.foodplanner.auth.register.view.IRegisterAuth;
-import com.example.foodplanner.home.foryou.presenter.ForYouPresenter;
-import com.example.foodplanner.home.meals.presenter.MealsPresenter;
-import com.example.foodplanner.home.search.presenter.SearchPresenter;
 import com.example.foodplanner.home.search.presenter.SearchedMealsCallback;
 import com.example.foodplanner.network.MealDetailsNetworkCallback;
 import com.example.foodplanner.network.MealsNetworkCallback;
@@ -40,7 +35,15 @@ public interface IRepository {
 
     void insert(Meal meal);
 
+    void delete(Meal meal);
+
     LiveData<List<Meal>> getLocalMeals();
 
-    void delete(Meal meal);
+    LiveData<List<PlannedMeal>> getLocalPlannedMeals(int year, int month, int dayOfMonth);
+
+    void insertPlannedMeal(PlannedMeal plannedMeal);
+
+    void deletePlannedMeal(PlannedMeal plannedMeal);
+
+    void addPlannedMeal(PlannedMeal plannedMeals);
 }

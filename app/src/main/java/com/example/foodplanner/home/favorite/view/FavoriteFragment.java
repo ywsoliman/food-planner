@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +16,7 @@ import android.view.ViewGroup;
 import com.example.foodplanner.R;
 import com.example.foodplanner.db.MealsLocalDataSource;
 import com.example.foodplanner.home.favorite.presenter.FavoritePresenter;
+import com.example.foodplanner.home.meals.details.view.OnMealButtonClickListener;
 import com.example.foodplanner.home.meals.view.MealsAdapter;
 import com.example.foodplanner.home.meals.view.OnMealClickListener;
 import com.example.foodplanner.models.Meal;
@@ -28,11 +28,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealClickListener {
+public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealClickListener, OnMealButtonClickListener {
 
     private RecyclerView rvFavorite;
-    private MealsAdapter adapter;
     private FavoritePresenter presenter;
+    private FavoriteAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealC
                 MealsLocalDataSource.getInstance(getContext())
         ));
 
-        adapter = new MealsAdapter(getContext(), new ArrayList<>(), this);
+        adapter = new FavoriteAdapter(getContext(), new ArrayList<>(), this, this);
         rvFavorite = view.findViewById(R.id.rvFavoriteMeals);
         rvFavorite.setLayoutManager(new LinearLayoutManager(getContext()));
         rvFavorite.setAdapter(adapter);
@@ -72,7 +72,7 @@ public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealC
     }
 
     @Override
-    public void onSaveOrDeleteButtonClicked(Meal meal) {
+    public void onMealFABClicked(Meal meal) {
         presenter.deleteFromFavorite(meal);
         Snackbar.make(requireView(), R.string.meal_is_deleted_from_favorites, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo, v -> presenter.addMealToFavorites(meal))

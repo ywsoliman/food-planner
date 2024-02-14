@@ -4,5 +4,4 @@ import com.example.foodplanner.models.Meal;
 
 public interface OnMealClickListener {
     void onMealItemClicked(String mealID);
-    void onSaveOrDeleteButtonClicked(Meal meal);
 }
