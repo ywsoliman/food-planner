@@ -3,6 +3,13 @@ package com.example.foodplanner.home.search.view;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,26 +18,23 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.SearchView;
-
 import com.example.foodplanner.R;
 import com.example.foodplanner.db.MealsLocalDataSource;
-import com.example.foodplanner.home.meals.view.OnMealClickListener;
 import com.example.foodplanner.home.meals.view.MealsAdapter;
+import com.example.foodplanner.home.meals.view.OnMealClickListener;
 import com.example.foodplanner.home.search.presenter.SearchPresenter;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.jakewharton.rxbinding4.widget.RxSearchView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 
 public class SearchFragment extends Fragment implements ISearchView, OnMealClickListener {
 
@@ -70,7 +74,7 @@ public class SearchFragment extends Fragment implements ISearchView, OnMealClick
         initUI(view);
 
         searchView.requestFocus();
-        showKeyboard();
+        new Handler().postDelayed(this::showKeyboard, 500);
 
         mealsAdapter = new MealsAdapter(requireContext(), new ArrayList<>(), this);
         rvSearchedMeals.setAdapter(mealsAdapter);
@@ -83,14 +87,22 @@ public class SearchFragment extends Fragment implements ISearchView, OnMealClick
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                hideKeyboard();
-                searchPresenter.getSearchedMeals(query);
-                return true;
+                return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false;
+                if (newText.isEmpty()) {
+                    showSearchedMeals(Collections.emptyList());
+                } else {
+                    RxSearchView.queryTextChanges(searchView)
+                            .debounce(500, TimeUnit.MILLISECONDS) // stream will go down after 1 second inactivity of user
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    text -> searchPresenter.getSearchedMeals(text.toString())
+                            );
+                }
+                return true;
             }
         });
     }

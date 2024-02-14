@@ -5,6 +5,8 @@ import com.example.foodplanner.models.area.AreaList;
 import com.example.foodplanner.models.category.CategoryList;
 import com.example.foodplanner.models.ingredients.IngredientList;
 
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -12,34 +14,34 @@ import retrofit2.http.Query;
 public interface MealsAPI {
 
     @GET("random.php")
-    Call<MealsList> getSingleRandomMeal();
+    Single<MealsList> getSingleRandomMeal();
 
     @GET("categories.php")
-    Call<CategoryList> getCategories();
+    Single<CategoryList> getCategories();
 
     //https://www.themealdb.com/api/json/v1/1/filter.php?c=Beef
     @GET("filter.php")
-    Call<MealsList> getMealsByCategory(@Query("c") String category);
+    Single<MealsList> getMealsByCategory(@Query("c") String category);
 
     //www.themealdb.com/api/json/v1/1/lookup.php?i=52772
     @GET("lookup.php")
-    Call<MealsList> getMealDetailsByID(@Query("i") String mealID);
+    Single<MealsList> getMealDetailsByID(@Query("i") String mealID);
 
     //https://www.themealdb.com/api/json/v1/1/search.php?s=Arrabiata
     @GET("search.php")
-    Call<MealsList> getMealsBySearch(@Query("s") String query);
+    Observable<MealsList> getMealsBySearch(@Query("s") String query);
 
     @GET("list.php?a=list")
-    Call<AreaList> getAreas();
+    Single<AreaList> getAreas();
 
     // www.themealdb.com/api/json/v1/1/filter.php?a=Canadian
     @GET("filter.php")
-    Call<MealsList> getMealsByArea(@Query("a") String area);
+    Single<MealsList> getMealsByArea(@Query("a") String area);
 
     @GET("list.php?i=list")
-    Call<IngredientList> getIngredients();
+    Single<IngredientList> getIngredients();
 
     // www.themealdb.com/api/json/v1/1/filter.php?i=chicken_breast
     @GET("filter.php")
-    Call<MealsList> getMealsByIngredient(@Query("i") String ingredient);
+    Single<MealsList> getMealsByIngredient(@Query("i") String ingredient);
 }
