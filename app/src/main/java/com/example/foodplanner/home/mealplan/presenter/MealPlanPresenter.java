@@ -8,6 +8,8 @@ import com.example.foodplanner.models.PlannedMeal;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Flowable;
+
 public class MealPlanPresenter {
 
     private final IMealPlanView view;
@@ -18,7 +20,7 @@ public class MealPlanPresenter {
         this.model = model;
     }
 
-    public LiveData<List<PlannedMeal>> getMealsByDate(int year, int month, int dayOfMonth) {
+    public Flowable<List<PlannedMeal>> getMealsByDate(int year, int month, int dayOfMonth) {
         return model.getLocalPlannedMeals(year, month, dayOfMonth);
     }
 

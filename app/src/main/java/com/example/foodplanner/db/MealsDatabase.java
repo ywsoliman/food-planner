@@ -21,12 +21,10 @@ public abstract class MealsDatabase extends RoomDatabase {
     public static synchronized MealsDatabase getInstance(Context context) {
         if (instance == null) {
             instance = Room.databaseBuilder(
-                            context.getApplicationContext(),
-                            MealsDatabase.class,
-                            "meals_db"
-                    )
-                    .fallbackToDestructiveMigration()
-                    .build();
+                    context.getApplicationContext(),
+                    MealsDatabase.class,
+                    "meals_db"
+            ).build();
         }
         return instance;
     }

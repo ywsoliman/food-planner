@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,12 +29,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealClickListener, OnMealButtonClickListener {
 
     private RecyclerView rvFavorite;
     private FavoritePresenter presenter;
     private FavoriteAdapter adapter;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,9 +66,10 @@ public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealC
         rvFavorite.setLayoutManager(new LinearLayoutManager(getContext()));
         rvFavorite.setAdapter(adapter);
 
-        LiveData<List<Meal>> localMeals = presenter.getFavoriteMeals();
-        localMeals.observe(getViewLifecycleOwner(), mealList -> adapter.setList(mealList));
-
+        presenter.getFavoriteMeals()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(favMeals -> adapter.setList(favMeals));
     }
 
     @Override
@@ -78,5 +84,10 @@ public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealC
                 .setAction(R.string.undo, v -> presenter.addMealToFavorites(meal))
                 .setAnchorView(R.id.bottomNavigationView)
                 .show();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

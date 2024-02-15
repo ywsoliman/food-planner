@@ -10,6 +10,9 @@ import com.example.foodplanner.network.ForYouNetworkCallback;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Flowable;
+
 public interface IRepository {
     void loginWithEmailAndPassword(IAuthCallback callback, String email, String pass);
 
@@ -37,9 +40,9 @@ public interface IRepository {
 
     void delete(Meal meal);
 
-    LiveData<List<Meal>> getLocalMeals();
+    Flowable<List<Meal>> getLocalMeals();
 
-    LiveData<List<PlannedMeal>> getLocalPlannedMeals(int year, int month, int dayOfMonth);
+    Flowable<List<PlannedMeal>> getLocalPlannedMeals(int year, int month, int dayOfMonth);
 
     void insertPlannedMeal(PlannedMeal plannedMeal);
 

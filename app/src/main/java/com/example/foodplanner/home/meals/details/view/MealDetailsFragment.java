@@ -1,8 +1,8 @@
 package com.example.foodplanner.home.meals.details.view;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,14 +21,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.foodplanner.R;
 import com.example.foodplanner.db.MealsLocalDataSource;
-import com.example.foodplanner.db.PlannedMealsDao;
 import com.example.foodplanner.home.meals.details.presenter.MealDetailsPresenter;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.PlannedMeal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
@@ -37,12 +33,12 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.Abs
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class MealDetailsFragment extends Fragment implements IMealDetailsView {
 
@@ -133,7 +129,7 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 plannedMeal.setYear(year);
                 plannedMeal.setMonth(month);
-                plannedMeal.setDay_of_month(dayOfMonth);
+                plannedMeal.setDayOfMonth(dayOfMonth);
                 presenter.insertMealOnDate(plannedMeal);
                 Snackbar.make(requireView(), R.string.meal_added_to_calendar_successfully, Snackbar.LENGTH_SHORT)
                         .setAnchorView(R.id.bottomNavigationView)
@@ -163,16 +159,20 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
         String instructions = meal.getStrInstructions().replaceAll("([0-9]\\.)|\\r|\\n|\\t", "");
         instructionsAdapter.setList(Arrays.asList(instructions.trim().split("\\.")));
 
+        setupYoutubeVideo(meal);
+
+    }
+
+    private void setupYoutubeVideo(Meal meal) {
         getLifecycle().addObserver(youtubeVideo);
         String mealVideoId = meal.getStrYoutube().substring(meal.getStrYoutube().indexOf('=') + 1);
         youtubeVideo.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
             @Override
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {
                 super.onReady(youTubePlayer);
-                youTubePlayer.loadVideo(mealVideoId, 0);
+                youTubePlayer.cueVideo(mealVideoId, 0);
             }
         });
-
     }
 
     private List<Pair<String, String>> getIngredientNameWithMeasure(Meal meal) {
@@ -199,4 +199,8 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
         return pairList;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }

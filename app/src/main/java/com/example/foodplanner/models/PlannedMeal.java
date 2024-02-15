@@ -1,6 +1,7 @@
 package com.example.foodplanner.models;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 import androidx.room.Entity;
 
@@ -12,7 +13,8 @@ public class PlannedMeal {
     private Meal meal;
     private int year;
     private int month;
-    private int day_of_month;
+    @ColumnInfo(name = "day_of_month")
+    private int dayOfMonth;
 
     public PlannedMeal(@NonNull Meal meal) {
         this.meal = meal;
@@ -43,11 +45,11 @@ public class PlannedMeal {
         this.month = month;
     }
 
-    public int getDay_of_month() {
-        return day_of_month;
+    public int getDayOfMonth() {
+        return dayOfMonth;
     }
 
-    public void setDay_of_month(int day_of_month) {
-        this.day_of_month = day_of_month;
+    public void setDayOfMonth(int dayOfMonth) {
+        this.dayOfMonth = dayOfMonth;
     }
 }

@@ -6,6 +6,8 @@ import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.PlannedMeal;
 import com.example.foodplanner.network.MealDetailsNetworkCallback;
 
+import io.reactivex.rxjava3.core.Completable;
+
 public class MealDetailsPresenter implements MealDetailsNetworkCallback {
 
     private final IMealDetailsView view;

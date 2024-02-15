@@ -13,6 +13,9 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Flowable;
+
 public class Repository implements IRepository {
 
     private static Repository repository = null;
@@ -83,8 +86,8 @@ public class Repository implements IRepository {
     }
 
     @Override
-    public LiveData<List<Meal>> getLocalMeals() {
-        return localDataSource.getLocalMeals();
+    public Flowable<List<Meal>> getLocalMeals() {
+        return localDataSource.getLocalFavMeals();
     }
 
     @Override
@@ -93,7 +96,7 @@ public class Repository implements IRepository {
     }
 
     @Override
-    public LiveData<List<PlannedMeal>> getLocalPlannedMeals(int year, int month, int dayOfMonth) {
+    public Flowable<List<PlannedMeal>> getLocalPlannedMeals(int year, int month, int dayOfMonth) {
         return localDataSource.getLocalPlannedMeals(year, month, dayOfMonth);
     }
 

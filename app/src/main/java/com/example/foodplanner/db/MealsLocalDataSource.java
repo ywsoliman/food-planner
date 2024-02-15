@@ -1,7 +1,6 @@
 package com.example.foodplanner.db;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -11,19 +10,24 @@ import com.example.foodplanner.models.PlannedMeal;
 import java.util.Calendar;
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public class MealsLocalDataSource implements IMealsLocalDataSource {
 
     private static final String TAG = "MealsLocalDataSource";
     private final FavoriteMealsDAO favDAO;
     private final PlannedMealsDao plannedDAO;
-    private final LiveData<List<Meal>> localMeals;
-    private LiveData<List<PlannedMeal>> localPlannedMeals;
+    private final Flowable<List<Meal>> localFavMeals;
+    private Flowable<List<PlannedMeal>> localPlannedMeals;
     private static MealsLocalDataSource instance = null;
 
     private MealsLocalDataSource(Context context) {
 
         favDAO = MealsDatabase.getInstance(context).getFavoriteMealsDao();
-        localMeals = favDAO.getFavoriteMeals();
+        localFavMeals = favDAO.getFavoriteMeals();
 
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -42,7 +46,9 @@ public class MealsLocalDataSource implements IMealsLocalDataSource {
 
     @Override
     public void insertFavoriteMeal(Meal meal) {
-        new Thread(() -> favDAO.insert(meal)).start();
+        favDAO.insert(meal)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
     }
 
     @Override
@@ -51,19 +57,21 @@ public class MealsLocalDataSource implements IMealsLocalDataSource {
     }
 
     @Override
-    public LiveData<List<Meal>> getLocalMeals() {
-        return localMeals;
+    public Flowable<List<Meal>> getLocalFavMeals() {
+        return localFavMeals;
     }
 
     @Override
-    public LiveData<List<PlannedMeal>> getLocalPlannedMeals(int year, int month, int dayOfMonth) {
+    public Flowable<List<PlannedMeal>> getLocalPlannedMeals(int year, int month, int dayOfMonth) {
         localPlannedMeals = plannedDAO.getPlannedMeals(year, month, dayOfMonth);
         return localPlannedMeals;
     }
 
     @Override
     public void insertPlannedMeal(PlannedMeal plannedMeal) {
-        new Thread(() -> plannedDAO.insert(plannedMeal)).start();
+        plannedDAO.insert(plannedMeal)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
     }
 
     @Override

@@ -7,14 +7,17 @@ import com.example.foodplanner.models.PlannedMeal;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Flowable;
+
 public interface IMealsLocalDataSource {
     void insertFavoriteMeal(Meal meal);
 
     void deleteFavoriteMeal(Meal meal);
 
-    LiveData<List<Meal>> getLocalMeals();
+    Flowable<List<Meal>> getLocalFavMeals();
 
-    LiveData<List<PlannedMeal>> getLocalPlannedMeals(int year, int month, int dayOfMonth);
+    Flowable<List<PlannedMeal>> getLocalPlannedMeals(int year, int month, int dayOfMonth);
 
     void insertPlannedMeal(PlannedMeal plannedMeal);
 

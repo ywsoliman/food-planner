@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,10 +31,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public class MealPlanFragment extends Fragment implements IMealPlanView, OnMealClickListener, OnPlannedMealClickListener {
 
     private MealPlanPresenter presenter;
-    private LiveData<List<PlannedMeal>> plannedMeals;
     private MealPlanAdapter adapter;
     private Button dateButton;
 
@@ -71,8 +75,12 @@ public class MealPlanFragment extends Fragment implements IMealPlanView, OnMealC
         int month = calendar.get(Calendar.MONTH);
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
-        plannedMeals = presenter.getMealsByDate(year, month, dayOfMonth);
-        plannedMeals.observe(getViewLifecycleOwner(), list -> adapter.setList(list));
+        presenter.getMealsByDate(year, month, dayOfMonth)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        list -> adapter.setList(list)
+                );
 
         String currentDate = year + "/" + (month + 1) + "/" + dayOfMonth;
         dateButton.setText(currentDate);
@@ -80,17 +88,21 @@ public class MealPlanFragment extends Fragment implements IMealPlanView, OnMealC
 
     }
 
-    private void openDateDialog(int year, int month, int dayOfMonth) {
+    private void openDateDialog(int initYear, int initMonth, int initDayOfMonth) {
         DatePickerDialog dialog = new DatePickerDialog(requireContext(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 String currentDate = year + "/" + (month + 1) + "/" + dayOfMonth;
                 dateButton.setText(currentDate);
-                plannedMeals = presenter.getMealsByDate(year, month, dayOfMonth);
-                plannedMeals.observe(getViewLifecycleOwner(), list -> adapter.setList(list));
+                presenter.getMealsByDate(year, month, dayOfMonth)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                list -> adapter.setList(list)
+                        );
 
             }
-        }, year, month, dayOfMonth);
+        }, initYear, initMonth, initDayOfMonth);
 
         dialog.show();
     }

@@ -12,14 +12,17 @@ import com.example.foodplanner.models.PlannedMeal;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Flowable;
+
 @Dao
 public interface PlannedMealsDao {
 
     @Query("SELECT * FROM planned_meals_table WHERE year = :year AND month = :month AND day_of_month = :dayOfMonth")
-    LiveData<List<PlannedMeal>> getPlannedMeals(int year, int month, int dayOfMonth);
+    Flowable<List<PlannedMeal>> getPlannedMeals(int year, int month, int dayOfMonth);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(PlannedMeal meal);
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    Completable insert(PlannedMeal meal);
 
     @Delete
     void delete(PlannedMeal meal);
