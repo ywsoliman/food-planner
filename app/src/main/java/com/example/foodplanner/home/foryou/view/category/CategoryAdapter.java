@@ -40,7 +40,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         Category currentCategory = categories.get(position);
         holder.categoryTitle.setText(currentCategory.getStrCategory());
-        holder.categoryDesc.setText(currentCategory.getStrCategoryDescription());
         Glide.with(context)
                 .load(currentCategory.getStrCategoryThumb())
                 .placeholder(R.drawable.loading_animation)
@@ -62,12 +61,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         private final ImageView categoryThumbnail;
         private final TextView categoryTitle;
-        private final TextView categoryDesc;
 
         public CategoryViewHolder(@NonNull View itemView) {
             super(itemView);
             categoryTitle = itemView.findViewById(R.id.categoryTitle);
-            categoryDesc = itemView.findViewById(R.id.categoryDesc);
             categoryThumbnail = itemView.findViewById(R.id.categoryThumbnail);
             itemView.setOnClickListener(v -> listener.onCategoryItemClicked(categories.get(getAdapterPosition()).getStrCategory()));
         }

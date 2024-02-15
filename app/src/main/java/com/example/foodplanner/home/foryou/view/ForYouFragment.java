@@ -33,6 +33,7 @@ import com.example.foodplanner.models.area.Area;
 import com.example.foodplanner.models.category.Category;
 import com.example.foodplanner.models.ingredients.Ingredient;
 import com.example.foodplanner.network.MealsRemoteDataSource;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -50,7 +51,10 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
     private RecyclerView rvIngredients;
     private IngredientAdapter ingredientsAdapter;
     private ForYouPresenter forYouPresenter;
-
+    private ShimmerFrameLayout shimmerTrendingMeal;
+    private ShimmerFrameLayout shimmerCategories;
+    private ShimmerFrameLayout shimmerAreas;
+    private ShimmerFrameLayout shimmerIngredients;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,7 +75,7 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
         initUI(view);
 
         categoryAdapter = new CategoryAdapter(getContext(), new ArrayList<>(), this);
-        areaAdapter = new AreaAdapter(getContext(), new ArrayList<>(), this);
+        areaAdapter = new AreaAdapter(new ArrayList<>(), this);
         ingredientsAdapter = new IngredientAdapter(getContext(), new ArrayList<>(), this);
 
         rvCategory.setLayoutManager(new GridLayoutManager(getContext(), 2, GridLayoutManager.HORIZONTAL, false));
@@ -88,6 +92,7 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
                         MealsRemoteDataSource.getInstance(requireContext()),
                         MealsLocalDataSource.getInstance(getContext())
                 ));
+//        shimmerTrendingMeal.startShimmer();
         forYouPresenter.getSingleRandomMeal();
         forYouPresenter.getCategories();
         forYouPresenter.getAreas();
@@ -101,10 +106,18 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
         rvCategory = view.findViewById(R.id.rvCategories);
         rvArea = view.findViewById(R.id.rvArea);
         rvIngredients = view.findViewById(R.id.rvIngredients);
+        shimmerTrendingMeal = view.findViewById(R.id.shimmerTrendingMealCard);
+        shimmerCategories = view.findViewById(R.id.shimmerCategories);
+        shimmerAreas = view.findViewById(R.id.shimmerAreas);
+        shimmerIngredients = view.findViewById(R.id.shimmerIngredients);
     }
 
     @Override
     public void showSingleRandomMeal(Meal meal) {
+
+        hideShimmer(shimmerTrendingMeal);
+        trendingMealCard.setVisibility(View.VISIBLE);
+
         trendingMealName.setText(meal.getStrMeal());
         Glide.with(this)
                 .load(meal.getStrMealThumb())
@@ -115,16 +128,22 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
 
     @Override
     public void showCategories(List<Category> categories) {
+        hideShimmer(shimmerCategories);
+        rvCategory.setVisibility(View.VISIBLE);
         categoryAdapter.setList(categories);
     }
 
     @Override
     public void showAreas(List<Area> areas) {
+        hideShimmer(shimmerAreas);
+        rvArea.setVisibility(View.VISIBLE);
         areaAdapter.setList(areas);
     }
 
     @Override
     public void showIngredients(List<Ingredient> ingredients) {
+        hideShimmer(shimmerIngredients);
+        rvIngredients.setVisibility(View.VISIBLE);
         ingredientsAdapter.setList(ingredients);
     }
 
@@ -151,6 +170,11 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
         ForYouFragmentDirections.ActionForYouFragmentToMealDetailsFragment action =
                 ForYouFragmentDirections.actionForYouFragmentToMealDetailsFragment(mealID);
         Navigation.findNavController(requireView()).navigate(action);
+    }
+
+    private void hideShimmer(ShimmerFrameLayout shimmer) {
+        shimmer.stopShimmer();
+        shimmer.setVisibility(View.GONE);
     }
 
 }

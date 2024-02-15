@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,12 +20,10 @@ import java.util.List;
 
 public class AreaAdapter extends RecyclerView.Adapter<AreaAdapter.AreaViewHolder> {
 
-    private final Context context;
     private List<Area> areas;
     private OnAreaClickListener listener;
 
-    public AreaAdapter(Context context, List<Area> areas, OnAreaClickListener listener) {
-        this.context = context;
+    public AreaAdapter(List<Area> areas, OnAreaClickListener listener) {
         this.areas = areas;
         this.listener = listener;
     }
@@ -39,12 +38,8 @@ public class AreaAdapter extends RecyclerView.Adapter<AreaAdapter.AreaViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull AreaAdapter.AreaViewHolder holder, int position) {
-        Glide.with(context)
-                .load(CountryImageMap.getCountryImageResource(areas.get(position).getStrArea()))
-                .apply(new RequestOptions().override(256, 256))
-                .placeholder(R.drawable.loading_animation)
-                .error(R.drawable.ic_broken_image)
-                .into(holder.areaImage);
+        holder.areaTitle.setText(areas.get(position).getStrArea());
+        holder.areaImage.setImageResource(CountryImageMap.getCountryImageResource(areas.get(position).getStrArea()));
     }
 
     @Override
@@ -60,10 +55,12 @@ public class AreaAdapter extends RecyclerView.Adapter<AreaAdapter.AreaViewHolder
     public class AreaViewHolder extends RecyclerView.ViewHolder {
 
         private final ImageView areaImage;
+        private final TextView areaTitle;
 
         public AreaViewHolder(@NonNull View itemView) {
             super(itemView);
             areaImage = itemView.findViewById(R.id.areaImage);
+            areaTitle = itemView.findViewById(R.id.areaTitle);
             areaImage.setOnClickListener(v -> listener.onAreaItemClicked(areas.get(getAdapterPosition()).getStrArea()));
         }
     }
