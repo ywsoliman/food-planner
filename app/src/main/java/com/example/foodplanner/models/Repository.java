@@ -1,5 +1,6 @@
 package com.example.foodplanner.models;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import com.example.foodplanner.auth.IAuthCallback;
@@ -9,6 +10,9 @@ import com.example.foodplanner.network.ForYouNetworkCallback;
 import com.example.foodplanner.network.IMealsRemoteDataSource;
 import com.example.foodplanner.network.MealDetailsNetworkCallback;
 import com.example.foodplanner.network.MealsNetworkCallback;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
@@ -113,6 +117,18 @@ public class Repository implements IRepository {
     @Override
     public void addPlannedMeal(PlannedMeal plannedMeals) {
         localDataSource.insertPlannedMeal(plannedMeals);
+    }
+
+    @Override
+    public void loginAsGuest(IAuthCallback callback) {
+        firebaseAuth.signInAnonymously()
+                .addOnCompleteListener(callback.getActivity(), task -> {
+                    if (task.isSuccessful()) {
+                        callback.onSuccess();
+                    } else {
+                        callback.onFailure("Something went worng.");
+                    }
+                });
     }
 
     @Override

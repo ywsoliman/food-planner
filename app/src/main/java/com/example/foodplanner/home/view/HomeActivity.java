@@ -1,14 +1,19 @@
 package com.example.foodplanner.home.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.foodplanner.R;
+import com.example.foodplanner.auth.AuthActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -27,18 +32,25 @@ public class HomeActivity extends AppCompatActivity {
             int itemId = item.getItemId();
             if (itemId == R.id.forYouFragment) {
                 navigateToFragment(R.id.forYouFragment);
-            } else if (itemId == R.id.favoriteFragment) {
-                navigateToFragment(R.id.favoriteFragment);
-            } else if (itemId == R.id.mealPlanFragment) {
-                navigateToFragment(R.id.mealPlanFragment);
+            } else if (itemId == R.id.favoriteFragment || itemId == R.id.mealPlanFragment) {
+                if (!checkIsGuest())
+                    navigateToFragment(itemId);
             } else if (itemId == R.id.searchFragment) {
                 navigateToFragment(R.id.searchFragment);
             }
             return true;
-
         });
 
 
+    }
+
+    public boolean checkIsGuest() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null && user.isAnonymous()) {
+            showDialog();
+            return true;
+        }
+        return false;
     }
 
     private void navigateToFragment(int fragmentId) {
@@ -46,6 +58,21 @@ public class HomeActivity extends AppCompatActivity {
             navController.popBackStack(R.id.forYouFragment, false); // Consider the necessity based on your app's flow
             navController.navigate(fragmentId);
         }
+    }
+
+    public void showDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Sign Up for More Features");
+        builder.setMessage("Add your food preferences, plan your meals and more!");
+        builder.setPositiveButton("SIGN UP", (dialog, which) -> navigateToSignup());
+        builder.setNegativeButton("CANCEL", (dialog, which) -> dialog.dismiss());
+        builder.show();
+    }
+
+    public void navigateToSignup() {
+        Intent intent = new Intent(this, AuthActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 }

@@ -1,6 +1,5 @@
 package com.example.foodplanner.home.meals.details.view;
 
-import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.util.Pair;
@@ -22,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.example.foodplanner.R;
 import com.example.foodplanner.db.MealsLocalDataSource;
 import com.example.foodplanner.home.meals.details.presenter.MealDetailsPresenter;
+import com.example.foodplanner.home.view.HomeActivity;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.PlannedMeal;
 import com.example.foodplanner.models.Repository;
@@ -37,8 +37,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class MealDetailsFragment extends Fragment implements IMealDetailsView {
 
@@ -111,6 +109,8 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
     }
 
     private void handleAddToFavorite() {
+        if (((HomeActivity) requireActivity()).checkIsGuest())
+            return;
         presenter.insertMealToFavorites(meal);
         Snackbar.make(requireView(), R.string.meal_is_added_to_favorites_successfully, Snackbar.LENGTH_SHORT)
                 .setAnchorView(R.id.bottomNavigationView)
@@ -118,7 +118,8 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
     }
 
     private void handleAddToCalendar() {
-
+        if (((HomeActivity) requireActivity()).checkIsGuest())
+            return;
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);

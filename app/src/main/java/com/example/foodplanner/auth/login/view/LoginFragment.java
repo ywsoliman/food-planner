@@ -120,7 +120,7 @@ public class LoginFragment extends Fragment implements IAuthenticate {
     }
 
     private void handleGuestButton() {
-        // TODO
+        loginPresenter.loginAsGuest();
     }
 
     private void handleLoginButton() {

@@ -22,6 +22,10 @@ public class LoginPresenter implements IAuthCallback {
             model.loginWithEmailAndPassword(this, email, password);
     }
 
+    public void loginAsGuest() {
+        model.loginAsGuest(this);
+    }
+
     private boolean validatePassword(String password) {
         return !password.isEmpty();
     }
