@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.example.foodplanner.R;
+import com.example.foodplanner.auth.AuthActivity;
 import com.example.foodplanner.auth.IAuthenticate;
 import com.example.foodplanner.auth.login.presenter.LoginPresenter;
 import com.example.foodplanner.db.MealsLocalDataSource;
@@ -116,7 +117,7 @@ public class LoginFragment extends Fragment implements IAuthenticate {
     }
 
     private void handleGoogleButton() {
-        Toast.makeText(getContext(), "Google clicked!", Toast.LENGTH_SHORT).show();
+        ((AuthActivity) requireActivity()).signIn();
     }
 
     private void handleGuestButton() {

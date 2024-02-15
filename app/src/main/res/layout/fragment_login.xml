@@ -169,7 +169,8 @@
         android:layout_marginStart="4dp"
         android:clickable="true"
         android:focusable="true"
-        android:text="@string/sign_up"
+        android:text="@string/sign_up_underline"
+        android:textColor="?colorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="@id/rightVGuideline"
         app:layout_constraintStart_toEndOf="@+id/textView" />

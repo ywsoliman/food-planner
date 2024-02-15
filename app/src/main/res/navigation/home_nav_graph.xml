@@ -39,7 +39,7 @@
     <fragment
         android:id="@+id/mealsFragment"
         android:name="com.example.foodplanner.home.meals.view.MealsFragment"
-        android:label="fragment_meals"
+        android:label="@string/meals"
         tools:layout="@layout/fragment_meals" >
         <action
             android:id="@+id/action_mealsFragment_to_mealDetailsFragment"
@@ -54,7 +54,7 @@
     <fragment
         android:id="@+id/mealDetailsFragment"
         android:name="com.example.foodplanner.home.meals.details.view.MealDetailsFragment"
-        android:label="fragment_meal_details"
+        android:label="@string/meal_details"
         tools:layout="@layout/fragment_meal_details" >
         <argument
             android:name="mealID"
