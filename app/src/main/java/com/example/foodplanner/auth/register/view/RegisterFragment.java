@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.example.foodplanner.R;
+import com.example.foodplanner.auth.AuthActivity;
 import com.example.foodplanner.auth.register.presenter.RegisterPresenter;
 import com.example.foodplanner.db.MealsLocalDataSource;
 import com.example.foodplanner.models.Repository;
@@ -110,7 +111,7 @@ public class RegisterFragment extends Fragment implements IRegisterAuth {
     }
 
     private void handleGoogleButton() {
-        Toast.makeText(getContext(), "Google clicked!", Toast.LENGTH_SHORT).show();
+        ((AuthActivity) requireActivity()).signIn();
     }
 
     private void handleRegisterButton() {
