@@ -109,8 +109,10 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
     }
 
     private void handleAddToFavorite() {
-        if (((HomeActivity) requireActivity()).checkIsGuest())
+        if (((HomeActivity) requireActivity()).isGuest()) {
+            ((HomeActivity) requireActivity()).showGuestDialog();
             return;
+        }
         presenter.insertMealToFavorites(meal);
         Snackbar.make(requireView(), R.string.meal_is_added_to_favorites_successfully, Snackbar.LENGTH_SHORT)
                 .setAnchorView(R.id.bottomNavigationView)
@@ -118,8 +120,10 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
     }
 
     private void handleAddToCalendar() {
-        if (((HomeActivity) requireActivity()).checkIsGuest())
+        if (((HomeActivity) requireActivity()).isGuest()) {
+            ((HomeActivity) requireActivity()).showGuestDialog();
             return;
+        }
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);

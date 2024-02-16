@@ -57,5 +57,6 @@
     <string name="meal_details">Meal Details</string>
     <string name="meals">Meals</string>
     <string name="default_web_client_id">357883500328-3582vqtq0u8nlgepvhs7b4ulhif5nt7a.apps.googleusercontent.com</string>
+    <string name="you_have_lost_connection_to_the_internet_nthis_app_is_offline">You have lost connection to the internet\nThis app is offline.</string>
 
 </resources>
