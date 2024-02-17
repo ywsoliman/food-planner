@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.example.foodplanner.FireStoreDataManager;
 import com.example.foodplanner.R;
 import com.example.foodplanner.auth.AuthActivity;
 import com.example.foodplanner.auth.IAuthenticate;
@@ -35,8 +37,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginFragment extends Fragment implements IAuthenticate {
 
-
-    private static final String PREF_NAME = "RememberMePrefs";
+    public static final String PREF_NAME = "RememberMePrefs";
     private TextInputLayout emailInputLayout;
     private TextInputEditText emailInputEditText;
     private TextInputEditText passInputEditText;
@@ -136,6 +137,13 @@ public class LoginFragment extends Fragment implements IAuthenticate {
     }
 
     private void navigateToHome() {
+        saveRememberMeState();
+        Intent intent = new Intent(requireActivity(), HomeActivity.class);
+        startActivity(intent);
+        requireActivity().finish();
+    }
+
+    private void saveRememberMeState() {
         if (rememberMe.isChecked()) {
             SharedPreferences sharedPreferences =
                     requireActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -143,14 +151,11 @@ public class LoginFragment extends Fragment implements IAuthenticate {
             editor.putBoolean("rememberMe", true);
             editor.apply();
         }
-        Intent intent = new Intent(requireActivity(), HomeActivity.class);
-        startActivity(intent);
-        requireActivity().finish();
     }
 
     @Override
     public void onSuccess() {
-        Toast.makeText(getContext(), "Signed-in successfully!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), R.string.signed_in_successfully, Toast.LENGTH_SHORT).show();
         navigateToHome();
     }
 

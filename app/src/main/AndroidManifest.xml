@@ -21,9 +21,6 @@
             android:exported="true" />
 
         <activity
-            android:name=".home.view.HomeActivity"
-            android:exported="false" />
-        <activity
             android:name=".auth.AuthActivity"
             android:exported="true">
             <intent-filter>
@@ -32,6 +29,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".home.view.HomeActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

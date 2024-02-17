@@ -1,5 +1,11 @@
 package com.example.foodplanner.home.foryou.view;
 
+import static com.example.foodplanner.auth.login.view.LoginFragment.PREF_NAME;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,15 +15,20 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.foodplanner.FireStoreDataManager;
 import com.example.foodplanner.R;
+import com.example.foodplanner.auth.AuthActivity;
 import com.example.foodplanner.db.MealsLocalDataSource;
 import com.example.foodplanner.home.foryou.presenter.ForYouPresenter;
 import com.example.foodplanner.home.foryou.view.area.AreaAdapter;
@@ -39,6 +50,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public class ForYouFragment extends Fragment implements IForYouView, OnCategoryClickListener, OnAreaClickListener, OnIngredientClickListener, OnMealClickListener {
 
     private View trendingMealCard;
@@ -55,6 +70,8 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
     private ShimmerFrameLayout shimmerCategories;
     private ShimmerFrameLayout shimmerAreas;
     private ShimmerFrameLayout shimmerIngredients;
+    private SearchView ingredientSearchView;
+    private Button logoutButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,6 +91,8 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
 
         initUI(view);
 
+        logoutButton.setOnClickListener(v -> handleLogoutButton());
+
         categoryAdapter = new CategoryAdapter(getContext(), new ArrayList<>(), this);
         areaAdapter = new AreaAdapter(new ArrayList<>(), this);
         ingredientsAdapter = new IngredientAdapter(getContext(), new ArrayList<>(), this);
@@ -92,11 +111,18 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
                         MealsRemoteDataSource.getInstance(requireContext()),
                         MealsLocalDataSource.getInstance(getContext())
                 ));
-//        shimmerTrendingMeal.startShimmer();
         forYouPresenter.getSingleRandomMeal();
         forYouPresenter.getCategories();
         forYouPresenter.getAreas();
         forYouPresenter.getIngredients();
+    }
+
+    private void handleLogoutButton() {
+        setRememberMeToFalse();
+        FireStoreDataManager.getInstance(getContext()).synchronizeUserData();
+        Intent intent = new Intent(getContext(), AuthActivity.class);
+        startActivity(intent);
+        requireActivity().finish();
     }
 
     private void initUI(View view) {
@@ -110,6 +136,8 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
         shimmerCategories = view.findViewById(R.id.shimmerCategories);
         shimmerAreas = view.findViewById(R.id.shimmerAreas);
         shimmerIngredients = view.findViewById(R.id.shimmerIngredients);
+        ingredientSearchView = view.findViewById(R.id.ingredientSearchView);
+        logoutButton = view.findViewById(R.id.logoutButton);
     }
 
     @Override
@@ -145,6 +173,38 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
         hideShimmer(shimmerIngredients);
         rvIngredients.setVisibility(View.VISIBLE);
         ingredientsAdapter.setList(ingredients);
+        addIngredientSearchViewListener(ingredients);
+    }
+
+    private void addIngredientSearchViewListener(List<Ingredient> ingredients) {
+        ingredientSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @SuppressLint("CheckResult")
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.i("TAG", "onQueryTextChange: " + newText);
+                if (newText.isEmpty())
+                    ingredientsAdapter.setList(ingredients);
+                else {
+                    List<Ingredient> filteredList = new ArrayList<>();
+                    Observable.fromIterable(ingredients)
+                            .subscribeOn(Schedulers.io())
+                            .filter(ingredient -> ingredient.getStrIngredient().toLowerCase().contains(newText.toLowerCase()))
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    filteredList::add,
+                                    error -> Log.i("TAG", "onQueryTextChange: " + error.getMessage()),
+                                    () -> ingredientsAdapter.setList(filteredList)
+                            );
+                    Log.i("TAG", "onQueryTextChange Filtered Meals: " + filteredList);
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -175,6 +235,14 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
     private void hideShimmer(ShimmerFrameLayout shimmer) {
         shimmer.stopShimmer();
         shimmer.setVisibility(View.GONE);
+    }
+
+    private void setRememberMeToFalse() {
+        SharedPreferences sharedPreferences =
+                requireActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("rememberMe", true);
+        editor.apply();
     }
 
 }

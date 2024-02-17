@@ -11,6 +11,29 @@
         android:orientation="vertical"
         tools:context=".home.view.HomeActivity">
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/app_name"
+                android:textColor="?colorPrimary"
+                android:textSize="42sp"
+                app:fontFamily="@font/skyland" />
+
+            <Button
+                android:id="@+id/logoutButton"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_margin="8dp"
+                app:icon="@drawable/ic_logout" />
+        </FrameLayout>
+
         <TextView
             android:id="@+id/trendingMealHeading"
             style="@style/textHeading"
@@ -41,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:text="@string/search_by_category" />
+            android:text="@string/our_categories" />
 
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmerCategories"
@@ -73,7 +96,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:text="@string/search_by_country" />
+            android:text="@string/most_popular_areas" />
 
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmerAreas"
@@ -109,7 +132,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:text="@string/search_by_ingredients" />
+            android:text="@string/top_ingredients" />
+
+        <SearchView
+            android:id="@+id/ingredientSearchView"
+            style="@style/AppSearchViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:iconifiedByDefault="false"
+            android:queryHint="@string/search_for_an_ingredient" />
 
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmerIngredients"
