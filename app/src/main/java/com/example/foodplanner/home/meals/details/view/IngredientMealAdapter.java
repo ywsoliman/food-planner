@@ -1,6 +1,9 @@
 package com.example.foodplanner.home.meals.details.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,9 +12,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.foodplanner.R;
 import com.example.foodplanner.models.ingredients.Ingredient;
 
@@ -47,10 +56,31 @@ public class IngredientMealAdapter extends RecyclerView.Adapter<IngredientMealAd
         holder.ingredientName.setText(current.first);
         holder.ingredientMeasure.setText(current.second);
         Glide.with(context)
-                .load("https://www.themealdb.com/images/ingredients/" + current.first + "-small.png")
-                .placeholder(R.drawable.loading_animation)
-                .error(R.drawable.ic_broken_image)
-                .into(holder.ingredientThumbnail);
+                .load("https://www.themealdb.com/images/ingredients/" + current.first + "-Small.png")
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.loading_animation)
+                        .error(R.drawable.ic_broken_image))
+                .into(new CustomTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        holder.ingredientThumbnail.setImageDrawable(resource);
+
+                        Bitmap bitmap = Bitmap.createBitmap(resource.getIntrinsicWidth(), resource.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                        Canvas canvas = new Canvas(bitmap);
+                        resource.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                        resource.draw(canvas);
+
+                        Palette.from(bitmap).generate(palette -> {
+                            int dominantColor = palette.getDominantColor(ContextCompat.getColor(context, android.R.color.black));
+                            holder.ingredientThumbnail.setBackgroundColor(dominantColor);
+                        });
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                        holder.ingredientThumbnail.setBackgroundColor(ContextCompat.getColor(context, android.R.color.black));
+                    }
+                });
     }
 
     @Override

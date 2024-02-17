@@ -1,6 +1,9 @@
 package com.example.foodplanner.home.foryou.view.category;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,9 +11,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.foodplanner.R;
 import com.example.foodplanner.models.category.Category;
 
@@ -42,9 +51,31 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.categoryTitle.setText(currentCategory.getStrCategory());
         Glide.with(context)
                 .load(currentCategory.getStrCategoryThumb())
-                .placeholder(R.drawable.loading_animation)
-                .error(R.drawable.ic_broken_image)
-                .into(holder.categoryThumbnail);
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.loading_animation)
+                        .error(R.drawable.ic_broken_image))
+                .into(new CustomTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        holder.categoryThumbnail.setImageDrawable(resource);
+
+                        Bitmap bitmap = Bitmap.createBitmap(resource.getIntrinsicWidth(), resource.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                        Canvas canvas = new Canvas(bitmap);
+                        resource.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                        resource.draw(canvas);
+
+                        Palette.from(bitmap).generate(palette -> {
+                            int dominantColor = palette.getDominantColor(ContextCompat.getColor(context, android.R.color.black));
+                            holder.categoryThumbnail.setBackgroundColor(dominantColor);
+                        });
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                        // Handle case where Glide is unable to load the image
+                        holder.categoryThumbnail.setBackgroundColor(ContextCompat.getColor(context, android.R.color.black));
+                    }
+                });
     }
 
     @Override

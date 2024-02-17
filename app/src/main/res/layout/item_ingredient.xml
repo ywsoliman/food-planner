@@ -5,16 +5,26 @@
     android:layout_width="120dp"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/ingredientImage"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/ingredientCardView"
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_marginTop="8dp"
-        android:contentDescription="@string/ingredient_thumbnail"
+        app:cardCornerRadius="36dp"
+        app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ingredientImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/ingredient_thumbnail"
+            android:padding="8dp"
+            android:scaleType="centerCrop"
+            tools:src="@tools:sample/avatars" />
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:id="@+id/ingredientText"
@@ -25,9 +35,9 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="@+id/ingredientImage"
-        app:layout_constraintStart_toStartOf="@+id/ingredientImage"
-        app:layout_constraintTop_toBottomOf="@+id/ingredientImage"
+        app:layout_constraintEnd_toEndOf="@+id/ingredientCardView"
+        app:layout_constraintStart_toStartOf="@+id/ingredientCardView"
+        app:layout_constraintTop_toBottomOf="@+id/ingredientCardView"
         tools:text="TextView TextView TextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

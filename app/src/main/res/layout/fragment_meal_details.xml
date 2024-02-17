@@ -49,24 +49,23 @@
             tools:layout_editor_absoluteY="297dp"
             tools:text="Ma7shy Koronb W Felfel W Betngan W Wara2 3enab" />
 
-        <Button
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addToFavButton"
-            style="?attr/materialIconButtonFilledTonalStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:contentDescription="@string/remove_icon"
-            app:icon="@drawable/favorite"
+            android:src="@drawable/favorite"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addToCalendarButton"
-            style="?attr/materialIconButtonFilledTonalStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:contentDescription="@string/remove_icon"
-            app:icon="@drawable/calendar"
+            android:src="@drawable/calendar"
             app:layout_constraintEnd_toStartOf="@id/addToFavButton"
             app:layout_constraintTop_toTopOf="@id/addToFavButton" />
 
@@ -107,11 +106,9 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvInstructions"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="16dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView4">
