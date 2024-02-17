@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:queryHint="@string/search_meal_by_name"
         android:iconifiedByDefault="false" />
 
     <androidx.recyclerview.widget.RecyclerView
