@@ -74,7 +74,7 @@ public class SearchFragment extends Fragment implements ISearchView, OnMealClick
         initUI(view);
 
         searchView.requestFocus();
-        new Handler().postDelayed(this::showKeyboard, 500);
+        new Handler().postDelayed(this::showKeyboard, 10);
 
         mealsAdapter = new MealsAdapter(requireContext(), new ArrayList<>(), this);
         rvSearchedMeals.setAdapter(mealsAdapter);
@@ -96,7 +96,7 @@ public class SearchFragment extends Fragment implements ISearchView, OnMealClick
                     showSearchedMeals(Collections.emptyList());
                 } else {
                     RxSearchView.queryTextChanges(searchView)
-                            .debounce(500, TimeUnit.MILLISECONDS) // stream will go down after 1 second inactivity of user
+                            .debounce(500, TimeUnit.MILLISECONDS)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
                                     text -> searchPresenter.getSearchedMeals(text.toString())
@@ -121,13 +121,6 @@ public class SearchFragment extends Fragment implements ISearchView, OnMealClick
     public void onMealItemClicked(String mealID) {
         SearchFragmentDirections.ActionSearchFragmentToMealDetailsFragment action = SearchFragmentDirections.actionSearchFragmentToMealDetailsFragment(mealID);
         Navigation.findNavController(requireView()).navigate(action);
-    }
-
-    private void hideKeyboard() {
-        InputMethodManager inputMethodManager = (InputMethodManager) requireContext().getSystemService(INPUT_METHOD_SERVICE);
-        if (inputMethodManager != null) {
-            inputMethodManager.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
-        }
     }
 
     private void showKeyboard() {
