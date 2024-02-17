@@ -1,24 +1,21 @@
 package com.example.foodplanner.home.favorite.view;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.foodplanner.R;
 import com.example.foodplanner.db.MealsLocalDataSource;
 import com.example.foodplanner.home.favorite.presenter.FavoritePresenter;
 import com.example.foodplanner.home.meals.details.view.OnMealButtonClickListener;
-import com.example.foodplanner.home.meals.view.MealsAdapter;
 import com.example.foodplanner.home.meals.view.OnMealClickListener;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.Repository;
@@ -27,11 +24,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Scheduler;
-import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealClickListener, OnMealButtonClickListener {
@@ -39,6 +33,7 @@ public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealC
     private RecyclerView rvFavorite;
     private FavoritePresenter presenter;
     private FavoriteAdapter adapter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +69,9 @@ public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealC
 
     @Override
     public void onMealItemClicked(String mealID) {
-        // TODO
+        FavoriteFragmentDirections.ActionFavoriteFragmentToMealDetailsFragment action =
+                FavoriteFragmentDirections.actionFavoriteFragmentToMealDetailsFragment(mealID);
+        Navigation.findNavController(requireView()).navigate(action);
     }
 
     @Override

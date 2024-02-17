@@ -2,20 +2,19 @@ package com.example.foodplanner.home.mealplan.view;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.DatePicker;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodplanner.R;
 import com.example.foodplanner.db.MealsLocalDataSource;
@@ -29,10 +28,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MealPlanFragment extends Fragment implements IMealPlanView, OnMealClickListener, OnPlannedMealClickListener {
@@ -109,7 +106,9 @@ public class MealPlanFragment extends Fragment implements IMealPlanView, OnMealC
 
     @Override
     public void onMealItemClicked(String mealID) {
-        // TODO
+        MealPlanFragmentDirections.ActionMealPlanFragmentToMealDetailsFragment action =
+                MealPlanFragmentDirections.actionMealPlanFragmentToMealDetailsFragment(mealID);
+        Navigation.findNavController(requireView()).navigate(action);
     }
 
     @Override
