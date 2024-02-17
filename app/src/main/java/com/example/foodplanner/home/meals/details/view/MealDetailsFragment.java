@@ -26,6 +26,7 @@ import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.PlannedMeal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
@@ -49,8 +50,8 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
     private InstructionsAdapter instructionsAdapter;
     private RecyclerView rvMealIngredients;
     private IngredientMealAdapter ingredientMealAdapter;
-    private Button addToCalendarButton;
-    private Button addToFavButton;
+    private FloatingActionButton addToCalendarButton;
+    private FloatingActionButton addToFavButton;
     private Meal meal;
     private PlannedMeal plannedMeal;
     private YouTubePlayerView youtubeVideo;
@@ -129,6 +130,10 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
         int month = calendar.get(Calendar.MONTH);
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
+        // Set maximum date (a week from today)
+        calendar.add(Calendar.DAY_OF_MONTH, 7);
+        long maxDate = calendar.getTimeInMillis();
+
         DatePickerDialog dialog = new DatePickerDialog(requireContext(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -141,6 +146,9 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
                         .show();
             }
         }, year, month, dayOfMonth);
+
+        dialog.getDatePicker().setMinDate(System.currentTimeMillis());
+        dialog.getDatePicker().setMaxDate(maxDate);
 
         dialog.show();
     }

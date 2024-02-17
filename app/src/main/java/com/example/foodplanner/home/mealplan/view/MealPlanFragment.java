@@ -86,6 +86,13 @@ public class MealPlanFragment extends Fragment implements IMealPlanView, OnMealC
     }
 
     private void openDateDialog(int initYear, int initMonth, int initDayOfMonth) {
+
+        Calendar calendar = Calendar.getInstance();
+
+        // Set maximum date (a week from today)
+        calendar.add(Calendar.DAY_OF_MONTH, 7);
+        long maxDate = calendar.getTimeInMillis();
+
         DatePickerDialog dialog = new DatePickerDialog(requireContext(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -100,6 +107,9 @@ public class MealPlanFragment extends Fragment implements IMealPlanView, OnMealC
 
             }
         }, initYear, initMonth, initDayOfMonth);
+
+        dialog.getDatePicker().setMinDate(System.currentTimeMillis());
+        dialog.getDatePicker().setMaxDate(maxDate);
 
         dialog.show();
     }
