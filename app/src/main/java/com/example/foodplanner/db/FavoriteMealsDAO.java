@@ -23,6 +23,6 @@ public interface FavoriteMealsDAO {
     Completable insert(Meal meal);
 
     @Delete
-    void delete(Meal meal);
-    
+    Completable delete(Meal meal);
+
 }

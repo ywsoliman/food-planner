@@ -20,7 +20,7 @@ public class MealsLocalDataSource implements IMealsLocalDataSource {
     private static final String TAG = "MealsLocalDataSource";
     private final FavoriteMealsDAO favDAO;
     private final PlannedMealsDao plannedDAO;
-    private final Flowable<List<Meal>> localFavMeals;
+    private Flowable<List<Meal>> localFavMeals;
     private Flowable<List<PlannedMeal>> localPlannedMeals;
     private static MealsLocalDataSource instance = null;
 
@@ -53,13 +53,21 @@ public class MealsLocalDataSource implements IMealsLocalDataSource {
 
     @Override
     public void deleteFavoriteMeal(Meal meal) {
-        new Thread(() -> favDAO.delete(meal)).start();
+        favDAO.delete(meal)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
     }
 
     @Override
     public Flowable<List<Meal>> getLocalFavMeals() {
         return localFavMeals;
     }
+
+    @Override
+    public Flowable<List<PlannedMeal>> getAllLocalPlannedMeals() {
+        return plannedDAO.getAllPlannedMeals();
+    }
+
 
     @Override
     public Flowable<List<PlannedMeal>> getLocalPlannedMeals(int year, int month, int dayOfMonth) {
@@ -76,6 +84,8 @@ public class MealsLocalDataSource implements IMealsLocalDataSource {
 
     @Override
     public void deletePlannedMeal(PlannedMeal plannedMeal) {
-        new Thread(() -> plannedDAO.delete(plannedMeal)).start();
+        plannedDAO.delete(plannedMeal)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
     }
 }
