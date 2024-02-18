@@ -162,21 +162,25 @@ public class RegisterFragment extends Fragment implements IRegisterAuth {
 
     @Override
     public void showEmailValid() {
+        emailTextInputLayout.setErrorEnabled(false);
         emailTextInputLayout.setError(null);
     }
 
     @Override
     public void showEmailNotValid(String errorMsg) {
+        emailTextInputLayout.setErrorEnabled(true);
         emailTextInputLayout.setError(errorMsg);
     }
 
     @Override
     public void showPasswordTooShort(String errorMsg) {
+        passwordTextInputLayout.setErrorEnabled(true);
         passwordTextInputLayout.setError(errorMsg);
     }
 
     @Override
     public void showPasswordValid() {
+        passwordTextInputLayout.setErrorEnabled(false);
         passwordTextInputLayout.setError(null);
     }
 

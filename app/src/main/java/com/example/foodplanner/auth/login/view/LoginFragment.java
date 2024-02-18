@@ -169,11 +169,13 @@ public class LoginFragment extends Fragment implements IAuthenticate {
 
     @Override
     public void showEmailValid() {
+        emailInputLayout.setErrorEnabled(false);
         emailInputLayout.setError(null);
     }
 
     @Override
     public void showEmailNotValid(String errorMsg) {
+        emailInputLayout.setErrorEnabled(true);
         emailInputLayout.setError(errorMsg);
     }
 
