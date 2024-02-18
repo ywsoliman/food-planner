@@ -5,5 +5,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="shimmer">#BFBEBE</color>
     <!--    <color name="colorPrimary">#00726D</color>-->
-    <!--    <color name="colorPrimary">#FA9D31</color>-->
+    <color name="colorPrimary">#DA892B</color>
 </resources>

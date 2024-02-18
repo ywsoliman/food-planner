@@ -64,4 +64,11 @@ public class RegisterPresenter implements IAuthCallback {
     public Activity getActivity() {
         return view.getActivity();
     }
+
+    public void checkPasswordsMatch(String password, String confirmPassword) {
+        if (!password.equals(confirmPassword))
+            view.showPasswordNotMatching("Passwords don't match.");
+        else
+            view.showPasswordMatching();
+    }
 }

@@ -29,8 +29,10 @@ public class RegisterFragment extends Fragment implements IRegisterAuth {
 
     private TextInputLayout emailTextInputLayout;
     private TextInputLayout passwordTextInputLayout;
+    private TextInputLayout confirmPasswordTextInputLayout;
     private TextInputEditText emailInputEditText;
     private TextInputEditText passInputEditText;
+    private TextInputEditText confirmPassInputEditText;
     private TextView navigateToLogin;
     private Button signupButton;
     private RegisterPresenter registerPresenter;
@@ -64,9 +66,12 @@ public class RegisterFragment extends Fragment implements IRegisterAuth {
         googleButton.setOnClickListener(v -> handleGoogleButton());
         addEmailTextInputWatcher();
         addPasswordTextInputWatcher();
+        addConfirmPasswordTextInputWatcher();
     }
 
     private void initUI(View view) {
+        confirmPasswordTextInputLayout = view.findViewById(R.id.confirmPasswordTextInputLayout);
+        confirmPassInputEditText = view.findViewById(R.id.confirmPasswordTextInputEdit);
         emailTextInputLayout = view.findViewById(R.id.emailTextInputLayout);
         passwordTextInputLayout = view.findViewById(R.id.passwordTextInputLayout);
         emailInputEditText = view.findViewById(R.id.emailTextInputEdit);
@@ -110,6 +115,25 @@ public class RegisterFragment extends Fragment implements IRegisterAuth {
         });
     }
 
+    private void addConfirmPasswordTextInputWatcher() {
+        confirmPassInputEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable confirmPassword) {
+                registerPresenter.checkPasswordsMatch(passInputEditText.getText().toString(), confirmPassword.toString());
+            }
+        });
+    }
+
     private void handleGoogleButton() {
         ((AuthActivity) requireActivity()).signIn();
     }
@@ -127,7 +151,7 @@ public class RegisterFragment extends Fragment implements IRegisterAuth {
 
     @Override
     public void onSuccess() {
-        Toast.makeText(getContext(), "Registered successfully!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), R.string.registered_successfully, Toast.LENGTH_SHORT).show();
         handleNavigateToLogin();
     }
 
@@ -154,5 +178,15 @@ public class RegisterFragment extends Fragment implements IRegisterAuth {
     @Override
     public void showPasswordValid() {
         passwordTextInputLayout.setError(null);
+    }
+
+    @Override
+    public void showPasswordNotMatching(String errorMsg) {
+        confirmPasswordTextInputLayout.setError(errorMsg);
+    }
+
+    @Override
+    public void showPasswordMatching() {
+        confirmPasswordTextInputLayout.setError(null);
     }
 }

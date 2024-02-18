@@ -3,17 +3,17 @@
 
     <style name="textHeading" parent="TextAppearance.AppCompat">
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">24sp</item>
+        <item name="android:textSize">22sp</item>
     </style>
 
     <style name="textSubheading" parent="TextAppearance.AppCompat">
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="textBold" parent="TextAppearance.AppCompat">
         <item name="android:textStyle">bold</item>
-<!--        <item name="android:textSize">14sp</item>-->
+        <!--        <item name="android:textSize">14sp</item>-->
     </style>
 
     <style name="textHeadingTemp">
