@@ -10,14 +10,17 @@ import android.view.View;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.foodplanner.R;
 import com.example.foodplanner.auth.AuthActivity;
+import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.example.foodplanner.network.NetworkChangeReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -33,6 +36,8 @@ public class HomeActivity extends AppCompatActivity implements NetworkChangeRece
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        Log.i(TAG, "onCreate: Is Firebase Signed? " + FirebaseAuth.getInstance().getCurrentUser());
 
         noInternetBanner = findViewById(R.id.noInternetBanner);
 
@@ -65,6 +70,21 @@ public class HomeActivity extends AppCompatActivity implements NetworkChangeRece
             return true;
         });
 
+//        bottomNavigationView.setOnItemSelectedListener(item -> {
+//            int itemId = item.getItemId();
+//            if (itemId == R.id.forYouFragment) {
+//                navigateToFragment(R.id.forYouFragment);
+//            } else if (itemId == R.id.favoriteFragment) {
+//                navigateToFragment(R.id.favoriteFragment);
+//            } else if (itemId == R.id.mealPlanFragment) {
+//                navigateToFragment(R.id.mealPlanFragment);
+//            } else if (itemId == R.id.searchFragment) {
+//                navigateToFragment(R.id.searchFragment);
+//            }
+//            return true
+//                    ;
+//        });
+
 
     }
 
@@ -75,7 +95,10 @@ public class HomeActivity extends AppCompatActivity implements NetworkChangeRece
 
     private void navigateToFragment(int fragmentId) {
         if (navController.getCurrentDestination().getId() != fragmentId) {
-            navController.popBackStack(R.id.forYouFragment, false); // Consider the necessity based on your app's flow
+            if (fragmentId == R.id.forYouFragment)
+                navController.popBackStack(R.id.forYouFragment, true); // Consider the necessity based on your app's flow
+            else
+                navController.popBackStack(R.id.forYouFragment, false);
             navController.navigate(fragmentId);
         }
     }
@@ -118,5 +141,6 @@ public class HomeActivity extends AppCompatActivity implements NetworkChangeRece
         super.onDestroy();
         Log.i(TAG, "onDestroy: ");
         unregisterReceiver(networkChangeReceiver);
+        MealsRemoteDataSource.getInstance(this).dispose();
     }
 }

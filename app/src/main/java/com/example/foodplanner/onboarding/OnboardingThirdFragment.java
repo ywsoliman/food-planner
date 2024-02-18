@@ -1,5 +1,8 @@
 package com.example.foodplanner.onboarding;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.foodplanner.R;
+import com.example.foodplanner.auth.AuthActivity;
 
 public class OnboardingThirdFragment extends Fragment {
 
@@ -32,8 +36,24 @@ public class OnboardingThirdFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         view.findViewById(R.id.getStartedButton).setOnClickListener(v -> {
-            Navigation.findNavController(requireView()).navigate(R.id.action_viewPagerFragment_to_loginFragment);
+            navigateToLogin();
+            onBoardingFinished();
         });
 
     }
+
+    private void navigateToLogin() {
+        Intent intent = new Intent(requireContext(), AuthActivity.class);
+        startActivity(intent);
+        requireActivity().finish();
+    }
+
+    private void onBoardingFinished() {
+        SharedPreferences sharedPref = requireActivity().getSharedPreferences("onBoarding", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("Finished", true);
+        editor.apply();
+    }
+
+
 }

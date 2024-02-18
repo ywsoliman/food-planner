@@ -1,6 +1,7 @@
 package com.example.foodplanner.splash;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.foodplanner.R;
+import com.example.foodplanner.auth.AuthActivity;
 
 public class SplashFragment extends Fragment {
 
@@ -36,12 +38,18 @@ public class SplashFragment extends Fragment {
 
         new Handler().postDelayed(() -> {
             if (onBoardingFinished()) {
-                Navigation.findNavController(requireView()).navigate(R.id.action_registerFragment_to_loginFragment);
+                navigateToLogin();
             } else {
                 Navigation.findNavController(requireView()).navigate(R.id.action_splashFragment_to_viewPagerFragment);
             }
         }, 3000);
 
+    }
+
+    private void navigateToLogin() {
+        Intent intent = new Intent(requireContext(), AuthActivity.class);
+        startActivity(intent);
+        requireActivity().finish();
     }
 
     private boolean onBoardingFinished() {

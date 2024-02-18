@@ -118,9 +118,10 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
     }
 
     private void handleLogoutButton() {
+        FirebaseAuth.getInstance().signOut();
         setRememberMeToFalse();
-        FireStoreDataManager.getInstance(getContext()).synchronizeUserData();
-        Intent intent = new Intent(getContext(), AuthActivity.class);
+//        FireStoreDataManager.getInstance(getContext()).synchronizeUserData();
+        Intent intent = new Intent(requireContext(), AuthActivity.class);
         startActivity(intent);
         requireActivity().finish();
     }
@@ -241,7 +242,7 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
         SharedPreferences sharedPreferences =
                 requireActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("rememberMe", true);
+        editor.putBoolean("rememberMe", false);
         editor.apply();
     }
 
