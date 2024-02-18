@@ -12,6 +12,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.foodplanner.FireStoreDataManager;
 import com.example.foodplanner.R;
 import com.example.foodplanner.db.MealsLocalDataSource;
 import com.example.foodplanner.home.favorite.presenter.FavoritePresenter;
@@ -26,13 +27,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealClickListener, OnMealButtonClickListener {
 
-    private RecyclerView rvFavorite;
     private FavoritePresenter presenter;
     private FavoriteAdapter adapter;
+    private Disposable disposable;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,7 +51,7 @@ public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealC
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        
         presenter = new FavoritePresenter(this, Repository.getInstance(
                 FirebaseAuth.getInstance(),
                 MealsRemoteDataSource.getInstance(getContext()),
@@ -57,11 +59,11 @@ public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealC
         ));
 
         adapter = new FavoriteAdapter(getContext(), new ArrayList<>(), this, this);
-        rvFavorite = view.findViewById(R.id.rvFavoriteMeals);
+        RecyclerView rvFavorite = view.findViewById(R.id.rvFavoriteMeals);
         rvFavorite.setLayoutManager(new LinearLayoutManager(getContext()));
         rvFavorite.setAdapter(adapter);
 
-        presenter.getFavoriteMeals()
+        disposable = presenter.getFavoriteMeals()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(favMeals -> adapter.setList(favMeals));
@@ -86,5 +88,6 @@ public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealC
     @Override
     public void onDestroy() {
         super.onDestroy();
+        disposable.dispose();
     }
 }
