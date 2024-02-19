@@ -1,7 +1,5 @@
 package com.example.foodplanner.home.mealplan.presenter;
 
-import androidx.lifecycle.LiveData;
-
 import com.example.foodplanner.home.mealplan.view.IMealPlanView;
 import com.example.foodplanner.models.IRepository;
 import com.example.foodplanner.models.PlannedMeal;

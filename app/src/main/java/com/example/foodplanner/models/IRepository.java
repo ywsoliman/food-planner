@@ -1,17 +1,13 @@
 package com.example.foodplanner.models;
 
-import androidx.lifecycle.LiveData;
-
 import com.example.foodplanner.auth.IAuthCallback;
-import com.example.foodplanner.auth.login.presenter.LoginPresenter;
 import com.example.foodplanner.home.search.presenter.SearchedMealsCallback;
+import com.example.foodplanner.network.ForYouNetworkCallback;
 import com.example.foodplanner.network.MealDetailsNetworkCallback;
 import com.example.foodplanner.network.MealsNetworkCallback;
-import com.example.foodplanner.network.ForYouNetworkCallback;
 
 import java.util.List;
 
-import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
 
 public interface IRepository {

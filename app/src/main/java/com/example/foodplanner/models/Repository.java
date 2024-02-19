@@ -1,8 +1,5 @@
 package com.example.foodplanner.models;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-
 import com.example.foodplanner.auth.IAuthCallback;
 import com.example.foodplanner.db.IMealsLocalDataSource;
 import com.example.foodplanner.home.search.presenter.SearchedMealsCallback;
@@ -10,14 +7,10 @@ import com.example.foodplanner.network.ForYouNetworkCallback;
 import com.example.foodplanner.network.IMealsRemoteDataSource;
 import com.example.foodplanner.network.MealDetailsNetworkCallback;
 import com.example.foodplanner.network.MealsNetworkCallback;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
-import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
 
 public class Repository implements IRepository {
@@ -126,7 +119,7 @@ public class Repository implements IRepository {
                     if (task.isSuccessful()) {
                         callback.onSuccess();
                     } else {
-                        callback.onFailure("Something went worng.");
+                        callback.onFailure("Something went wrong.");
                     }
                 });
     }

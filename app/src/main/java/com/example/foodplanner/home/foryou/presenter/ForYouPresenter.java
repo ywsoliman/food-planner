@@ -61,7 +61,4 @@ public class ForYouPresenter implements ForYouNetworkCallback {
         model.getRemoteIngredients(this);
     }
 
-    public void addMealToFavorites(Meal meal) {
-        model.insert(meal);
-    }
 }

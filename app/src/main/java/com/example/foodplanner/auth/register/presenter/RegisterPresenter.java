@@ -3,15 +3,9 @@ package com.example.foodplanner.auth.register.presenter;
 import android.app.Activity;
 import android.util.Patterns;
 
-import androidx.annotation.NonNull;
-
 import com.example.foodplanner.auth.IAuthCallback;
 import com.example.foodplanner.auth.register.view.IRegisterAuth;
 import com.example.foodplanner.models.IRepository;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class RegisterPresenter implements IAuthCallback {
 

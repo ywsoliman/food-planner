@@ -6,7 +6,6 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -210,10 +209,5 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
         }
 
         return pairList;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 }

@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.foodplanner.R;
 import com.example.foodplanner.models.Meal;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 

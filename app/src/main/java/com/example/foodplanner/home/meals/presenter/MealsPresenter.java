@@ -37,8 +37,4 @@ public class MealsPresenter implements MealsNetworkCallback {
     public void getMealsByIngredient(String ingredient) {
         model.getRemoteMealsByIngredient(this, ingredient);
     }
-
-    public void addMealToFavorites(Meal meal) {
-        model.insert(meal);
-    }
 }

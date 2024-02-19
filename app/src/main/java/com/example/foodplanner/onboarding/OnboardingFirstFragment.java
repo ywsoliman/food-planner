@@ -32,9 +32,7 @@ public class OnboardingFirstFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         ViewPager2 viewPager = requireActivity().findViewById(R.id.viewPager);
-        view.findViewById(R.id.nextButton).setOnClickListener(v -> {
-            viewPager.setCurrentItem(1);
-        });
+        view.findViewById(R.id.nextButton).setOnClickListener(v -> viewPager.setCurrentItem(1));
 
     }
 }

@@ -22,7 +22,6 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.foodplanner.R;
 import com.example.foodplanner.models.ingredients.Ingredient;
-import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
 

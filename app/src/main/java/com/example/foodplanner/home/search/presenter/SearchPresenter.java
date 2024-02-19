@@ -30,8 +30,4 @@ public class SearchPresenter implements SearchedMealsCallback {
     public void onFailure(String errorMsg) {
 
     }
-
-    public void addMealToFavorites(Meal meal) {
-        model.insert(meal);
-    }
 }

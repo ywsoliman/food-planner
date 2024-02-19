@@ -76,14 +76,11 @@ public class AuthActivity extends AppCompatActivity implements NetworkChangeRece
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            navigateToHome();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                        }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        navigateToHome();
+                    } else {
+                        Toast.makeText(AuthActivity.this, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
                     }
                 });
     }

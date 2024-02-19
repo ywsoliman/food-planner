@@ -12,7 +12,6 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.foodplanner.FireStoreDataManager;
 import com.example.foodplanner.R;
 import com.example.foodplanner.db.MealsLocalDataSource;
 import com.example.foodplanner.home.favorite.presenter.FavoritePresenter;

@@ -1,14 +1,11 @@
 package com.example.foodplanner.home.favorite.presenter;
 
-import androidx.lifecycle.LiveData;
-
 import com.example.foodplanner.home.favorite.view.IFavoriteView;
 import com.example.foodplanner.models.IRepository;
 import com.example.foodplanner.models.Meal;
 
 import java.util.List;
 
-import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
 
 public class FavoritePresenter {
