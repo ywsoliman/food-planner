@@ -6,4 +6,5 @@
     <color name="shimmer">#BFBEBE</color>
     <!--    <color name="colorPrimary">#00726D</color>-->
     <color name="colorPrimary">#DA892B</color>
+    <color name="red">#C50000</color>
 </resources>

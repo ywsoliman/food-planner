@@ -39,7 +39,6 @@ public class MealsFragment extends Fragment implements IMealView, OnMealClickLis
     private MealsAdapter adapter;
     private MealsPresenter presenter;
     private SearchView searchView;
-    private List<Meal> meals;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,11 +83,9 @@ public class MealsFragment extends Fragment implements IMealView, OnMealClickLis
                 presenter.getMealsByIngredient(query.replaceAll(" ", "_").toLowerCase());
                 break;
         }
-
-        addSearchViewListener();
     }
 
-    private void addSearchViewListener() {
+    private void addSearchViewListener(List<Meal> meals) {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -127,7 +124,7 @@ public class MealsFragment extends Fragment implements IMealView, OnMealClickLis
     @Override
     public void showMeals(List<Meal> mealList) {
         adapter.setList(mealList);
-        this.meals = mealList;
+        addSearchViewListener(mealList);
     }
 
     @Override

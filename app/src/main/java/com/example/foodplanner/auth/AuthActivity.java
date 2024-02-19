@@ -1,7 +1,12 @@
 package com.example.foodplanner.auth;
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -9,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.foodplanner.R;
 import com.example.foodplanner.home.view.HomeActivity;
+import com.example.foodplanner.network.NetworkChangeReceiver;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -21,16 +27,26 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class AuthActivity extends AppCompatActivity {
+public class AuthActivity extends AppCompatActivity implements NetworkChangeReceiver.NetworkChangeListener {
 
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
+    private NetworkChangeReceiver networkChangeReceiver;
+    private FrameLayout authContainer;
+    private LinearLayout noInternetContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
+
+        authContainer = findViewById(R.id.authContainer);
+        noInternetContainer = findViewById(R.id.noInternetContainer);
+
+        networkChangeReceiver = new NetworkChangeReceiver(this);
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -73,7 +89,7 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     private void navigateToHome() {
-        Toast.makeText(this, "Signed-in successfully!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.signed_in_successfully, Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
         finish();
@@ -82,5 +98,16 @@ public class AuthActivity extends AppCompatActivity {
     public void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    @Override
+    public void onNetworkChanged(boolean isConnected) {
+        if (isConnected) {
+            noInternetContainer.setVisibility(View.GONE);
+            authContainer.setVisibility(View.VISIBLE);
+        } else {
+            authContainer.setVisibility(View.GONE);
+            noInternetContainer.setVisibility(View.VISIBLE);
+        }
     }
 }

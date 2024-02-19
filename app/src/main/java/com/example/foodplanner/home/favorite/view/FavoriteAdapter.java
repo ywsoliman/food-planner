@@ -16,6 +16,7 @@ import com.example.foodplanner.R;
 import com.example.foodplanner.home.meals.details.view.OnMealButtonClickListener;
 import com.example.foodplanner.home.meals.view.OnMealClickListener;
 import com.example.foodplanner.models.Meal;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -71,7 +72,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.MealVi
             super(itemView);
             mealThumbnail = itemView.findViewById(R.id.mealThumbnail);
             mealTitle = itemView.findViewById(R.id.mealTitle);
-            Button removeButton = itemView.findViewById(R.id.removeButton);
+            FloatingActionButton removeButton = itemView.findViewById(R.id.removeButton);
             removeButton.setOnClickListener(v -> onMealButtonClickListener.onMealFABClicked(meals.get(getAdapterPosition())));
             itemView.setOnClickListener(v -> onMealClickListener.onMealItemClicked(meals.get(getAdapterPosition()).getIdMeal()));
         }

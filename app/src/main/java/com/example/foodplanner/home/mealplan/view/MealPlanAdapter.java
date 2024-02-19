@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,10 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.foodplanner.R;
-import com.example.foodplanner.home.meals.details.view.OnMealButtonClickListener;
 import com.example.foodplanner.home.meals.view.OnMealClickListener;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.PlannedMeal;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -72,7 +71,7 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealVi
             super(itemView);
             mealThumbnail = itemView.findViewById(R.id.mealThumbnail);
             mealTitle = itemView.findViewById(R.id.mealTitle);
-            Button removeButton = itemView.findViewById(R.id.removeButton);
+            FloatingActionButton removeButton = itemView.findViewById(R.id.removeButton);
             removeButton.setOnClickListener(v -> onPlannedMealClickListener.onPlannedMealButtonClicked(meals.get(getAdapterPosition())));
             itemView.setOnClickListener(v -> onMealClickListener.onMealItemClicked(meals.get(getAdapterPosition()).getMeal().getIdMeal()));
         }
