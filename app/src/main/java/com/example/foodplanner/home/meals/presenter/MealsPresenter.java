@@ -1,9 +1,9 @@
 package com.example.foodplanner.home.meals.presenter;
 
-import com.example.foodplanner.network.MealsNetworkCallback;
 import com.example.foodplanner.home.meals.view.IMealView;
 import com.example.foodplanner.models.IRepository;
 import com.example.foodplanner.models.Meal;
+import com.example.foodplanner.network.MealsNetworkCallback;
 
 import java.util.List;
 

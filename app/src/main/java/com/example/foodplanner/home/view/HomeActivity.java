@@ -1,5 +1,6 @@
 package com.example.foodplanner.home.view;
 
+import static com.example.foodplanner.auth.login.view.LoginFragment.LOGIN;
 import static com.example.foodplanner.auth.login.view.LoginFragment.PREF_NAME;
 
 import android.content.Context;
@@ -20,18 +21,27 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.foodplanner.R;
 import com.example.foodplanner.auth.AuthActivity;
+import com.example.foodplanner.db.MealsLocalDataSource;
+import com.example.foodplanner.home.presenter.HomePresenter;
+import com.example.foodplanner.models.Meal;
+import com.example.foodplanner.models.PlannedMeal;
+import com.example.foodplanner.models.Repository;
+import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.example.foodplanner.network.NetworkChangeReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class HomeActivity extends AppCompatActivity implements NetworkChangeReceiver.NetworkChangeListener {
+import java.util.List;
+
+public class HomeActivity extends AppCompatActivity implements NetworkChangeReceiver.NetworkChangeListener, IHomeView {
 
     private static final String TAG = "HomeActivity";
     private NetworkChangeReceiver networkChangeReceiver;
     private NavController navController;
     private ConstraintLayout noInternetBanner;
     private BottomNavigationView bottomNavigationView;
+    private HomePresenter homePresenter;
     public boolean isConnectedToInternet;
 
 
@@ -39,6 +49,13 @@ public class HomeActivity extends AppCompatActivity implements NetworkChangeRece
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        homePresenter = new HomePresenter(this, Repository.getInstance(
+                MealsRemoteDataSource.getInstance(this),
+                MealsLocalDataSource.getInstance(this)
+        ));
+
+        synchronizeMeals();
 
         Log.i(TAG, "onCreate HomeActivity: Current User = " + FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
@@ -57,6 +74,19 @@ public class HomeActivity extends AppCompatActivity implements NetworkChangeRece
 //            navigateToFragment(R.id.favoriteFragment);
         setupButtonNavigation();
 
+    }
+
+    @Override
+    public void synchronizeMeals() {
+        SharedPreferences sharedPreferences = getSharedPreferences(LOGIN, Context.MODE_PRIVATE);
+        boolean isFirstLogged = sharedPreferences.getBoolean("firstLogged", false);
+        if (isFirstLogged) {
+            Log.i(TAG, "HomeActivity synchronizeMeals: ");
+            homePresenter.synchronizeMeals();
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("firstLogged", false);
+            editor.apply();
+        }
     }
 
     private void rememberUser() {
@@ -109,6 +139,7 @@ public class HomeActivity extends AppCompatActivity implements NetworkChangeRece
         }
     }
 
+    @Override
     public void showGuestDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Sign Up for More Features");
@@ -118,6 +149,7 @@ public class HomeActivity extends AppCompatActivity implements NetworkChangeRece
         builder.show();
     }
 
+    @Override
     public void showNoInternetDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Enable Internet for More Features");
@@ -126,7 +158,7 @@ public class HomeActivity extends AppCompatActivity implements NetworkChangeRece
         builder.show();
     }
 
-    public void navigateToSignup() {
+    private void navigateToSignup() {
         Intent intent = new Intent(this, AuthActivity.class);
         startActivity(intent);
         finish();
@@ -139,6 +171,16 @@ public class HomeActivity extends AppCompatActivity implements NetworkChangeRece
             noInternetBanner.setVisibility(View.GONE);
         else
             noInternetBanner.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onSuccessFetchingMealsFromFirebase(List<Meal> meals) {
+        homePresenter.replaceFavoriteMeals(meals);
+    }
+
+    @Override
+    public void onSuccessFetchingPlannedFromFirebase(List<PlannedMeal> plannedMeals) {
+        homePresenter.replacePlannedMeals(plannedMeals);
     }
 
     @Override

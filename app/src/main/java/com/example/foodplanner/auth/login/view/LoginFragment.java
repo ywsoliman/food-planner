@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,20 +26,17 @@ import com.example.foodplanner.auth.IAuthenticate;
 import com.example.foodplanner.auth.login.presenter.LoginPresenter;
 import com.example.foodplanner.db.MealsLocalDataSource;
 import com.example.foodplanner.home.view.HomeActivity;
-import com.example.foodplanner.models.Meal;
-import com.example.foodplanner.models.PlannedMeal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.List;
-
-public class LoginFragment extends Fragment implements IAuthenticate{
+public class LoginFragment extends Fragment implements IAuthenticate {
 
     private static final String TAG = "LoginFragment";
     public static final String PREF_NAME = "RememberMePrefs";
+    public static final String LOGIN = "Login";
     private TextInputLayout emailInputLayout;
     private TextInputEditText emailInputEditText;
     private TextInputEditText passInputEditText;
@@ -49,6 +45,7 @@ public class LoginFragment extends Fragment implements IAuthenticate{
     private Button guestButton;
     private LoginPresenter loginPresenter;
     private Button googleButton;
+    private Button backupButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,8 +67,8 @@ public class LoginFragment extends Fragment implements IAuthenticate{
         initUI(view);
 
         loginPresenter = new LoginPresenter(this,
-                Repository.getInstance(
-                        FirebaseAuth.getInstance(), MealsRemoteDataSource.getInstance(requireContext()), MealsLocalDataSource.getInstance(getContext())
+                Repository.getInstance(MealsRemoteDataSource.getInstance(getContext()),
+                        MealsLocalDataSource.getInstance(getContext())
                 ));
 
         loginButton.setOnClickListener(v -> handleLoginButton());
@@ -89,6 +86,7 @@ public class LoginFragment extends Fragment implements IAuthenticate{
         loginButton = view.findViewById(R.id.navigateToLogin);
         guestButton = view.findViewById(R.id.guestButton);
         googleButton = view.findViewById(R.id.googleButton);
+        backupButton = view.findViewById(R.id.backupButton);
     }
 
     private void addEmailTextInputWatcher() {
@@ -120,6 +118,10 @@ public class LoginFragment extends Fragment implements IAuthenticate{
         String email = emailInputEditText.getText().toString().trim();
         String password = passInputEditText.getText().toString().trim();
         loginPresenter.login(email, password);
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(LOGIN, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("firstLogged", true);
+        editor.apply();
     }
 
     private void handleNavigateToSignup() {

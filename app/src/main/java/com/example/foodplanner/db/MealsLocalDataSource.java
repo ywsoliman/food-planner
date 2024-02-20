@@ -89,6 +89,7 @@ public class MealsLocalDataSource implements IMealsLocalDataSource {
 
     @Override
     public void insertAllPlannedMeals(List<PlannedMeal> meals) {
+        Log.i(TAG, "insertAllPlannedMeals: ");
         plannedDAO.insertAll(meals)
                 .subscribeOn(Schedulers.io())
                 .subscribe();
@@ -101,16 +102,34 @@ public class MealsLocalDataSource implements IMealsLocalDataSource {
                 .subscribe();
     }
 
+//    @Override
+//    public void deleteAllFavoriteMeals() {
+//        favDAO.deleteAllMeals()
+//                .subscribeOn(Schedulers.io())
+//                .subscribe();
+//    }
+//
+//    @Override
+//    public void deleteAllPlannedMeals() {
+//        plannedDAO.deleteAllMeals()
+//                .subscribeOn(Schedulers.io())
+//                .subscribe();
+//    }
+
     @Override
-    public void deleteAllFavoriteMeals() {
+    public void replaceFavoriteMeals(List<Meal> meals) {
+        Log.i(TAG, "MealsLocalDataSource replaceFavoriteMeals: ");
         favDAO.deleteAllMeals()
+                .doOnComplete(() -> insertAllFavoriteMeals(meals))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
     @Override
-    public void deleteAllPlannedMeals() {
+    public void replacePlannedMeals(List<PlannedMeal> plannedMeals) {
+        Log.i(TAG, "MealsLocalDataSource replacePlannedMeals: ");
         plannedDAO.deleteAllMeals()
+                .doOnComplete(() -> insertAllPlannedMeals(plannedMeals))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }

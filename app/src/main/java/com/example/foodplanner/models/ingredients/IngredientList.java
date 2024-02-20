@@ -1,7 +1,5 @@
 package com.example.foodplanner.models.ingredients;
 
-import com.example.foodplanner.models.area.Area;
-
 import java.util.List;
 
 public class IngredientList {

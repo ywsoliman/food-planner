@@ -26,8 +26,12 @@ public interface IMealsLocalDataSource {
 
 
     void deletePlannedMeal(PlannedMeal plannedMeal);
+//
+//    void deleteAllFavoriteMeals();
+//
+//    void deleteAllPlannedMeals();
 
-    void deleteAllFavoriteMeals();
+    void replaceFavoriteMeals(List<Meal> meals);
 
-    void deleteAllPlannedMeals();
+    void replacePlannedMeals(List<PlannedMeal> plannedMeals);
 }

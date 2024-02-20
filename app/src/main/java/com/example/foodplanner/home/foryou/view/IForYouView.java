@@ -17,5 +17,7 @@ public interface IForYouView {
 
     void showIngredients(List<Ingredient> meals);
 
-    void backupSuccess();
+    void onBackupSuccess();
+
+    void onBackupFailure();
 }

@@ -1,5 +1,6 @@
 package com.example.foodplanner.home.foryou.view;
 
+import static com.example.foodplanner.auth.login.view.LoginFragment.LOGIN;
 import static com.example.foodplanner.auth.login.view.LoginFragment.PREF_NAME;
 
 import android.content.Context;
@@ -26,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.foodplanner.FirebaseDataManager;
 import com.example.foodplanner.R;
 import com.example.foodplanner.auth.AuthActivity;
 import com.example.foodplanner.db.MealsLocalDataSource;
@@ -97,12 +99,11 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
         initUI(view);
 
         logoutButton.setOnClickListener(v -> handleLogoutButton());
-//        backupButton.setOnClickListener(v -> handleBackupButton());
+        backupButton.setOnClickListener(v -> handleBackupButton());
 
         forYouPresenter = new ForYouPresenter(this,
-                Repository.getInstance(FirebaseAuth.getInstance(),
-                        MealsRemoteDataSource.getInstance(requireContext()),
-                        MealsLocalDataSource.getInstance(getContext())
+                Repository.getInstance(MealsRemoteDataSource.getInstance(requireContext()),
+                        MealsLocalDataSource.getInstance(requireContext())
                 ));
 
         setupRecyclerViews();
@@ -122,7 +123,7 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
         shimmerIngredients = view.findViewById(R.id.shimmerIngredients);
         ingredientSearchView = view.findViewById(R.id.ingredientSearchView);
         logoutButton = view.findViewById(R.id.logoutButton);
-        backupButton = view.findViewById(R.id.backupBUtton);
+        backupButton = view.findViewById(R.id.backupButton);
     }
 
     private void setupRecyclerViews() {
@@ -151,6 +152,10 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
         FirebaseAuth.getInstance().signOut();
         setRememberMeToFalse();
         navigateToLogin();
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(LOGIN, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("firstLogged", false);
+        editor.apply();
     }
 
     private void navigateToLogin() {
@@ -159,21 +164,21 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
         requireActivity().finish();
     }
 
-//    private void handleBackupButton() {
-//        if (FireStoreDataManager.getInstance(requireContext()).isGuest()) {
-//            Toast.makeText(requireContext(), "You can't backup meals as guest", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//        if (!((HomeActivity) requireActivity()).isConnectedToInternet) {
-//            ((HomeActivity) requireActivity()).showNoInternetDialog();
-//            return;
-//        }
-//        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-//        builder.setTitle("Are you sure you want to backup your data?");
-//        builder.setPositiveButton("BACKUP", (dialog, which) -> forYouPresenter.backupMeals(requireContext()));
-//        builder.setNegativeButton("CANCEL", (dialog, which) -> dialog.dismiss());
-//        builder.show();
-//    }
+    private void handleBackupButton() {
+        if (FirebaseDataManager.getInstance().isGuest()) {
+            Toast.makeText(requireContext(), "You can't backup meals as guest", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!((HomeActivity) requireActivity()).isConnectedToInternet) {
+            ((HomeActivity) requireActivity()).showNoInternetDialog();
+            return;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Are you sure you want to backup your data?");
+        builder.setPositiveButton("BACKUP", (dialog, which) -> forYouPresenter.backupMeals());
+        builder.setNegativeButton("CANCEL", (dialog, which) -> dialog.dismiss());
+        builder.show();
+    }
 
     @Override
     public void showSingleRandomMeal(Meal meal) {
@@ -212,10 +217,15 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
     }
 
     @Override
-    public void backupSuccess() {
+    public void onBackupSuccess() {
         Snackbar.make(requireView(), R.string.backed_up_meals_successfully, Snackbar.LENGTH_SHORT)
                 .setAnchorView(R.id.bottomNavigationView)
                 .show();
+    }
+
+    @Override
+    public void onBackupFailure() {
+        Toast.makeText(requireContext(), R.string.failed_to_backup_meals, Toast.LENGTH_SHORT).show();
     }
 
     private void addIngredientSearchViewListener(List<Ingredient> ingredients) {

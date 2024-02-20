@@ -23,7 +23,6 @@ import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class RegisterFragment extends Fragment implements IRegisterAuth {
 
@@ -57,8 +56,7 @@ public class RegisterFragment extends Fragment implements IRegisterAuth {
         initUI(view);
         registerPresenter = new RegisterPresenter(this,
                 Repository.getInstance(
-                        FirebaseAuth.getInstance(),
-                        MealsRemoteDataSource.getInstance(requireContext()),
+                        MealsRemoteDataSource.getInstance(getContext()),
                         MealsLocalDataSource.getInstance(getContext())
                 ));
         navigateToLogin.setOnClickListener(v -> handleNavigateToLogin());

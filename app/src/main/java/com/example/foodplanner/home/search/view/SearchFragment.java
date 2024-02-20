@@ -26,7 +26,6 @@ import com.example.foodplanner.home.search.presenter.SearchPresenter;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
-import com.google.firebase.auth.FirebaseAuth;
 import com.jakewharton.rxbinding4.widget.RxSearchView;
 
 import java.util.ArrayList;
@@ -66,8 +65,7 @@ public class SearchFragment extends Fragment implements ISearchView, OnMealClick
 
         searchPresenter = new SearchPresenter(this,
                 Repository.getInstance(
-                        FirebaseAuth.getInstance(),
-                        MealsRemoteDataSource.getInstance(requireContext()),
+                        MealsRemoteDataSource.getInstance(getContext()),
                         MealsLocalDataSource.getInstance(getContext())
                 ));
 

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.DatePicker;
 
 import androidx.annotation.NonNull;
@@ -20,16 +19,13 @@ import com.example.foodplanner.R;
 import com.example.foodplanner.db.MealsLocalDataSource;
 import com.example.foodplanner.home.mealplan.presenter.MealPlanPresenter;
 import com.example.foodplanner.home.meals.view.OnMealClickListener;
-import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.PlannedMeal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -59,9 +55,8 @@ public class MealPlanFragment extends Fragment implements IMealPlanView, OnMealC
         dateButton = view.findViewById(R.id.dateButton);
 
         presenter = new MealPlanPresenter(this, Repository.getInstance(
-                FirebaseAuth.getInstance(),
-                MealsRemoteDataSource.getInstance(requireContext()),
-                MealsLocalDataSource.getInstance(requireContext())
+                MealsRemoteDataSource.getInstance(getContext()),
+                MealsLocalDataSource.getInstance(getContext())
         ));
 
         adapter = new MealPlanAdapter(requireContext(), new ArrayList<>(), this, this);
@@ -124,15 +119,6 @@ public class MealPlanFragment extends Fragment implements IMealPlanView, OnMealC
 
     private void showPlannedMealsByDate(int year, int month, int dayOfMonth) {
         presenter.getMealsByDate(year, month, dayOfMonth)
-                .map(plannedMeals -> {
-                    List<PlannedMeal> filteredMeals = new ArrayList<>();
-                    for (PlannedMeal plannedMeal : plannedMeals) {
-                        if (plannedMeal.getMeal().getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-                            filteredMeals.add(plannedMeal);
-                        }
-                    }
-                    return filteredMeals;
-                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(filteredMeals -> adapter.setList(filteredMeals));

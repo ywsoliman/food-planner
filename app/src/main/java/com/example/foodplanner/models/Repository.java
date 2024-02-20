@@ -1,13 +1,14 @@
 package com.example.foodplanner.models;
 
 import com.example.foodplanner.auth.IAuthCallback;
+import com.example.foodplanner.auth.login.view.ISyncCallback;
 import com.example.foodplanner.db.IMealsLocalDataSource;
+import com.example.foodplanner.home.foryou.view.IBackupCallback;
 import com.example.foodplanner.home.search.presenter.SearchedMealsCallback;
 import com.example.foodplanner.network.ForYouNetworkCallback;
 import com.example.foodplanner.network.IMealsRemoteDataSource;
 import com.example.foodplanner.network.MealDetailsNetworkCallback;
 import com.example.foodplanner.network.MealsNetworkCallback;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
@@ -15,21 +16,18 @@ import io.reactivex.rxjava3.core.Flowable;
 
 public class Repository implements IRepository {
 
-    private static final String TAG = "Repository";
     private static Repository repository = null;
     private final IMealsRemoteDataSource remoteDataSource;
     private final IMealsLocalDataSource localDataSource;
-    private final FirebaseAuth firebaseAuth;
 
-    private Repository(FirebaseAuth firebaseAuth, IMealsRemoteDataSource remoteDataSource, IMealsLocalDataSource localDataSource) {
+    private Repository(IMealsRemoteDataSource remoteDataSource, IMealsLocalDataSource localDataSource) {
         this.remoteDataSource = remoteDataSource;
-        this.firebaseAuth = firebaseAuth;
         this.localDataSource = localDataSource;
     }
 
-    public static synchronized Repository getInstance(FirebaseAuth firebaseAuth, IMealsRemoteDataSource remoteDataSource, IMealsLocalDataSource localDataSource) {
+    public static synchronized Repository getInstance(IMealsRemoteDataSource remoteDataSource, IMealsLocalDataSource localDataSource) {
         if (repository == null)
-            repository = new Repository(firebaseAuth, remoteDataSource, localDataSource);
+            repository = new Repository(remoteDataSource, localDataSource);
         return repository;
     }
 
@@ -115,54 +113,38 @@ public class Repository implements IRepository {
 
     @Override
     public void loginAsGuest(IAuthCallback callback) {
-        firebaseAuth.signInAnonymously()
-                .addOnCompleteListener(callback.getActivity(), task -> {
-                    if (task.isSuccessful()) {
-                        callback.onSuccess();
-                    } else {
-                        callback.onFailure("Something went wrong.");
-                    }
-                });
+        remoteDataSource.loginAsGuest(callback);
     }
 
-//    @Override
-//    public void backupMeals(ForYouNetworkCallback callback, Context context) {
-//        Flowable.zip(
-//                        localDataSource.getLocalFavMeals(),
-//                        localDataSource.getLocalPlannedMeals(),
-//                        Pair::create)
-//                .subscribe(pair -> {
-//                    FireStoreDataManager.getInstance(context).backupMealsToFirebase(pair.first, pair.second);
-//                    Log.i(TAG, "backupMeals Success");
-//                    callback.onSuccessBackup();
-//                }, throwable -> {
-//                    Log.i(TAG, "backupMeals: error = " + throwable.getMessage());
-//                });
-//    }
+    @Override
+    public void synchronizeMeals(ISyncCallback callback) {
+        remoteDataSource.synchronizeMeals(callback);
+    }
+
+    @Override
+    public void replaceFavoriteMeals(List<Meal> meals) {
+        localDataSource.replaceFavoriteMeals(meals);
+    }
+
+    @Override
+    public void replacePlannedMeals(List<PlannedMeal> plannedMeals) {
+        localDataSource.replacePlannedMeals(plannedMeals);
+    }
+
+    @Override
+    public void backupMeals(IBackupCallback callback) {
+        remoteDataSource.backupMeals(callback);
+    }
 
     @Override
     public void registerWithEmailAndPassword(IAuthCallback callback, String email, String password) {
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(callback.getActivity(), task -> {
-                    if (task.isSuccessful()) {
-                        callback.onSuccess();
-                    } else {
-                        callback.onFailure("The email address is already in use by another account.");
-                    }
-                });
+        remoteDataSource.registerWithEmailAndPassword(callback, email, password);
     }
 
 
     @Override
     public void loginWithEmailAndPassword(IAuthCallback callback, String email, String password) {
-        firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(callback.getActivity(), task -> {
-                    if (task.isSuccessful()) {
-                        callback.onSuccess();
-                    } else {
-                        callback.onFailure("Invalid username or password");
-                    }
-                });
+        remoteDataSource.loginWithEmailAndPassword(callback, email, password);
     }
 
 }

@@ -73,4 +73,6 @@
     <string name="failed_to_connect">فشل الاتصال بـ MyKitchenPal. يرجى التحقق من اتصال الجهاز بالشبكة</string>
     <string name="something_went_wrong">حدث خطأ ما.</string>
     <string name="backed_up_meals_successfully">تمت إنشاء نسخة احتياطية من الوجبات بنجاح!</string>
+    <string name="failed_to_backup_meals">فشلت عملية نسخ الوجبات.</string>
+
 </resources>

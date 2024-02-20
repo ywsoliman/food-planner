@@ -21,13 +21,10 @@ import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealClickListener, OnMealButtonClickListener {
@@ -52,7 +49,6 @@ public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealC
         super.onViewCreated(view, savedInstanceState);
 
         presenter = new FavoritePresenter(this, Repository.getInstance(
-                FirebaseAuth.getInstance(),
                 MealsRemoteDataSource.getInstance(getContext()),
                 MealsLocalDataSource.getInstance(getContext())
         ));
@@ -83,15 +79,6 @@ public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealC
 
     private void showFavoriteMeals() {
         presenter.getFavoriteMeals()
-                .map(favMeals -> {
-                    List<Meal> filteredMeals = new ArrayList<>();
-                    for (Meal meal : favMeals) {
-                        if (meal.getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-                            filteredMeals.add(meal);
-                        }
-                    }
-                    return filteredMeals;
-                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(filteredMeals -> adapter.setList(filteredMeals));

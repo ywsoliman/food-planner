@@ -22,7 +22,6 @@ import com.example.foodplanner.home.meals.presenter.MealsPresenter;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,8 +62,7 @@ public class MealsFragment extends Fragment implements IMealView, OnMealClickLis
         recyclerView.setLayoutManager(gridLayoutManager);
 
         presenter = new MealsPresenter(this, Repository.getInstance(
-                FirebaseAuth.getInstance(),
-                MealsRemoteDataSource.getInstance(requireContext()),
+                MealsRemoteDataSource.getInstance(getContext()),
                 MealsLocalDataSource.getInstance(getContext())
         ));
 

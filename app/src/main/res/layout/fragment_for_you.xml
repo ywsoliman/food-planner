@@ -34,13 +34,12 @@
                 app:icon="@drawable/ic_logout" />
 
             <Button
-                android:id="@+id/backupBUtton"
+                android:id="@+id/backupButton"
                 style="?attr/materialIconButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_margin="8dp"
-                android:enabled="false"
                 app:icon="@drawable/ic_backup" />
         </FrameLayout>
 

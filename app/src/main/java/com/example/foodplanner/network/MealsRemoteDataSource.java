@@ -2,11 +2,18 @@ package com.example.foodplanner.network;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.Pair;
 
+import com.example.foodplanner.FirebaseDataManager;
+import com.example.foodplanner.auth.IAuthCallback;
+import com.example.foodplanner.auth.login.view.ISyncCallback;
+import com.example.foodplanner.db.MealsLocalDataSource;
+import com.example.foodplanner.home.foryou.view.IBackupCallback;
 import com.example.foodplanner.home.search.presenter.SearchedMealsCallback;
 
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
@@ -18,9 +25,13 @@ public class MealsRemoteDataSource implements IMealsRemoteDataSource {
     private static final String TAG = "MealsRemoteDataSource";
     private static final String BASE_URL = "https://www.themealdb.com/api/json/v1/1/";
     private static MealsRemoteDataSource instance = null;
+    private final FirebaseDataManager firebaseDataManager;
     private final MealsAPI mealsAPI;
+    private Context context;
 
     private MealsRemoteDataSource(Context context) {
+
+        this.context = context;
 
         int cacheSize = 10 * 1024 * 1024;
         Cache cache = new Cache(context.getCacheDir(), cacheSize);
@@ -36,6 +47,8 @@ public class MealsRemoteDataSource implements IMealsRemoteDataSource {
                 .client(okHttpClient)
                 .build();
         mealsAPI = retrofit.create(MealsAPI.class);
+
+        firebaseDataManager = FirebaseDataManager.getInstance();
     }
 
     public static synchronized MealsRemoteDataSource getInstance(Context context) {
@@ -150,6 +163,39 @@ public class MealsRemoteDataSource implements IMealsRemoteDataSource {
                         list -> networkCallback.onSuccess(list.getMeals()),
                         error -> networkCallback.onFailure(error.getMessage())
                 );
+    }
+
+    @Override
+    public void loginAsGuest(IAuthCallback callback) {
+        firebaseDataManager.loginAsGuest(callback);
+    }
+
+    @Override
+    public void registerWithEmailAndPassword(IAuthCallback callback, String email, String password) {
+        firebaseDataManager.registerWithEmailAndPassword(callback, email, password);
+    }
+
+    @Override
+    public void loginWithEmailAndPassword(IAuthCallback callback, String email, String password) {
+        firebaseDataManager.loginWithEmailAndPassword(callback, email, password);
+    }
+
+    @Override
+    public void synchronizeMeals(ISyncCallback callback) {
+        firebaseDataManager.synchronizeMeals(callback);
+    }
+
+    @Override
+    public void backupMeals(IBackupCallback callback) {
+        Flowable.zip(
+                        MealsLocalDataSource.getInstance(context).getLocalFavMeals(),
+                        MealsLocalDataSource.getInstance(context).getLocalPlannedMeals(),
+                        Pair::create)
+                .subscribe(pair -> {
+                            firebaseDataManager.backupMealsToFirebase(pair.first, pair.second);
+                            callback.onBackupSuccess();
+                        },
+                        throwable -> callback.onBackupFailure());
     }
 
 }

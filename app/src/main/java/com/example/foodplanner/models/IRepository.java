@@ -1,8 +1,8 @@
 package com.example.foodplanner.models;
 
-import android.content.Context;
-
 import com.example.foodplanner.auth.IAuthCallback;
+import com.example.foodplanner.auth.login.view.ISyncCallback;
+import com.example.foodplanner.home.foryou.view.IBackupCallback;
 import com.example.foodplanner.home.search.presenter.SearchedMealsCallback;
 import com.example.foodplanner.network.ForYouNetworkCallback;
 import com.example.foodplanner.network.MealDetailsNetworkCallback;
@@ -50,6 +50,14 @@ public interface IRepository {
     void addPlannedMeal(PlannedMeal plannedMeals);
 
     void loginAsGuest(IAuthCallback callback);
+
+    void synchronizeMeals(ISyncCallback callback);
+
+    void replaceFavoriteMeals(List<Meal> meals);
+
+    void replacePlannedMeals(List<PlannedMeal> plannedMeals);
+
+    void backupMeals(IBackupCallback callback);
 
 //    void backupMeals(ForYouNetworkCallback callback, Context context);
 
