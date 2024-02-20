@@ -85,7 +85,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanView, OnMealC
         calendar.add(Calendar.DAY_OF_MONTH, 7);
         long maxDate = calendar.getTimeInMillis();
 
-        DatePickerDialog dialog = new DatePickerDialog(requireContext(), new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog dialog = new DatePickerDialog(requireContext(), R.style.CustomDatePickerTheme, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 String currentDate = year + "/" + (month + 1) + "/" + dayOfMonth;
