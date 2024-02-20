@@ -8,6 +8,8 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "meals_table")
 public class Meal {
+
+    private String email;
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "id")
@@ -72,6 +74,14 @@ public class Meal {
     private String strSource;
     @Ignore
     private String strImageSource;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public String getIdMeal() {
         return idMeal;

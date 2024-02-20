@@ -113,6 +113,7 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
             ((HomeActivity) requireActivity()).showGuestDialog();
             return;
         }
+        meal.setEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         presenter.insertMealToFavorites(meal);
         Snackbar.make(requireView(), R.string.meal_is_added_to_favorites_successfully, Snackbar.LENGTH_SHORT)
                 .setAnchorView(R.id.bottomNavigationView)
@@ -139,6 +140,7 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
                 plannedMeal.setYear(year);
                 plannedMeal.setMonth(month);
                 plannedMeal.setDayOfMonth(dayOfMonth);
+                plannedMeal.getMeal().setEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
                 presenter.insertMealOnDate(plannedMeal);
                 Snackbar.make(requireView(), R.string.meal_added_to_calendar_successfully, Snackbar.LENGTH_SHORT)
                         .setAnchorView(R.id.bottomNavigationView)

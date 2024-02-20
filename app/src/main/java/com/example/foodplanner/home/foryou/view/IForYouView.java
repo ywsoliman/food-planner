@@ -16,4 +16,6 @@ public interface IForYouView {
     void showAreas(List<Area> areas);
 
     void showIngredients(List<Ingredient> meals);
+
+    void backupSuccess();
 }

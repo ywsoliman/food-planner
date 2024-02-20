@@ -17,4 +17,6 @@ public interface ForYouNetworkCallback {
     void onSuccessAreas(List<Area> meals);
 
     void onSuccessIngredients(List<Ingredient> meals);
+
+//    void onSuccessBackup();
 }

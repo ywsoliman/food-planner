@@ -24,6 +24,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -33,7 +34,6 @@ public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealC
 
     private FavoritePresenter presenter;
     private FavoriteAdapter adapter;
-    private Disposable disposable;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,7 +50,7 @@ public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealC
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        
+
         presenter = new FavoritePresenter(this, Repository.getInstance(
                 FirebaseAuth.getInstance(),
                 MealsRemoteDataSource.getInstance(getContext()),
@@ -62,10 +62,7 @@ public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealC
         rvFavorite.setLayoutManager(new LinearLayoutManager(getContext()));
         rvFavorite.setAdapter(adapter);
 
-        disposable = presenter.getFavoriteMeals()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(favMeals -> adapter.setList(favMeals));
+        showFavoriteMeals();
     }
 
     @Override
@@ -84,9 +81,19 @@ public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealC
                 .show();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        disposable.dispose();
+    private void showFavoriteMeals() {
+        presenter.getFavoriteMeals()
+                .map(favMeals -> {
+                    List<Meal> filteredMeals = new ArrayList<>();
+                    for (Meal meal : favMeals) {
+                        if (meal.getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                            filteredMeals.add(meal);
+                        }
+                    }
+                    return filteredMeals;
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(filteredMeals -> adapter.setList(filteredMeals));
     }
 }

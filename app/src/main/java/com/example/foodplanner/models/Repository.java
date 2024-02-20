@@ -15,6 +15,7 @@ import io.reactivex.rxjava3.core.Flowable;
 
 public class Repository implements IRepository {
 
+    private static final String TAG = "Repository";
     private static Repository repository = null;
     private final IMealsRemoteDataSource remoteDataSource;
     private final IMealsLocalDataSource localDataSource;
@@ -123,6 +124,21 @@ public class Repository implements IRepository {
                     }
                 });
     }
+
+//    @Override
+//    public void backupMeals(ForYouNetworkCallback callback, Context context) {
+//        Flowable.zip(
+//                        localDataSource.getLocalFavMeals(),
+//                        localDataSource.getLocalPlannedMeals(),
+//                        Pair::create)
+//                .subscribe(pair -> {
+//                    FireStoreDataManager.getInstance(context).backupMealsToFirebase(pair.first, pair.second);
+//                    Log.i(TAG, "backupMeals Success");
+//                    callback.onSuccessBackup();
+//                }, throwable -> {
+//                    Log.i(TAG, "backupMeals: error = " + throwable.getMessage());
+//                });
+//    }
 
     @Override
     public void registerWithEmailAndPassword(IAuthCallback callback, String email, String password) {

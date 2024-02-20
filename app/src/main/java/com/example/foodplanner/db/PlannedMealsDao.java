@@ -25,7 +25,13 @@ public interface PlannedMealsDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     Completable insert(PlannedMeal meal);
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    Completable insertAll(List<PlannedMeal> meals);
+
     @Delete
     Completable delete(PlannedMeal meal);
+
+    @Query("DELETE FROM planned_meals_table")
+    Completable deleteAllMeals();
 
 }

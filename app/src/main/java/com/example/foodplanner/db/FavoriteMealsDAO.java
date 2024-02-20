@@ -22,7 +22,13 @@ public interface FavoriteMealsDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     Completable insert(Meal meal);
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    Completable insertAll(List<Meal> meals);
+
     @Delete
     Completable delete(Meal meal);
+
+    @Query("DELETE FROM meals_table")
+    Completable deleteAllMeals();
 
 }

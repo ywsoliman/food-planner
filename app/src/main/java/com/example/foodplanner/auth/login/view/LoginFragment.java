@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,21 +21,25 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
-import com.example.foodplanner.FireStoreDataManager;
 import com.example.foodplanner.R;
 import com.example.foodplanner.auth.AuthActivity;
 import com.example.foodplanner.auth.IAuthenticate;
 import com.example.foodplanner.auth.login.presenter.LoginPresenter;
 import com.example.foodplanner.db.MealsLocalDataSource;
 import com.example.foodplanner.home.view.HomeActivity;
+import com.example.foodplanner.models.Meal;
+import com.example.foodplanner.models.PlannedMeal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class LoginFragment extends Fragment implements IAuthenticate {
+import java.util.List;
 
+public class LoginFragment extends Fragment implements IAuthenticate{
+
+    private static final String TAG = "LoginFragment";
     public static final String PREF_NAME = "RememberMePrefs";
     private TextInputLayout emailInputLayout;
     private TextInputEditText emailInputEditText;
@@ -46,20 +49,11 @@ public class LoginFragment extends Fragment implements IAuthenticate {
     private Button guestButton;
     private LoginPresenter loginPresenter;
     private Button googleButton;
-    private CheckBox rememberMe;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    private void rememberMeCheck() {
-        SharedPreferences sharedPreferences =
-                requireActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        boolean rememberMe = sharedPreferences.getBoolean("rememberMe", false);
-        if (rememberMe) {
-            navigateToHome();
-        }
+        rememberMeCheck();
     }
 
     @Override
@@ -74,8 +68,6 @@ public class LoginFragment extends Fragment implements IAuthenticate {
         super.onViewCreated(view, savedInstanceState);
 
         initUI(view);
-
-        rememberMeCheck();
 
         loginPresenter = new LoginPresenter(this,
                 Repository.getInstance(
@@ -97,7 +89,6 @@ public class LoginFragment extends Fragment implements IAuthenticate {
         loginButton = view.findViewById(R.id.navigateToLogin);
         guestButton = view.findViewById(R.id.guestButton);
         googleButton = view.findViewById(R.id.googleButton);
-        rememberMe = view.findViewById(R.id.rememberMeCheck);
     }
 
     private void addEmailTextInputWatcher() {
@@ -136,21 +127,18 @@ public class LoginFragment extends Fragment implements IAuthenticate {
                 .navigate(R.id.action_loginFragment_to_registerFragment);
     }
 
+    private void rememberMeCheck() {
+        SharedPreferences sharedPreferences =
+                requireActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        boolean rememberMe = sharedPreferences.getBoolean("rememberMe", false);
+        if (rememberMe && FirebaseAuth.getInstance().getCurrentUser() != null)
+            navigateToHome();
+    }
+
     private void navigateToHome() {
-        saveRememberMeState();
         Intent intent = new Intent(requireActivity(), HomeActivity.class);
         startActivity(intent);
         requireActivity().finish();
-    }
-
-    private void saveRememberMeState() {
-        if (rememberMe.isChecked()) {
-            SharedPreferences sharedPreferences =
-                    requireActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("rememberMe", true);
-            editor.apply();
-        }
     }
 
     @Override

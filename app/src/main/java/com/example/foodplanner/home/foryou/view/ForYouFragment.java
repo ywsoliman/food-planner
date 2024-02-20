@@ -2,19 +2,10 @@ package com.example.foodplanner.home.foryou.view;
 
 import static com.example.foodplanner.auth.login.view.LoginFragment.PREF_NAME;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,21 +14,30 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.foodplanner.FireStoreDataManager;
 import com.example.foodplanner.R;
 import com.example.foodplanner.auth.AuthActivity;
 import com.example.foodplanner.db.MealsLocalDataSource;
 import com.example.foodplanner.home.foryou.presenter.ForYouPresenter;
 import com.example.foodplanner.home.foryou.view.area.AreaAdapter;
 import com.example.foodplanner.home.foryou.view.area.OnAreaClickListener;
-import com.example.foodplanner.home.foryou.view.category.OnCategoryClickListener;
 import com.example.foodplanner.home.foryou.view.category.CategoryAdapter;
+import com.example.foodplanner.home.foryou.view.category.OnCategoryClickListener;
 import com.example.foodplanner.home.foryou.view.ingredient.IngredientAdapter;
 import com.example.foodplanner.home.foryou.view.ingredient.OnIngredientClickListener;
 import com.example.foodplanner.home.meals.view.OnMealClickListener;
+import com.example.foodplanner.home.view.HomeActivity;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.models.area.Area;
@@ -45,6 +45,7 @@ import com.example.foodplanner.models.category.Category;
 import com.example.foodplanner.models.ingredients.Ingredient;
 import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -56,6 +57,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class ForYouFragment extends Fragment implements IForYouView, OnCategoryClickListener, OnAreaClickListener, OnIngredientClickListener, OnMealClickListener {
 
+    private static final String TAG = "ForYouFragment";
     private View trendingMealCard;
     private TextView trendingMealName;
     private ImageView trendingMealImage;
@@ -72,6 +74,7 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
     private ShimmerFrameLayout shimmerIngredients;
     private SearchView ingredientSearchView;
     private Button logoutButton;
+    private Button backupButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,41 +92,21 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Log.i(TAG, "onViewCreated: ForYouFragment");
+
         initUI(view);
 
         logoutButton.setOnClickListener(v -> handleLogoutButton());
-
-        categoryAdapter = new CategoryAdapter(getContext(), new ArrayList<>(), this);
-        areaAdapter = new AreaAdapter(new ArrayList<>(), this);
-        ingredientsAdapter = new IngredientAdapter(getContext(), new ArrayList<>(), this);
-
-        rvCategory.setLayoutManager(new GridLayoutManager(getContext(), 2, GridLayoutManager.HORIZONTAL, false));
-        rvCategory.setAdapter(categoryAdapter);
-
-        rvArea.setLayoutManager(new GridLayoutManager(getContext(), 2, GridLayoutManager.HORIZONTAL, false));
-        rvArea.setAdapter(areaAdapter);
-
-        rvIngredients.setLayoutManager(new GridLayoutManager(getContext(), 3, GridLayoutManager.HORIZONTAL, false));
-        rvIngredients.setAdapter(ingredientsAdapter);
+//        backupButton.setOnClickListener(v -> handleBackupButton());
 
         forYouPresenter = new ForYouPresenter(this,
                 Repository.getInstance(FirebaseAuth.getInstance(),
                         MealsRemoteDataSource.getInstance(requireContext()),
                         MealsLocalDataSource.getInstance(getContext())
                 ));
-        forYouPresenter.getSingleRandomMeal();
-        forYouPresenter.getCategories();
-        forYouPresenter.getAreas();
-        forYouPresenter.getIngredients();
-    }
 
-    private void handleLogoutButton() {
-        FirebaseAuth.getInstance().signOut();
-        setRememberMeToFalse();
-//        FireStoreDataManager.getInstance(getContext()).synchronizeUserData();
-        Intent intent = new Intent(requireContext(), AuthActivity.class);
-        startActivity(intent);
-        requireActivity().finish();
+        setupRecyclerViews();
+        requestData();
     }
 
     private void initUI(View view) {
@@ -139,7 +122,58 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
         shimmerIngredients = view.findViewById(R.id.shimmerIngredients);
         ingredientSearchView = view.findViewById(R.id.ingredientSearchView);
         logoutButton = view.findViewById(R.id.logoutButton);
+        backupButton = view.findViewById(R.id.backupBUtton);
     }
+
+    private void setupRecyclerViews() {
+        categoryAdapter = new CategoryAdapter(getContext(), new ArrayList<>(), this);
+        areaAdapter = new AreaAdapter(new ArrayList<>(), this);
+        ingredientsAdapter = new IngredientAdapter(getContext(), new ArrayList<>(), this);
+
+        rvCategory.setLayoutManager(new GridLayoutManager(getContext(), 2, GridLayoutManager.HORIZONTAL, false));
+        rvCategory.setAdapter(categoryAdapter);
+
+        rvArea.setLayoutManager(new GridLayoutManager(getContext(), 2, GridLayoutManager.HORIZONTAL, false));
+        rvArea.setAdapter(areaAdapter);
+
+        rvIngredients.setLayoutManager(new GridLayoutManager(getContext(), 3, GridLayoutManager.HORIZONTAL, false));
+        rvIngredients.setAdapter(ingredientsAdapter);
+    }
+
+    private void requestData() {
+        forYouPresenter.getSingleRandomMeal();
+        forYouPresenter.getCategories();
+        forYouPresenter.getAreas();
+        forYouPresenter.getIngredients();
+    }
+
+    private void handleLogoutButton() {
+        FirebaseAuth.getInstance().signOut();
+        setRememberMeToFalse();
+        navigateToLogin();
+    }
+
+    private void navigateToLogin() {
+        Intent intent = new Intent(requireContext(), AuthActivity.class);
+        startActivity(intent);
+        requireActivity().finish();
+    }
+
+//    private void handleBackupButton() {
+//        if (FireStoreDataManager.getInstance(requireContext()).isGuest()) {
+//            Toast.makeText(requireContext(), "You can't backup meals as guest", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//        if (!((HomeActivity) requireActivity()).isConnectedToInternet) {
+//            ((HomeActivity) requireActivity()).showNoInternetDialog();
+//            return;
+//        }
+//        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+//        builder.setTitle("Are you sure you want to backup your data?");
+//        builder.setPositiveButton("BACKUP", (dialog, which) -> forYouPresenter.backupMeals(requireContext()));
+//        builder.setNegativeButton("CANCEL", (dialog, which) -> dialog.dismiss());
+//        builder.show();
+//    }
 
     @Override
     public void showSingleRandomMeal(Meal meal) {
@@ -148,7 +182,7 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
         trendingMealCard.setVisibility(View.VISIBLE);
 
         trendingMealName.setText(meal.getStrMeal());
-        Glide.with(this)
+        Glide.with(requireContext())
                 .load(meal.getStrMealThumb())
                 .apply(new RequestOptions().override(0, 200))
                 .into(trendingMealImage);
@@ -177,6 +211,13 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
         addIngredientSearchViewListener(ingredients);
     }
 
+    @Override
+    public void backupSuccess() {
+        Snackbar.make(requireView(), R.string.backed_up_meals_successfully, Snackbar.LENGTH_SHORT)
+                .setAnchorView(R.id.bottomNavigationView)
+                .show();
+    }
+
     private void addIngredientSearchViewListener(List<Ingredient> ingredients) {
         ingredientSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -184,7 +225,6 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
                 return false;
             }
 
-            @SuppressLint("CheckResult")
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.i("TAG", "onQueryTextChange: " + newText);

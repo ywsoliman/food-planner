@@ -20,6 +20,7 @@ import com.example.foodplanner.R;
 import com.example.foodplanner.db.MealsLocalDataSource;
 import com.example.foodplanner.home.mealplan.presenter.MealPlanPresenter;
 import com.example.foodplanner.home.meals.view.OnMealClickListener;
+import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.PlannedMeal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
@@ -28,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -72,12 +74,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanView, OnMealC
         int month = calendar.get(Calendar.MONTH);
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
-        presenter.getMealsByDate(year, month, dayOfMonth)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        list -> adapter.setList(list)
-                );
+        showPlannedMealsByDate(year, month, dayOfMonth);
 
         String currentDate = year + "/" + (month + 1) + "/" + dayOfMonth;
         dateButton.setText(currentDate);
@@ -98,12 +95,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanView, OnMealC
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 String currentDate = year + "/" + (month + 1) + "/" + dayOfMonth;
                 dateButton.setText(currentDate);
-                presenter.getMealsByDate(year, month, dayOfMonth)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                list -> adapter.setList(list)
-                        );
+                showPlannedMealsByDate(year, month, dayOfMonth);
 
             }
         }, initYear, initMonth, initDayOfMonth);
@@ -128,5 +120,21 @@ public class MealPlanFragment extends Fragment implements IMealPlanView, OnMealC
                 .setAction(R.string.undo, v -> presenter.insert(plannedMeal))
                 .setAnchorView(R.id.bottomNavigationView)
                 .show();
+    }
+
+    private void showPlannedMealsByDate(int year, int month, int dayOfMonth) {
+        presenter.getMealsByDate(year, month, dayOfMonth)
+                .map(plannedMeals -> {
+                    List<PlannedMeal> filteredMeals = new ArrayList<>();
+                    for (PlannedMeal plannedMeal : plannedMeals) {
+                        if (plannedMeal.getMeal().getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                            filteredMeals.add(plannedMeal);
+                        }
+                    }
+                    return filteredMeals;
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(filteredMeals -> adapter.setList(filteredMeals));
     }
 }

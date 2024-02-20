@@ -1,5 +1,8 @@
 package com.example.foodplanner.home.foryou.presenter;
 
+import android.content.Context;
+import android.util.Log;
+
 import com.example.foodplanner.home.foryou.view.IForYouView;
 import com.example.foodplanner.models.IRepository;
 import com.example.foodplanner.models.Meal;
@@ -12,6 +15,7 @@ import java.util.List;
 
 public class ForYouPresenter implements ForYouNetworkCallback {
 
+    private static final String TAG = "ForYouPresenter";
     private final IForYouView view;
     private final IRepository model;
 
@@ -35,7 +39,7 @@ public class ForYouPresenter implements ForYouNetworkCallback {
 
     @Override
     public void onFailure(String errorMsg) {
-
+        Log.i(TAG, "onFailure: " + errorMsg);
     }
 
     @Override
@@ -53,6 +57,11 @@ public class ForYouPresenter implements ForYouNetworkCallback {
         view.showIngredients(meals);
     }
 
+//    @Override
+//    public void onSuccessBackup() {
+//        view.backupSuccess();
+//    }
+
     public void getAreas() {
         model.getRemoteAreas(this);
     }
@@ -61,4 +70,7 @@ public class ForYouPresenter implements ForYouNetworkCallback {
         model.getRemoteIngredients(this);
     }
 
+//    public void backupMeals(Context context) {
+//        model.backupMeals(this, context);
+//    }
 }

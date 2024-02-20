@@ -16,6 +16,9 @@ public class PlannedMeal {
     @ColumnInfo(name = "day_of_month")
     private int dayOfMonth;
 
+    public PlannedMeal() {
+    }
+
     public PlannedMeal(@NonNull Meal meal) {
         this.meal = meal;
     }

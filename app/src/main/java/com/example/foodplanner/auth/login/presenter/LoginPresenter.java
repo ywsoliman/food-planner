@@ -1,6 +1,7 @@
 package com.example.foodplanner.auth.login.presenter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.util.Patterns;
 
 import com.example.foodplanner.auth.IAuthCallback;

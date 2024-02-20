@@ -1,6 +1,7 @@
 package com.example.foodplanner.db;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.PlannedMeal;
@@ -48,6 +49,14 @@ public class MealsLocalDataSource implements IMealsLocalDataSource {
     }
 
     @Override
+    public void insertAllFavoriteMeals(List<Meal> meals) {
+        Log.i(TAG, "insertAllFavoriteMeals: " + meals);
+        favDAO.insertAll(meals)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+    @Override
     public void deleteFavoriteMeal(Meal meal) {
         favDAO.delete(meal)
                 .subscribeOn(Schedulers.io())
@@ -60,7 +69,7 @@ public class MealsLocalDataSource implements IMealsLocalDataSource {
     }
 
     @Override
-    public Flowable<List<PlannedMeal>> getAllLocalPlannedMeals() {
+    public Flowable<List<PlannedMeal>> getLocalPlannedMeals() {
         return plannedDAO.getAllPlannedMeals();
     }
 
@@ -79,8 +88,29 @@ public class MealsLocalDataSource implements IMealsLocalDataSource {
     }
 
     @Override
+    public void insertAllPlannedMeals(List<PlannedMeal> meals) {
+        plannedDAO.insertAll(meals)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+    @Override
     public void deletePlannedMeal(PlannedMeal plannedMeal) {
         plannedDAO.delete(plannedMeal)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+    @Override
+    public void deleteAllFavoriteMeals() {
+        favDAO.deleteAllMeals()
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+    @Override
+    public void deleteAllPlannedMeals() {
+        plannedDAO.deleteAllMeals()
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
