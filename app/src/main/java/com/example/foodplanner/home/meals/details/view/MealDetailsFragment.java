@@ -112,9 +112,6 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
             return;
         }
         presenter.insertMealToFavorites(meal);
-        Snackbar.make(requireView(), R.string.meal_is_added_to_favorites_successfully, Snackbar.LENGTH_SHORT)
-                .setAnchorView(R.id.bottomNavigationView)
-                .show();
     }
 
     private void handleAddToCalendar() {
@@ -138,9 +135,6 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
                 plannedMeal.setMonth(month);
                 plannedMeal.setDayOfMonth(dayOfMonth);
                 presenter.insertMealOnDate(plannedMeal);
-                Snackbar.make(requireView(), R.string.meal_added_to_calendar_successfully, Snackbar.LENGTH_SHORT)
-                        .setAnchorView(R.id.bottomNavigationView)
-                        .show();
             }
         }, year, month, dayOfMonth);
 
@@ -148,6 +142,20 @@ public class MealDetailsFragment extends Fragment implements IMealDetailsView {
         dialog.getDatePicker().setMaxDate(maxDate);
 
         dialog.show();
+    }
+
+    @Override
+    public void onAddToFavoritesSuccess() {
+        Snackbar.make(requireView(), R.string.meal_is_added_to_favorites_successfully, Snackbar.LENGTH_SHORT)
+                .setAnchorView(R.id.bottomNavigationView)
+                .show();
+    }
+
+    @Override
+    public void onAddToCalendarSuccess() {
+        Snackbar.make(requireView(), R.string.meal_added_to_calendar_successfully, Snackbar.LENGTH_SHORT)
+                .setAnchorView(R.id.bottomNavigationView)
+                .show();
     }
 
     @Override

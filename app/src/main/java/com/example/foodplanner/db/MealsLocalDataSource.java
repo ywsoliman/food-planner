@@ -1,7 +1,6 @@
 package com.example.foodplanner.db;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.PlannedMeal;
@@ -9,15 +8,14 @@ import com.example.foodplanner.models.PlannedMeal;
 import java.util.Calendar;
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MealsLocalDataSource implements IMealsLocalDataSource {
 
-    private static final String TAG = "MealsLocalDataSource";
     private final FavoriteMealsDAO favDAO;
     private final PlannedMealsDao plannedDAO;
-    private Flowable<List<Meal>> localFavMeals;
+    private final Flowable<List<Meal>> localFavMeals;
     private Flowable<List<PlannedMeal>> localPlannedMeals;
     private static MealsLocalDataSource instance = null;
 
@@ -42,25 +40,13 @@ public class MealsLocalDataSource implements IMealsLocalDataSource {
     }
 
     @Override
-    public void insertFavoriteMeal(Meal meal) {
-        favDAO.insert(meal)
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+    public Completable insertFavoriteMeal(Meal meal) {
+        return favDAO.insert(meal);
     }
 
     @Override
-    public void insertAllFavoriteMeals(List<Meal> meals) {
-        Log.i(TAG, "insertAllFavoriteMeals: " + meals);
-        favDAO.insertAll(meals)
-                .subscribeOn(Schedulers.io())
-                .subscribe();
-    }
-
-    @Override
-    public void deleteFavoriteMeal(Meal meal) {
-        favDAO.delete(meal)
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+    public Completable deleteFavoriteMeal(Meal meal) {
+        return favDAO.delete(meal);
     }
 
     @Override
@@ -73,7 +59,6 @@ public class MealsLocalDataSource implements IMealsLocalDataSource {
         return plannedDAO.getAllPlannedMeals();
     }
 
-
     @Override
     public Flowable<List<PlannedMeal>> getLocalPlannedMeals(int year, int month, int dayOfMonth) {
         localPlannedMeals = plannedDAO.getPlannedMeals(year, month, dayOfMonth);
@@ -81,56 +66,24 @@ public class MealsLocalDataSource implements IMealsLocalDataSource {
     }
 
     @Override
-    public void insertPlannedMeal(PlannedMeal plannedMeal) {
-        plannedDAO.insert(plannedMeal)
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+    public Completable insertPlannedMeal(PlannedMeal plannedMeal) {
+        return plannedDAO.insert(plannedMeal);
     }
 
     @Override
-    public void insertAllPlannedMeals(List<PlannedMeal> meals) {
-        Log.i(TAG, "insertAllPlannedMeals: ");
-        plannedDAO.insertAll(meals)
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+    public Completable deletePlannedMeal(PlannedMeal plannedMeal) {
+        return plannedDAO.delete(plannedMeal);
     }
 
     @Override
-    public void deletePlannedMeal(PlannedMeal plannedMeal) {
-        plannedDAO.delete(plannedMeal)
-                .subscribeOn(Schedulers.io())
-                .subscribe();
-    }
-
-//    @Override
-//    public void deleteAllFavoriteMeals() {
-//        favDAO.deleteAllMeals()
-//                .subscribeOn(Schedulers.io())
-//                .subscribe();
-//    }
-//
-//    @Override
-//    public void deleteAllPlannedMeals() {
-//        plannedDAO.deleteAllMeals()
-//                .subscribeOn(Schedulers.io())
-//                .subscribe();
-//    }
-
-    @Override
-    public void replaceFavoriteMeals(List<Meal> meals) {
-        Log.i(TAG, "MealsLocalDataSource replaceFavoriteMeals: ");
-        favDAO.deleteAllMeals()
-                .doOnComplete(() -> insertAllFavoriteMeals(meals))
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+    public Completable replaceFavoriteMeals(List<Meal> meals) {
+        return favDAO.deleteAllMeals()
+                .andThen(favDAO.insertAll(meals));
     }
 
     @Override
-    public void replacePlannedMeals(List<PlannedMeal> plannedMeals) {
-        Log.i(TAG, "MealsLocalDataSource replacePlannedMeals: ");
-        plannedDAO.deleteAllMeals()
-                .doOnComplete(() -> insertAllPlannedMeals(plannedMeals))
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+    public Completable replacePlannedMeals(List<PlannedMeal> plannedMeals) {
+        return plannedDAO.deleteAllMeals()
+                .andThen(plannedDAO.insertAll(plannedMeals));
     }
 }

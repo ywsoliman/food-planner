@@ -1,13 +1,14 @@
 package com.example.foodplanner.auth.login.presenter;
 
-import android.app.Activity;
 import android.util.Patterns;
 
-import com.example.foodplanner.auth.IAuthCallback;
 import com.example.foodplanner.auth.IAuthenticate;
 import com.example.foodplanner.models.IRepository;
 
-public class LoginPresenter implements IAuthCallback {
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
+public class LoginPresenter {
 
     private final IAuthenticate view;
     private final IRepository model;
@@ -19,11 +20,19 @@ public class LoginPresenter implements IAuthCallback {
 
     public void login(String email, String password) {
         if (validateEmail(email) && validatePassword(password))
-            model.loginWithEmailAndPassword(this, email, password);
+            model.loginWithEmailAndPassword(view, email, password)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(() -> view.onSuccess(),
+                            throwable -> view.onFailure(throwable.getMessage()));
     }
 
     public void loginAsGuest() {
-        model.loginAsGuest(this);
+        model.loginAsGuest(view)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> view.onSuccess(),
+                        throwable -> view.onFailure(throwable.getMessage()));
     }
 
     private boolean validatePassword(String password) {
@@ -41,20 +50,5 @@ public class LoginPresenter implements IAuthCallback {
 
     private boolean isEmailValid(String email) {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
-    @Override
-    public void onSuccess() {
-        view.onSuccess();
-    }
-
-    @Override
-    public void onFailure(String errorMsg) {
-        view.onFailure(errorMsg);
-    }
-
-    @Override
-    public Activity getActivity() {
-        return view.getActivity();
     }
 }

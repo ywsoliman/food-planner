@@ -6,4 +6,7 @@ public interface IMealDetailsView {
 
     void showMealDetails(Meal meal);
 
+    void onAddToFavoritesSuccess();
+
+    void onAddToCalendarSuccess();
 }

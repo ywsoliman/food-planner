@@ -1,20 +1,22 @@
 package com.example.foodplanner.network;
 
 import android.content.Context;
-import android.util.Log;
 import android.util.Pair;
 
-import com.example.foodplanner.FirebaseDataManager;
-import com.example.foodplanner.auth.IAuthCallback;
-import com.example.foodplanner.auth.login.view.ISyncCallback;
-import com.example.foodplanner.db.MealsLocalDataSource;
-import com.example.foodplanner.home.foryou.view.IBackupCallback;
-import com.example.foodplanner.home.search.presenter.SearchedMealsCallback;
+import com.example.foodplanner.auth.IAuthenticate;
+import com.example.foodplanner.auth.register.view.IRegisterAuth;
+import com.example.foodplanner.models.Meal;
+import com.example.foodplanner.models.MealsList;
+import com.example.foodplanner.models.PlannedMeal;
+import com.example.foodplanner.models.area.AreaList;
+import com.example.foodplanner.models.category.CategoryList;
+import com.example.foodplanner.models.ingredients.IngredientList;
+
+import java.util.List;
 
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -22,16 +24,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MealsRemoteDataSource implements IMealsRemoteDataSource {
 
-    private static final String TAG = "MealsRemoteDataSource";
     private static final String BASE_URL = "https://www.themealdb.com/api/json/v1/1/";
     private static MealsRemoteDataSource instance = null;
     private final FirebaseDataManager firebaseDataManager;
     private final MealsAPI mealsAPI;
-    private Context context;
 
     private MealsRemoteDataSource(Context context) {
-
-        this.context = context;
 
         int cacheSize = 10 * 1024 * 1024;
         Cache cache = new Cache(context.getCacheDir(), cacheSize);
@@ -58,144 +56,73 @@ public class MealsRemoteDataSource implements IMealsRemoteDataSource {
     }
 
     @Override
-    public void requestSingleRandomMeal(ForYouNetworkCallback networkCallback) {
-
-        mealsAPI.getSingleRandomMeal()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        meals -> {
-                            networkCallback.onSuccessSingleMeal(meals.getMeals());
-                            Log.i(TAG, "requestSingleRandomMeal: ");
-                        },
-                        error -> networkCallback.onFailure(error.getMessage())
-                );
-
+    public Single<MealsList> requestSingleRandomMeal() {
+        return mealsAPI.getSingleRandomMeal();
     }
 
     @Override
-    public void requestCategories(ForYouNetworkCallback networkCallback) {
-
-        mealsAPI.getCategories()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        categories -> networkCallback.onSuccessCategories(categories.getCategories()),
-                        error -> networkCallback.onFailure(error.getMessage())
-                );
-
+    public Single<CategoryList> requestCategories() {
+        return mealsAPI.getCategories();
     }
 
     @Override
-    public void requestMealsByCategory(MealsNetworkCallback networkCallback, String category) {
-
-        mealsAPI.getMealsByCategory(category)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        meals -> networkCallback.onSuccess(meals.getMeals()),
-                        error -> networkCallback.onFailure(error.getMessage())
-                );
-
+    public Single<MealsList> requestMealsByCategory(String category) {
+        return mealsAPI.getMealsByCategory(category);
     }
 
     @Override
-    public void requestMealDetailsByID(MealDetailsNetworkCallback networkCallback, String mealID) {
-        mealsAPI.getMealDetailsByID(mealID)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        meal -> networkCallback.onSuccess(meal.getMeals().get(0)),
-                        error -> networkCallback.onFailure(error.getMessage())
-                );
+    public Single<MealsList> requestMealDetailsByID(String mealID) {
+        return mealsAPI.getMealDetailsByID(mealID);
     }
 
     @Override
-    public void requestSearchedMeals(SearchedMealsCallback callback, String query) {
-        mealsAPI.getMealsBySearch(query)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        list -> callback.onSuccess(list.getMeals()),
-                        error -> callback.onFailure(error.getMessage())
-                );
+    public Single<MealsList> requestSearchedMeals(String query) {
+        return mealsAPI.getMealsBySearch(query);
     }
 
     @Override
-    public void requestAreas(ForYouNetworkCallback networkCallback) {
-        mealsAPI.getAreas()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        areas -> networkCallback.onSuccessAreas(areas.getMeals()),
-                        error -> networkCallback.onFailure(error.getMessage())
-                );
+    public Single<AreaList> requestAreas() {
+        return mealsAPI.getAreas();
     }
 
     @Override
-    public void requestMealsByArea(MealsNetworkCallback networkCallback, String query) {
-        mealsAPI.getMealsByArea(query)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        areas -> networkCallback.onSuccess(areas.getMeals()),
-                        error -> networkCallback.onFailure(error.getMessage())
-                );
+    public Single<MealsList> requestMealsByArea(String query) {
+        return mealsAPI.getMealsByArea(query);
     }
 
     @Override
-    public void requestIngredients(ForYouNetworkCallback networkCallback) {
-        mealsAPI.getIngredients()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        list -> networkCallback.onSuccessIngredients(list.getMeals()),
-                        error -> networkCallback.onFailure(error.getMessage())
-                );
+    public Single<IngredientList> requestIngredients() {
+        return mealsAPI.getIngredients();
     }
 
     @Override
-    public void requestMealsByIngredient(MealsNetworkCallback networkCallback, String ingredient) {
-        mealsAPI.getMealsByIngredient(ingredient)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        list -> networkCallback.onSuccess(list.getMeals()),
-                        error -> networkCallback.onFailure(error.getMessage())
-                );
+    public Single<MealsList> requestMealsByIngredient(String ingredient) {
+        return mealsAPI.getMealsByIngredient(ingredient);
     }
 
     @Override
-    public void loginAsGuest(IAuthCallback callback) {
-        firebaseDataManager.loginAsGuest(callback);
+    public Completable loginAsGuest(IAuthenticate view) {
+        return firebaseDataManager.loginAsGuest(view);
     }
 
     @Override
-    public void registerWithEmailAndPassword(IAuthCallback callback, String email, String password) {
-        firebaseDataManager.registerWithEmailAndPassword(callback, email, password);
+    public Completable registerWithEmailAndPassword(IRegisterAuth view, String email, String password) {
+        return firebaseDataManager.registerWithEmailAndPassword(view, email, password);
     }
 
     @Override
-    public void loginWithEmailAndPassword(IAuthCallback callback, String email, String password) {
-        firebaseDataManager.loginWithEmailAndPassword(callback, email, password);
+    public Completable loginWithEmailAndPassword(IAuthenticate view, String email, String password) {
+        return firebaseDataManager.loginWithEmailAndPassword(view, email, password);
     }
 
     @Override
-    public void synchronizeMeals(ISyncCallback callback) {
-        firebaseDataManager.synchronizeMeals(callback);
+    public Single<Pair<List<Meal>, List<PlannedMeal>>> synchronizeMeals() {
+        return firebaseDataManager.synchronizeMeals();
     }
 
     @Override
-    public void backupMeals(IBackupCallback callback) {
-        Flowable.zip(
-                        MealsLocalDataSource.getInstance(context).getLocalFavMeals(),
-                        MealsLocalDataSource.getInstance(context).getLocalPlannedMeals(),
-                        Pair::create)
-                .subscribe(pair -> {
-                            firebaseDataManager.backupMealsToFirebase(pair.first, pair.second);
-                            callback.onBackupSuccess();
-                        },
-                        throwable -> callback.onBackupFailure());
+    public Completable backupMeals(List<Meal> favMeals, List<PlannedMeal> plannedMeals) {
+        return firebaseDataManager.backupMealsToFirebase(favMeals, plannedMeals);
     }
 
 }

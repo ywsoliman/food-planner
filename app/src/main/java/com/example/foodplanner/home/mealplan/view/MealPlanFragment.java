@@ -26,9 +26,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import java.util.List;
 
 public class MealPlanFragment extends Fragment implements IMealPlanView, OnMealClickListener, OnPlannedMealClickListener {
 
@@ -111,16 +109,22 @@ public class MealPlanFragment extends Fragment implements IMealPlanView, OnMealC
     @Override
     public void onPlannedMealButtonClicked(PlannedMeal plannedMeal) {
         presenter.delete(plannedMeal);
+    }
+
+    private void showPlannedMealsByDate(int year, int month, int dayOfMonth) {
+        presenter.getMealsByDate(year, month, dayOfMonth);
+    }
+
+    @Override
+    public void showPlannedMealsByDate(List<PlannedMeal> plannedMeals) {
+        adapter.setList(plannedMeals);
+    }
+
+    @Override
+    public void onDeleteFromCalendarSuccess(PlannedMeal plannedMeal) {
         Snackbar.make(requireView(), R.string.meal_is_deleted_from_calendar, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo, v -> presenter.insert(plannedMeal))
                 .setAnchorView(R.id.bottomNavigationView)
                 .show();
-    }
-
-    private void showPlannedMealsByDate(int year, int month, int dayOfMonth) {
-        presenter.getMealsByDate(year, month, dayOfMonth)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(filteredMeals -> adapter.setList(filteredMeals));
     }
 }

@@ -1,6 +1,5 @@
 package com.example.foodplanner.home.meals.view;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,10 +24,6 @@ import com.example.foodplanner.network.MealsRemoteDataSource;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MealsFragment extends Fragment implements IMealView, OnMealClickListener {
 
@@ -81,6 +76,11 @@ public class MealsFragment extends Fragment implements IMealView, OnMealClickLis
         }
     }
 
+    private void initUI(View view) {
+        recyclerView = view.findViewById(R.id.rvMealsByCategory);
+        searchView = view.findViewById(R.id.searchView);
+    }
+
     private void addSearchViewListener(List<Meal> meals) {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -88,39 +88,26 @@ public class MealsFragment extends Fragment implements IMealView, OnMealClickLis
                 return true;
             }
 
-            @SuppressLint("CheckResult")
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.i("TAG", "onQueryTextChange: " + newText);
                 if (newText.isEmpty())
                     adapter.setList(meals);
-                else {
-                    List<Meal> filteredList = new ArrayList<>();
-                    Observable.fromIterable(meals)
-                            .subscribeOn(Schedulers.io())
-                            .filter(meal -> meal.getStrMeal().toLowerCase().contains(newText.toLowerCase()))
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                    filteredList::add,
-                                    error -> Log.i("TAG", "onQueryTextChange: " + error.getMessage()),
-                                    () -> adapter.setList(filteredList)
-                            );
-                    Log.i("TAG", "onQueryTextChange Filtered Meals: " + filteredList);
-                }
+                else
+                    presenter.filterMealsByName(meals, newText);
                 return true;
             }
         });
-    }
-
-    private void initUI(View view) {
-        recyclerView = view.findViewById(R.id.rvMealsByCategory);
-        searchView = view.findViewById(R.id.searchView);
     }
 
     @Override
     public void showMeals(List<Meal> mealList) {
         adapter.setList(mealList);
         addSearchViewListener(mealList);
+    }
+
+    @Override
+    public void showFilteredMeals(List<Meal> filteredList) {
+        adapter.setList(filteredList);
     }
 
     @Override

@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface IMealView {
     void showMeals(List<Meal> mealList);
+
+    void showFilteredMeals(List<Meal> filteredList);
 }

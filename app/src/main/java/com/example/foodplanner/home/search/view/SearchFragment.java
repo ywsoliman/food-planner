@@ -26,14 +26,10 @@ import com.example.foodplanner.home.search.presenter.SearchPresenter;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
-import com.jakewharton.rxbinding4.widget.RxSearchView;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 
 public class SearchFragment extends Fragment implements ISearchView, OnMealClickListener {
 
@@ -90,16 +86,10 @@ public class SearchFragment extends Fragment implements ISearchView, OnMealClick
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (newText.isEmpty()) {
+                if (newText.isEmpty())
                     showSearchedMeals(Collections.emptyList());
-                } else {
-                    RxSearchView.queryTextChanges(searchView)
-                            .debounce(500, TimeUnit.MILLISECONDS)
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                    text -> searchPresenter.getSearchedMeals(text.toString())
-                            );
-                }
+                else
+                    searchPresenter.searchForMealByQuery(searchView, newText);
                 return true;
             }
         });

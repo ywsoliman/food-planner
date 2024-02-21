@@ -23,16 +23,12 @@ import com.example.foodplanner.R;
 import com.example.foodplanner.auth.AuthActivity;
 import com.example.foodplanner.db.MealsLocalDataSource;
 import com.example.foodplanner.home.presenter.HomePresenter;
-import com.example.foodplanner.models.Meal;
-import com.example.foodplanner.models.PlannedMeal;
 import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.example.foodplanner.network.NetworkChangeReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.util.List;
 
 public class HomeActivity extends AppCompatActivity implements NetworkChangeReceiver.NetworkChangeListener, IHomeView {
 
@@ -68,8 +64,6 @@ public class HomeActivity extends AppCompatActivity implements NetworkChangeRece
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
-//        if (!isConnectedToInternet)
-//            navigateToFragment(R.id.favoriteFragment);
         setupButtonNavigation();
 
     }
@@ -174,16 +168,6 @@ public class HomeActivity extends AppCompatActivity implements NetworkChangeRece
             noInternetBanner.setVisibility(View.GONE);
         else
             noInternetBanner.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onSuccessFetchingMealsFromFirebase(List<Meal> meals) {
-        homePresenter.replaceFavoriteMeals(meals);
-    }
-
-    @Override
-    public void onSuccessFetchingPlannedFromFirebase(List<PlannedMeal> plannedMeals) {
-        homePresenter.replacePlannedMeals(plannedMeals);
     }
 
     @Override

@@ -1,12 +1,17 @@
 package com.example.foodplanner.home.search.presenter;
 
+import android.widget.SearchView;
+
 import com.example.foodplanner.home.search.view.ISearchView;
 import com.example.foodplanner.models.IRepository;
-import com.example.foodplanner.models.Meal;
+import com.jakewharton.rxbinding4.widget.RxSearchView;
 
-import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-public class SearchPresenter implements SearchedMealsCallback {
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
+public class SearchPresenter {
 
     private final ISearchView view;
     private final IRepository model;
@@ -17,17 +22,20 @@ public class SearchPresenter implements SearchedMealsCallback {
     }
 
     public void getSearchedMeals(String query) {
-        model.getRemoteSearchedMeals(this, query);
+        model.getRemoteSearchedMeals(query)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        mealsList -> view.showSearchedMeals(mealsList.getMeals())
+                );
     }
 
-    @Override
-    public void onSuccess(List<Meal> searchedMeals) {
-        if (searchedMeals != null)
-            view.showSearchedMeals(searchedMeals);
-    }
-
-    @Override
-    public void onFailure(String errorMsg) {
-
+    public void searchForMealByQuery(SearchView searchView, String newText) {
+        RxSearchView.queryTextChanges(searchView)
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        text -> getSearchedMeals(text.toString())
+                );
     }
 }

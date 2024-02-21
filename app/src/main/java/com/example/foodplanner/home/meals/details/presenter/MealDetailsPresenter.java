@@ -4,9 +4,11 @@ import com.example.foodplanner.home.meals.details.view.IMealDetailsView;
 import com.example.foodplanner.models.IRepository;
 import com.example.foodplanner.models.Meal;
 import com.example.foodplanner.models.PlannedMeal;
-import com.example.foodplanner.network.MealDetailsNetworkCallback;
 
-public class MealDetailsPresenter implements MealDetailsNetworkCallback {
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
+public class MealDetailsPresenter {
 
     private final IMealDetailsView view;
     private final IRepository model;
@@ -17,24 +19,25 @@ public class MealDetailsPresenter implements MealDetailsNetworkCallback {
     }
 
     public void getMealDetails(String mealID) {
-        model.getRemoteMealDetails(this, mealID);
-    }
-
-    @Override
-    public void onSuccess(Meal meal) {
-        view.showMealDetails(meal);
-    }
-
-    @Override
-    public void onFailure(String errorMsg) {
-
+        model.getRemoteMealDetails(mealID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        mealsList -> view.showMealDetails(mealsList.getMeals().get(0))
+                );
     }
 
     public void insertMealOnDate(PlannedMeal plannedMeal) {
-        model.insertPlannedMeal(plannedMeal);
+        model.insertPlannedMeal(plannedMeal)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> view.onAddToCalendarSuccess());
     }
 
     public void insertMealToFavorites(Meal meal) {
-        model.insert(meal);
+        model.insert(meal)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> view.onAddToFavoritesSuccess());
     }
 }

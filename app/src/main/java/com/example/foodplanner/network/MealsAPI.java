@@ -5,7 +5,6 @@ import com.example.foodplanner.models.area.AreaList;
 import com.example.foodplanner.models.category.CategoryList;
 import com.example.foodplanner.models.ingredients.IngredientList;
 
-import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -25,7 +24,7 @@ public interface MealsAPI {
     Single<MealsList> getMealDetailsByID(@Query("i") String mealID);
 
     @GET("search.php")
-    Observable<MealsList> getMealsBySearch(@Query("s") String query);
+    Single<MealsList> getMealsBySearch(@Query("s") String query);
 
     @GET("list.php?a=list")
     Single<AreaList> getAreas();

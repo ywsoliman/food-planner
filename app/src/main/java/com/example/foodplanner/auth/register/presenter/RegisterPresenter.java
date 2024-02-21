@@ -1,13 +1,14 @@
 package com.example.foodplanner.auth.register.presenter;
 
-import android.app.Activity;
 import android.util.Patterns;
 
-import com.example.foodplanner.auth.IAuthCallback;
 import com.example.foodplanner.auth.register.view.IRegisterAuth;
 import com.example.foodplanner.models.IRepository;
 
-public class RegisterPresenter implements IAuthCallback {
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
+public class RegisterPresenter {
 
     private final IRegisterAuth view;
     private final IRepository model;
@@ -19,7 +20,11 @@ public class RegisterPresenter implements IAuthCallback {
 
     public void register(String email, String password) {
         if (validateEmail(email) && validatePassword(password))
-            model.registerWithEmailAndPassword(this, email, password);
+            model.registerWithEmailAndPassword(view, email, password)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(() -> view.onSuccess(),
+                            throwable -> view.onFailure(throwable.getMessage()));
     }
 
     public boolean validatePassword(String password) {
@@ -42,21 +47,6 @@ public class RegisterPresenter implements IAuthCallback {
 
     private boolean isEmailValid(String email) {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
-    @Override
-    public void onSuccess() {
-        view.onSuccess();
-    }
-
-    @Override
-    public void onFailure(String errorMsg) {
-        view.onFailure(errorMsg);
-    }
-
-    @Override
-    public Activity getActivity() {
-        return view.getActivity();
     }
 
     public void checkPasswordsMatch(String password, String confirmPassword) {

@@ -1,64 +1,64 @@
 package com.example.foodplanner.models;
 
-import com.example.foodplanner.auth.IAuthCallback;
-import com.example.foodplanner.auth.login.view.ISyncCallback;
-import com.example.foodplanner.home.foryou.view.IBackupCallback;
-import com.example.foodplanner.home.search.presenter.SearchedMealsCallback;
-import com.example.foodplanner.network.ForYouNetworkCallback;
-import com.example.foodplanner.network.MealDetailsNetworkCallback;
-import com.example.foodplanner.network.MealsNetworkCallback;
+import android.util.Pair;
+
+import com.example.foodplanner.auth.IAuthenticate;
+import com.example.foodplanner.auth.register.view.IRegisterAuth;
+import com.example.foodplanner.models.area.AreaList;
+import com.example.foodplanner.models.category.CategoryList;
+import com.example.foodplanner.models.ingredients.IngredientList;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Single;
 
 public interface IRepository {
-    void loginWithEmailAndPassword(IAuthCallback callback, String email, String pass);
+    Single<MealsList> getRemoteSingleMeal();
 
-    void getRemoteProducts(ForYouNetworkCallback forYouNetworkCallback);
+    Single<CategoryList> getRemoteCategories();
 
-    void getRemoteCategories(ForYouNetworkCallback forYouNetworkCallback);
+    Single<MealsList> getRemoteMealsByCategory(String category);
 
-    void getRemoteMealsByCategory(MealsNetworkCallback networkCallback, String category);
+    Single<MealsList> getRemoteMealDetails(String mealID);
 
-    void getRemoteMealDetails(MealDetailsNetworkCallback networkCallback, String mealID);
+    Single<MealsList> getRemoteSearchedMeals(String query);
 
-    void registerWithEmailAndPassword(IAuthCallback callback, String email, String password);
+    Single<AreaList> getRemoteAreas();
 
-    void getRemoteSearchedMeals(SearchedMealsCallback callback, String query);
+    Single<MealsList> getRemoteMealsByArea(String query);
 
-    void getRemoteAreas(ForYouNetworkCallback callback);
+    Single<IngredientList> getRemoteIngredients();
 
-    void getRemoteMealsByArea(MealsNetworkCallback networkCallback, String query);
+    Single<MealsList> getRemoteMealsByIngredient(String ingredient);
 
-    void getRemoteIngredients(ForYouNetworkCallback networkCallback);
+    Completable insert(Meal meal);
 
-    void getRemoteMealsByIngredient(MealsNetworkCallback networkCallback, String ingredient);
-
-    void insert(Meal meal);
-
-    void delete(Meal meal);
+    Completable delete(Meal meal);
 
     Flowable<List<Meal>> getLocalMeals();
 
     Flowable<List<PlannedMeal>> getLocalPlannedMeals(int year, int month, int dayOfMonth);
 
-    void insertPlannedMeal(PlannedMeal plannedMeal);
+    Completable insertPlannedMeal(PlannedMeal plannedMeal);
 
-    void deletePlannedMeal(PlannedMeal plannedMeal);
+    Completable deletePlannedMeal(PlannedMeal plannedMeal);
 
-    void addPlannedMeal(PlannedMeal plannedMeals);
+    Completable addPlannedMeal(PlannedMeal plannedMeals);
 
-    void loginAsGuest(IAuthCallback callback);
+    Completable registerWithEmailAndPassword(IRegisterAuth view, String email, String password);
 
-    void synchronizeMeals(ISyncCallback callback);
+    Completable loginWithEmailAndPassword(IAuthenticate view, String email, String pass);
 
-    void replaceFavoriteMeals(List<Meal> meals);
+    Completable loginAsGuest(IAuthenticate view);
 
-    void replacePlannedMeals(List<PlannedMeal> plannedMeals);
+    Single<Pair<List<Meal>, List<PlannedMeal>>> synchronizeMeals();
 
-    void backupMeals(IBackupCallback callback);
+    Completable replaceFavoriteMeals(List<Meal> meals);
 
-//    void backupMeals(ForYouNetworkCallback callback, Context context);
+    Completable replacePlannedMeals(List<PlannedMeal> plannedMeals);
+
+    Completable backupMeals();
 
 }

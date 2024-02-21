@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
-import com.example.foodplanner.FirebaseDataManager;
 import com.example.foodplanner.R;
 import com.example.foodplanner.auth.AuthActivity;
 import com.example.foodplanner.auth.register.presenter.RegisterPresenter;

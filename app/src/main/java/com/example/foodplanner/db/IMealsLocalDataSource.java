@@ -5,14 +5,21 @@ import com.example.foodplanner.models.PlannedMeal;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
 
 public interface IMealsLocalDataSource {
-    void insertFavoriteMeal(Meal meal);
+    Completable insertFavoriteMeal(Meal meal);
 
-    void insertAllFavoriteMeals(List<Meal> meals);
+    Completable deleteFavoriteMeal(Meal meal);
 
-    void deleteFavoriteMeal(Meal meal);
+    Completable insertPlannedMeal(PlannedMeal plannedMeal);
+
+    Completable deletePlannedMeal(PlannedMeal plannedMeal);
+
+    Completable replaceFavoriteMeals(List<Meal> meals);
+
+    Completable replacePlannedMeals(List<PlannedMeal> plannedMeals);
 
     Flowable<List<Meal>> getLocalFavMeals();
 
@@ -20,18 +27,4 @@ public interface IMealsLocalDataSource {
 
     Flowable<List<PlannedMeal>> getLocalPlannedMeals(int year, int month, int dayOfMonth);
 
-    void insertPlannedMeal(PlannedMeal plannedMeal);
-
-    void insertAllPlannedMeals(List<PlannedMeal> meals);
-
-
-    void deletePlannedMeal(PlannedMeal plannedMeal);
-//
-//    void deleteAllFavoriteMeals();
-//
-//    void deleteAllPlannedMeals();
-
-    void replaceFavoriteMeals(List<Meal> meals);
-
-    void replacePlannedMeals(List<PlannedMeal> plannedMeals);
 }

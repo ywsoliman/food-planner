@@ -4,9 +4,8 @@ import com.example.foodplanner.home.mealplan.view.IMealPlanView;
 import com.example.foodplanner.models.IRepository;
 import com.example.foodplanner.models.PlannedMeal;
 
-import java.util.List;
-
-import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MealPlanPresenter {
 
@@ -18,15 +17,24 @@ public class MealPlanPresenter {
         this.model = model;
     }
 
-    public Flowable<List<PlannedMeal>> getMealsByDate(int year, int month, int dayOfMonth) {
-        return model.getLocalPlannedMeals(year, month, dayOfMonth);
+    public void getMealsByDate(int year, int month, int dayOfMonth) {
+        model.getLocalPlannedMeals(year, month, dayOfMonth)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(plannedMeals -> view.showPlannedMealsByDate(plannedMeals));
     }
 
     public void delete(PlannedMeal plannedMeal) {
-        model.deletePlannedMeal(plannedMeal);
+        model.deletePlannedMeal(plannedMeal)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> view.onDeleteFromCalendarSuccess(plannedMeal));
     }
 
     public void insert(PlannedMeal plannedMeals) {
-        model.addPlannedMeal(plannedMeals);
+        model.addPlannedMeal(plannedMeals)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
     }
 }

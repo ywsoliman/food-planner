@@ -23,9 +23,7 @@ import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import java.util.List;
 
 public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealClickListener, OnMealButtonClickListener {
 
@@ -58,7 +56,7 @@ public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealC
         rvFavorite.setLayoutManager(new LinearLayoutManager(getContext()));
         rvFavorite.setAdapter(adapter);
 
-        showFavoriteMeals();
+        presenter.getFavoriteMeals();
     }
 
     @Override
@@ -71,16 +69,18 @@ public class FavoriteFragment extends Fragment implements IFavoriteView, OnMealC
     @Override
     public void onMealFABClicked(Meal meal) {
         presenter.deleteFromFavorite(meal);
+    }
+
+    @Override
+    public void showFavoriteMeals(List<Meal> meals) {
+        adapter.setList(meals);
+    }
+
+    @Override
+    public void onDeleteFromFavoritesSuccess(Meal meal) {
         Snackbar.make(requireView(), R.string.meal_is_deleted_from_favorites, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo, v -> presenter.addMealToFavorites(meal))
                 .setAnchorView(R.id.bottomNavigationView)
                 .show();
-    }
-
-    private void showFavoriteMeals() {
-        presenter.getFavoriteMeals()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(filteredMeals -> adapter.setList(filteredMeals));
     }
 }

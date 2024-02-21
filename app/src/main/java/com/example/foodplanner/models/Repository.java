@@ -1,18 +1,20 @@
 package com.example.foodplanner.models;
 
-import com.example.foodplanner.auth.IAuthCallback;
-import com.example.foodplanner.auth.login.view.ISyncCallback;
+import android.util.Pair;
+
+import com.example.foodplanner.auth.IAuthenticate;
+import com.example.foodplanner.auth.register.view.IRegisterAuth;
 import com.example.foodplanner.db.IMealsLocalDataSource;
-import com.example.foodplanner.home.foryou.view.IBackupCallback;
-import com.example.foodplanner.home.search.presenter.SearchedMealsCallback;
-import com.example.foodplanner.network.ForYouNetworkCallback;
+import com.example.foodplanner.models.area.AreaList;
+import com.example.foodplanner.models.category.CategoryList;
+import com.example.foodplanner.models.ingredients.IngredientList;
 import com.example.foodplanner.network.IMealsRemoteDataSource;
-import com.example.foodplanner.network.MealDetailsNetworkCallback;
-import com.example.foodplanner.network.MealsNetworkCallback;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Single;
 
 public class Repository implements IRepository {
 
@@ -32,53 +34,53 @@ public class Repository implements IRepository {
     }
 
     @Override
-    public void getRemoteProducts(ForYouNetworkCallback forYouNetworkCallback) {
-        remoteDataSource.requestSingleRandomMeal(forYouNetworkCallback);
+    public Single<MealsList> getRemoteSingleMeal() {
+        return remoteDataSource.requestSingleRandomMeal();
     }
 
     @Override
-    public void getRemoteCategories(ForYouNetworkCallback forYouNetworkCallback) {
-        remoteDataSource.requestCategories(forYouNetworkCallback);
+    public Single<CategoryList> getRemoteCategories() {
+        return remoteDataSource.requestCategories();
     }
 
     @Override
-    public void getRemoteMealsByCategory(MealsNetworkCallback networkCallback, String category) {
-        remoteDataSource.requestMealsByCategory(networkCallback, category);
+    public Single<MealsList> getRemoteMealsByCategory(String category) {
+        return remoteDataSource.requestMealsByCategory(category);
     }
 
     @Override
-    public void getRemoteMealDetails(MealDetailsNetworkCallback networkCallback, String mealID) {
-        remoteDataSource.requestMealDetailsByID(networkCallback, mealID);
+    public Single<MealsList> getRemoteMealDetails(String mealID) {
+        return remoteDataSource.requestMealDetailsByID(mealID);
     }
 
     @Override
-    public void getRemoteSearchedMeals(SearchedMealsCallback callback, String query) {
-        remoteDataSource.requestSearchedMeals(callback, query);
+    public Single<MealsList> getRemoteSearchedMeals(String query) {
+        return remoteDataSource.requestSearchedMeals(query);
     }
 
     @Override
-    public void getRemoteAreas(ForYouNetworkCallback callback) {
-        remoteDataSource.requestAreas(callback);
+    public Single<AreaList> getRemoteAreas() {
+        return remoteDataSource.requestAreas();
     }
 
     @Override
-    public void getRemoteMealsByArea(MealsNetworkCallback networkCallback, String query) {
-        remoteDataSource.requestMealsByArea(networkCallback, query);
+    public Single<MealsList> getRemoteMealsByArea(String query) {
+        return remoteDataSource.requestMealsByArea(query);
     }
 
     @Override
-    public void getRemoteIngredients(ForYouNetworkCallback networkCallback) {
-        remoteDataSource.requestIngredients(networkCallback);
+    public Single<IngredientList> getRemoteIngredients() {
+        return remoteDataSource.requestIngredients();
     }
 
     @Override
-    public void getRemoteMealsByIngredient(MealsNetworkCallback networkCallback, String ingredient) {
-        remoteDataSource.requestMealsByIngredient(networkCallback, ingredient);
+    public Single<MealsList> getRemoteMealsByIngredient(String ingredient) {
+        return remoteDataSource.requestMealsByIngredient(ingredient);
     }
 
     @Override
-    public void insert(Meal meal) {
-        localDataSource.insertFavoriteMeal(meal);
+    public Completable insert(Meal meal) {
+        return localDataSource.insertFavoriteMeal(meal);
     }
 
     @Override
@@ -87,8 +89,8 @@ public class Repository implements IRepository {
     }
 
     @Override
-    public void delete(Meal meal) {
-        localDataSource.deleteFavoriteMeal(meal);
+    public Completable delete(Meal meal) {
+        return localDataSource.deleteFavoriteMeal(meal);
     }
 
     @Override
@@ -97,54 +99,54 @@ public class Repository implements IRepository {
     }
 
     @Override
-    public void insertPlannedMeal(PlannedMeal plannedMeal) {
-        localDataSource.insertPlannedMeal(plannedMeal);
+    public Completable insertPlannedMeal(PlannedMeal plannedMeal) {
+        return localDataSource.insertPlannedMeal(plannedMeal);
     }
 
     @Override
-    public void deletePlannedMeal(PlannedMeal plannedMeal) {
-        localDataSource.deletePlannedMeal(plannedMeal);
+    public Completable deletePlannedMeal(PlannedMeal plannedMeal) {
+        return localDataSource.deletePlannedMeal(plannedMeal);
     }
 
     @Override
-    public void addPlannedMeal(PlannedMeal plannedMeals) {
-        localDataSource.insertPlannedMeal(plannedMeals);
+    public Completable addPlannedMeal(PlannedMeal plannedMeals) {
+        return localDataSource.insertPlannedMeal(plannedMeals);
     }
 
     @Override
-    public void loginAsGuest(IAuthCallback callback) {
-        remoteDataSource.loginAsGuest(callback);
+    public Completable loginAsGuest(IAuthenticate view) {
+        return remoteDataSource.loginAsGuest(view);
     }
 
     @Override
-    public void synchronizeMeals(ISyncCallback callback) {
-        remoteDataSource.synchronizeMeals(callback);
+    public Single<Pair<List<Meal>, List<PlannedMeal>>> synchronizeMeals() {
+        return remoteDataSource.synchronizeMeals();
     }
 
     @Override
-    public void replaceFavoriteMeals(List<Meal> meals) {
-        localDataSource.replaceFavoriteMeals(meals);
+    public Completable replaceFavoriteMeals(List<Meal> meals) {
+        return localDataSource.replaceFavoriteMeals(meals);
     }
 
     @Override
-    public void replacePlannedMeals(List<PlannedMeal> plannedMeals) {
-        localDataSource.replacePlannedMeals(plannedMeals);
+    public Completable replacePlannedMeals(List<PlannedMeal> plannedMeals) {
+        return localDataSource.replacePlannedMeals(plannedMeals);
     }
 
     @Override
-    public void backupMeals(IBackupCallback callback) {
-        remoteDataSource.backupMeals(callback);
+    public Completable backupMeals() {
+        return remoteDataSource.backupMeals(localDataSource.getLocalFavMeals().blockingFirst(), localDataSource.getLocalPlannedMeals().blockingFirst());
     }
 
     @Override
-    public void registerWithEmailAndPassword(IAuthCallback callback, String email, String password) {
-        remoteDataSource.registerWithEmailAndPassword(callback, email, password);
+    public Completable registerWithEmailAndPassword(IRegisterAuth view, String email, String password) {
+        return remoteDataSource.registerWithEmailAndPassword(view, email, password);
     }
 
 
     @Override
-    public void loginWithEmailAndPassword(IAuthCallback callback, String email, String password) {
-        remoteDataSource.loginWithEmailAndPassword(callback, email, password);
+    public Completable loginWithEmailAndPassword(IAuthenticate view, String email, String password) {
+        return remoteDataSource.loginWithEmailAndPassword(view, email, password);
     }
 
 }

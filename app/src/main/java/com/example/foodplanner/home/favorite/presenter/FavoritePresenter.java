@@ -4,9 +4,8 @@ import com.example.foodplanner.home.favorite.view.IFavoriteView;
 import com.example.foodplanner.models.IRepository;
 import com.example.foodplanner.models.Meal;
 
-import java.util.List;
-
-import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class FavoritePresenter {
 
@@ -18,15 +17,24 @@ public class FavoritePresenter {
         this.model = model;
     }
 
-    public Flowable<List<Meal>> getFavoriteMeals() {
-        return model.getLocalMeals();
+    public void getFavoriteMeals() {
+        model.getLocalMeals()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(meals -> view.showFavoriteMeals(meals));
     }
 
     public void deleteFromFavorite(Meal meal) {
-        model.delete(meal);
+        model.delete(meal)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> view.onDeleteFromFavoritesSuccess(meal));
     }
 
     public void addMealToFavorites(Meal meal) {
-        model.insert(meal);
+        model.insert(meal)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
     }
 }

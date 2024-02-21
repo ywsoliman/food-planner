@@ -20,4 +20,6 @@ public interface IForYouView {
     void onBackupSuccess();
 
     void onBackupFailure();
+
+    void showFilteredIngredients(List<Ingredient> filteredList);
 }

@@ -2,20 +2,19 @@ package com.example.foodplanner.home.foryou.presenter;
 
 import android.util.Log;
 
-import com.example.foodplanner.home.foryou.view.IBackupCallback;
 import com.example.foodplanner.home.foryou.view.IForYouView;
 import com.example.foodplanner.models.IRepository;
-import com.example.foodplanner.models.Meal;
-import com.example.foodplanner.models.area.Area;
-import com.example.foodplanner.models.category.Category;
 import com.example.foodplanner.models.ingredients.Ingredient;
-import com.example.foodplanner.network.ForYouNetworkCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ForYouPresenter implements ForYouNetworkCallback, IBackupCallback {
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
-    private static final String TAG = "ForYouPresenter";
+public class ForYouPresenter {
+
     private final IForYouView view;
     private final IRepository model;
 
@@ -25,58 +24,59 @@ public class ForYouPresenter implements ForYouNetworkCallback, IBackupCallback {
     }
 
     public void getSingleRandomMeal() {
-        model.getRemoteProducts(this);
+        model.getRemoteSingleMeal()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        mealsList -> view.showSingleRandomMeal(mealsList.getMeals().get(0))
+                );
     }
 
     public void getCategories() {
-        model.getRemoteCategories(this);
-    }
-
-    @Override
-    public void onSuccessSingleMeal(List<Meal> meals) {
-        view.showSingleRandomMeal(meals.get(0));
-    }
-
-    @Override
-    public void onFailure(String errorMsg) {
-        Log.i(TAG, "onFailure: " + errorMsg);
-    }
-
-    @Override
-    public void onSuccessCategories(List<Category> categories) {
-        view.showCategories(categories);
-    }
-
-    @Override
-    public void onSuccessAreas(List<Area> areas) {
-        view.showAreas(areas);
-    }
-
-    @Override
-    public void onSuccessIngredients(List<Ingredient> meals) {
-        view.showIngredients(meals);
+        model.getRemoteCategories()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        categoryList -> view.showCategories(categoryList.getCategories())
+                );
     }
 
     public void getAreas() {
-        model.getRemoteAreas(this);
+        model.getRemoteAreas()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        areaList -> view.showAreas(areaList.getMeals())
+                );
     }
 
     public void getIngredients() {
-        model.getRemoteIngredients(this);
+        model.getRemoteIngredients()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        ingredientList -> view.showIngredients(ingredientList.getMeals())
+                );
     }
 
     public void backupMeals() {
-        model.backupMeals(this);
+        model.backupMeals()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> view.onBackupSuccess(),
+                        throwable -> view.onBackupFailure());
     }
 
-    @Override
-    public void onBackupSuccess() {
-        view.onBackupSuccess();
+    public void showFilteredIngredients(List<Ingredient> ingredients, String newText) {
+        List<Ingredient> filteredList = new ArrayList<>();
+        Observable.fromIterable(ingredients)
+                .subscribeOn(Schedulers.io())
+                .filter(ingredient -> ingredient.getStrIngredient().toLowerCase().contains(newText.toLowerCase()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        filteredList::add,
+                        error -> Log.i("TAG", "onQueryTextChange: " + error.getMessage()),
+                        () -> view.showFilteredIngredients(filteredList)
+                );
     }
-
-    @Override
-    public void onBackupFailure() {
-        view.onBackupFailure();
-    }
-
 }

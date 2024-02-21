@@ -27,7 +27,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.foodplanner.FirebaseDataManager;
 import com.example.foodplanner.R;
 import com.example.foodplanner.auth.AuthActivity;
 import com.example.foodplanner.db.MealsLocalDataSource;
@@ -45,6 +44,7 @@ import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.models.area.Area;
 import com.example.foodplanner.models.category.Category;
 import com.example.foodplanner.models.ingredients.Ingredient;
+import com.example.foodplanner.network.FirebaseDataManager;
 import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.snackbar.Snackbar;
@@ -52,10 +52,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class ForYouFragment extends Fragment implements IForYouView, OnCategoryClickListener, OnAreaClickListener, OnIngredientClickListener, OnMealClickListener {
 
@@ -243,23 +239,18 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
             public boolean onQueryTextChange(String newText) {
                 Log.i("TAG", "onQueryTextChange: " + newText);
                 if (newText.isEmpty())
-                    ingredientsAdapter.setList(ingredients);
+                    showFilteredIngredients(ingredients);
                 else {
-                    List<Ingredient> filteredList = new ArrayList<>();
-                    Observable.fromIterable(ingredients)
-                            .subscribeOn(Schedulers.io())
-                            .filter(ingredient -> ingredient.getStrIngredient().toLowerCase().contains(newText.toLowerCase()))
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                    filteredList::add,
-                                    error -> Log.i("TAG", "onQueryTextChange: " + error.getMessage()),
-                                    () -> ingredientsAdapter.setList(filteredList)
-                            );
-                    Log.i("TAG", "onQueryTextChange Filtered Meals: " + filteredList);
+                    forYouPresenter.showFilteredIngredients(ingredients, newText);
                 }
                 return true;
             }
         });
+    }
+
+    @Override
+    public void showFilteredIngredients(List<Ingredient> filteredList) {
+        ingredientsAdapter.setList(filteredList);
     }
 
     @Override
