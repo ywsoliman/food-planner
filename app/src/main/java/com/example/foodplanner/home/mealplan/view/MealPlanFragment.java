@@ -111,7 +111,7 @@ public class MealPlanFragment extends Fragment implements IMealPlanView, OnMealC
     @Override
     public void onPlannedMealButtonClicked(PlannedMeal plannedMeal) {
         presenter.delete(plannedMeal);
-        Snackbar.make(requireView(), R.string.meal_is_deleted_from_favorites, Snackbar.LENGTH_LONG)
+        Snackbar.make(requireView(), R.string.meal_is_deleted_from_calendar, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo, v -> presenter.insert(plannedMeal))
                 .setAnchorView(R.id.bottomNavigationView)
                 .show();

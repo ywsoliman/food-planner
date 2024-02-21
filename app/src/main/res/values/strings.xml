@@ -75,5 +75,6 @@
     <string name="something_went_wrong">Something went wrong.</string>
     <string name="backed_up_meals_successfully">Backed up meals successfully!</string>
     <string name="failed_to_backup_meals">Failed to backup meals.</string>
+    <string name="meal_is_deleted_from_calendar">Meal is deleted from calendar.</string>
 
 </resources>

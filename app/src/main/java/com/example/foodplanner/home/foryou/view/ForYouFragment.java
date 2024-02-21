@@ -187,10 +187,14 @@ public class ForYouFragment extends Fragment implements IForYouView, OnCategoryC
         trendingMealCard.setVisibility(View.VISIBLE);
 
         trendingMealName.setText(meal.getStrMeal());
-        Glide.with(requireContext())
-                .load(meal.getStrMealThumb())
-                .apply(new RequestOptions().override(0, 200))
-                .into(trendingMealImage);
+        try {
+            Glide.with(requireContext())
+                    .load(meal.getStrMealThumb())
+                    .apply(new RequestOptions().override(0, 200))
+                    .into(trendingMealImage);
+        } catch (Exception e) {
+            Log.i(TAG, "showSingleRandomMeal: Exception ");
+        }
         trendingMealCard.setOnClickListener(v -> onMealItemClicked(meal.getIdMeal()));
     }
 

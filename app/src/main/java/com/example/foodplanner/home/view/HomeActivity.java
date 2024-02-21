@@ -57,8 +57,6 @@ public class HomeActivity extends AppCompatActivity implements NetworkChangeRece
 
         synchronizeMeals();
 
-        Log.i(TAG, "onCreate HomeActivity: Current User = " + FirebaseAuth.getInstance().getCurrentUser().getEmail());
-
         rememberUser();
 
         noInternetBanner = findViewById(R.id.noInternetBanner);
@@ -159,6 +157,11 @@ public class HomeActivity extends AppCompatActivity implements NetworkChangeRece
     }
 
     private void navigateToSignup() {
+        FirebaseAuth.getInstance().signOut();
+        SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("rememberMe", false);
+        editor.apply();
         Intent intent = new Intent(this, AuthActivity.class);
         startActivity(intent);
         finish();

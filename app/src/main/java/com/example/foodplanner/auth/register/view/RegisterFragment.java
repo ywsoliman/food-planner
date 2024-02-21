@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.example.foodplanner.FirebaseDataManager;
 import com.example.foodplanner.R;
 import com.example.foodplanner.auth.AuthActivity;
 import com.example.foodplanner.auth.register.presenter.RegisterPresenter;
@@ -23,6 +24,7 @@ import com.example.foodplanner.models.Repository;
 import com.example.foodplanner.network.MealsRemoteDataSource;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class RegisterFragment extends Fragment implements IRegisterAuth {
 
@@ -145,6 +147,7 @@ public class RegisterFragment extends Fragment implements IRegisterAuth {
     private void handleNavigateToLogin() {
         Navigation.findNavController(requireView()).
                 navigate(R.id.action_registerFragment_to_loginFragment);
+        FirebaseAuth.getInstance().signOut();
     }
 
     @Override

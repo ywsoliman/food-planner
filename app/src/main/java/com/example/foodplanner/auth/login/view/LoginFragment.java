@@ -45,7 +45,6 @@ public class LoginFragment extends Fragment implements IAuthenticate {
     private Button guestButton;
     private LoginPresenter loginPresenter;
     private Button googleButton;
-    private Button backupButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,7 +85,6 @@ public class LoginFragment extends Fragment implements IAuthenticate {
         loginButton = view.findViewById(R.id.navigateToLogin);
         guestButton = view.findViewById(R.id.guestButton);
         googleButton = view.findViewById(R.id.googleButton);
-        backupButton = view.findViewById(R.id.backupButton);
     }
 
     private void addEmailTextInputWatcher() {
@@ -133,7 +131,7 @@ public class LoginFragment extends Fragment implements IAuthenticate {
         SharedPreferences sharedPreferences =
                 requireActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         boolean rememberMe = sharedPreferences.getBoolean("rememberMe", false);
-        if (rememberMe && FirebaseAuth.getInstance().getCurrentUser() != null)
+        if (rememberMe)
             navigateToHome();
     }
 
